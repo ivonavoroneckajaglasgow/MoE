@@ -1,0 +1,27 @@
+[
+{
+  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\main.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\main.cpp\"",
+  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp"
+},
+{
+  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\Node.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Node.cpp\"",
+  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.cpp"
+},
+{
+  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\Gate.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Gate.cpp\"",
+  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.cpp"
+},
+{
+  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\Expert.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Expert.cpp\"",
+  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.cpp"
+},
+{
+  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\NormalExpert.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalExpert.cpp\"",
+  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.cpp"
+}
+]

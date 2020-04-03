@@ -1,0 +1,25 @@
+# The set of languages for which implicit dependencies are needed:
+set(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_CXX
+  "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.cpp" "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build/CMakeFiles/MoE.dir/Expert.cpp.obj"
+  "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.cpp" "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build/CMakeFiles/MoE.dir/Gate.cpp.obj"
+  "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.cpp" "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build/CMakeFiles/MoE.dir/Node.cpp.obj"
+  "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.cpp" "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build/CMakeFiles/MoE.dir/NormalExpert.cpp.obj"
+  "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp" "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build/CMakeFiles/MoE.dir/main.cpp.obj"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
+
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/share/Armadillo/../../include"
+  )
+
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
+  )
+
+# Fortran module output directory.
+set(CMAKE_Fortran_TARGET_MODULE_DIR "")

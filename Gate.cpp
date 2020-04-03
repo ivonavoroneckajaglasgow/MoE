@@ -21,7 +21,7 @@ Gate::Gate(string aName,GateParameters aParameters)
     cout<<"Gate "<<name<<" has been created."<<endl;
 }
 
-Gate::Gate(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
+/* Gate::Gate(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
         :Node()
 {
     this->type="G";
@@ -30,7 +30,7 @@ Gate::Gate(string aName, GateParameters aParameters,NormalParameters aParameters
     this->createTree(aParameters,aParameters2,depth,nchildren,gcount,ecount);
     //this=this->createTree(aParameters,aParameters2,depth,nchildren,gcount,ecount);
     //cout<<"Gate "<<name<<" has been created. It has a depth of "<<depth<<" with "<<nchildren<<" children at each split."<<endl;
-}
+} */
 
 Node* Gate::createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
 {

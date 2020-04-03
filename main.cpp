@@ -92,10 +92,10 @@ cout<<test[i]->name<<endl; */
      int  d=2;
      int  chl=2;
 
-Gate* Gtest= new Gate("Gtest",generalGateParams, generalNormalParams,d,chl,&n_g,&n_e);
+/* Gate* Gtest= new Gate("Gtest",generalGateParams, generalNormalParams,d,chl,&n_g,&n_e);
 
 cout<<Gtest->name<<endl;
-Gtest->printChildren();
+Gtest->printChildren(); */
 
 //      int n_g2=0;
 //      int n_e2=0;
