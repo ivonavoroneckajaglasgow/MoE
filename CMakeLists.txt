@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.14)
+project(MoE_3)
+set(Armadillo_DIR C:/Users/Ivona\ Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/share/Armadillo)
+find_package(Armadillo CONFIG REQUIRED)
+include_directories(${ARMADILLO_INCLUDE_DIRS})
+set(CMAKE_CXX_STANDARD 14)
+add_executable(MoE_3 main.cpp Node.cpp Node.h Gate.cpp Gate.h Expert.cpp Expert.h NormalExpert.cpp NormalExpert.h NormalParameters.h GateParameters.h)
+target_link_libraries(${ARMADILLO_LIBRARIES})
