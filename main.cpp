@@ -93,34 +93,21 @@ Node* translateTree(vector<int> description) {
 
 int main(){
 
-/* Gate* G = new Gate("G",generalGateParams);
+Gate* G = new Gate("G",generalGateParams);
 NormalExpert* E1 = new NormalExpert("E1",generalNormalParams);
 NormalExpert* E2 = new NormalExpert("E2",generalNormalParams);
 
 G->addChild(E1);
 G->addChild(E2);
 
-vector<Node*> test;
-test=G->getDescendants();
-for(int i=0;i<test.size();i++)
-cout<<test[i]->name<<endl; */
+int  n_g=0;
+int  n_e=0;
+int  d=2;
+int  chl=2;
 
-     int  n_g=0;
-     int  n_e=0;
-     int  d=2;
-     int  chl=2;
+Gate* Gtest= new Gate("Gtest",generalGateParams, generalNormalParams,d,chl,&n_g,&n_e);
 
-/* Gate* Gtest= new Gate("Gtest",generalGateParams, generalNormalParams,d,chl,&n_g,&n_e);
-
-cout<<Gtest->name<<endl;
-Gtest->printChildren(); */
-
-//      int n_g2=0;
-//      int n_e2=0;
-//      int  d2=2;
-//      int  chl2=2;
-
-// Gtest->createTree(generalGateParams, generalNormalParams,d2,chl2,&n_g2,&n_e2);
+Gtest->printChildren(); 
 
 return 0;
 }
