@@ -12,6 +12,12 @@
 using namespace arma;
 using namespace std;
 
+/**
+ * @brief Construct a new Gate:: Gate object.
+ * 
+ * @param aName a string name of the Gate.
+ * @param aParameters a list of Gate parameters for the Gate.
+ */
 Gate::Gate(string aName,GateParameters aParameters)
         :Node()
 {
@@ -21,7 +27,7 @@ Gate::Gate(string aName,GateParameters aParameters)
     cout<<"Gate "<<name<<" has been created."<<endl;
 }
 
-/* Gate::Gate(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
+Gate::Gate(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
         :Node()
 {
     this->type="G";
@@ -30,7 +36,7 @@ Gate::Gate(string aName,GateParameters aParameters)
     this->createTree(aParameters,aParameters2,depth,nchildren,gcount,ecount);
     //this=this->createTree(aParameters,aParameters2,depth,nchildren,gcount,ecount);
     //cout<<"Gate "<<name<<" has been created. It has a depth of "<<depth<<" with "<<nchildren<<" children at each split."<<endl;
-} */
+} 
 
 Node* Gate::createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
 {
@@ -42,11 +48,20 @@ Node* Gate::createTree(GateParameters aParameters,NormalParameters aParameters2,
     return root;
 } 
 
+/**
+ * @brief Destroy the Gate:: Gate object.
+ * 
+ */
 Gate::~Gate(){
     for (int i; i<this->Children.size(); i++)
         delete this->Children[i];
 }
 
+/**
+ * @brief adds a child to the gate.
+ * Adds either an expert or a gate as a child to itself.
+ * @param aChild the object to be added as a child.
+ */
 void Gate::addChild(Node* aChild){
     this -> Children.push_back(aChild);
     aChild -> Parent = this;
@@ -54,6 +69,10 @@ void Gate::addChild(Node* aChild){
         <<" and vice versa."<<endl;
 }
 
+/**
+ * @brief Prints out the names of all children of the gate.
+ * 
+ */
 void Gate::printChildren(){
     if(Children.size()>1) {
         cout << "Gate " << name << " has " << Children.size() << " children called ";
@@ -75,6 +94,10 @@ void Gate::printChildren(){
     }
 };
 
+/**
+ * @brief Prints out the names of all descendants of the gate.
+ * 
+ */
 void Gate::printDescendants(){
 
     for(int i=0;i<Children.size();i++){
@@ -85,6 +108,10 @@ void Gate::printDescendants(){
     }
 }
 
+/**
+ * @brief Prints out the names of all terminal nodes (experts) descending from the gate.
+ * 
+ */
 void Gate::printTerminalNodes(){
 
     for (int i = 0; i < Children.size(); i++) {
@@ -96,10 +123,21 @@ void Gate::printTerminalNodes(){
     }
 }
 
+/**
+ * @brief Retrieves all children of the gate.
+ * 
+ * @return vector<Node*>  a vecor of pointers to all children of the gate.
+ */
 vector<Node*> Gate::getChildren() {
     return Children;
 }
 
+/**
+ * @brief An internal function which helps retrieve all descendents of the gate.
+ * An internal function that is then called at the Node level to retrieve all descendants of the gate.
+ * @param desc vector to be filled in with the descendants of the gate.
+ * @return vector<Node*> vector of pointers to the descendants of the gate.
+ */
 vector<Node*> Gate::getDescendantsInternal(vector<Node*>* desc) {
 
     for(int i=0; i<this->Children.size();i++){
@@ -111,6 +149,12 @@ vector<Node*> Gate::getDescendantsInternal(vector<Node*>* desc) {
     return *desc;
 }
 
+/**
+ * @brief An internal function which helps retrieve all terminal nodes descending from the gate.
+ * An internal function that is then called at the node level to retrieve all terminal nodes of the gate.
+ * @param terminal vector to be filled in with the terminal nodes descending from the gate.
+ * @return vector<Node*> vector of pointers to the terminal nodes descending from the gate.
+ */
 vector<Node*> Gate::getTerminalNodesInternal(vector<Node*>* terminal){
     for(int i=0; i<this->Children.size();i++){
         if(this->Children[i]->countChildren()==0){
@@ -124,6 +168,14 @@ vector<Node*> Gate::getTerminalNodesInternal(vector<Node*>* terminal){
     return *terminal;
 };
 
+/**
+ * @brief An internal function which helps to construct a numeric vector describing a tree.
+ * This function is called at the node level and returns a vector containing the number of children 
+ * of the gate. Then, the same is performed for each of the children of the gate. If the child is an expert,
+ * the describeTreeInternal function will be called from the expert level. 
+ * @param description vector to be filled with integers describing a tree.
+ * @return vector<int> pointer to a vector of integers with the number of children of the gate.
+ */
 vector<int> Gate::describeTreeInternal(vector<int>* description){
 
         description->push_back(Children.size());
@@ -135,18 +187,35 @@ vector<int> Gate::describeTreeInternal(vector<int>* description){
         return *description;
 };
 
+/**
+ * @brief Counts the number of children of the gate.
+ * 
+ * @return int integer number of children of the gate.
+ */
 int Gate::countChildren(){
     int n;
     n=Children.size();
     return n;
 };
 
+/**
+ * @brief Counts the number of descendants of the gate.
+ * 
+ * @return int integer number of descendants of the gate.
+ */
 int Gate::countDescendants(){
     vector<Node*> desc;
     desc=this->getDescendants();
     return desc.size();
 };
 
+/**
+ * @brief A top layer function for assigning ID.
+ * 
+ * Sets the gate id to start at 2 (the root gate is automatically determined in issueID_helper2()) and 
+ * the expert id to start at 1. Calls the helper functions to perform the task.
+ * 
+ */
 void Gate::issueID(){
 
     int gateid=2;
@@ -154,7 +223,13 @@ void Gate::issueID(){
 
     this->issueID_helper2(&gateid,&expertid);
 }
-
+/**
+ * @brief First internal function which helps to assign the id's to the nodes of tree vertically.
+ * This function checks each child of the Node. If a child doesn't have any children, it assumes that it is an expert and 
+ * assigns expert id to it. If a child has some children, a gate id is assigned. 
+ * @param gate_id pointer to an integer which tracks gate id's.
+ * @param expert_id pointer to an integer which tracks expert id's.
+ */
 void Gate::issueID_helper1(int* gate_id, int* expert_id){
 
     for(int i=0;i<this->Children.size();i++){
@@ -170,7 +245,14 @@ void Gate::issueID_helper1(int* gate_id, int* expert_id){
     }
 }
 
-
+/**
+ * @brief Second internal function which helps to assign the id's to the nodes of tree vertically.
+ * This function identifies a root gate by checking the presence of the parent node. If there is no parent 
+ * node, an id of 1 is assigned. Next, issueID_helper1() is called to assign the id's to the children of the 
+ * gate. The process is repeated for every node in the tree by calling this function recursively.
+ * @param gate_id pointer to an integer which tracks gate id's.
+ * @param expert_id pointer to an integer which tracks expert id's.
+ */
 void Gate::issueID_helper2(int* gate_id, int* expert_id){
 
     if(this->Parent==NULL){
