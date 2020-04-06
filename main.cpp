@@ -8,6 +8,8 @@
 
 using namespace std;
 
+// I am testing gitHub commit
+
 NormalParameters generalNormalParams{
         {0.0,0.0},
         1.0,
