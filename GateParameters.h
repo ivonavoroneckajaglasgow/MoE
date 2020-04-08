@@ -8,6 +8,10 @@
 #include "armadillo"
 using namespace arma;
 
+/**
+ * @brief Parameters for a gate.
+ * 
+ */
 struct GateParameters {
     vec gamma;
     vec prior_gamma_mean;

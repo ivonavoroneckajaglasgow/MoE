@@ -9,13 +9,34 @@
 using namespace std;
 
 /**
- * @brief Construct a new Node:: Node object
+ * @brief Construct a new Node:: Node object.
  * 
  */
 Node::Node(){
     this->Parent=NULL;
     this->id=NULL;
 }
+
+Node::Node(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
+{
+    cout<<"Constructing a new Node."<<endl;
+    this->name=aName;
+    this->Parent=NULL;
+    Node* helper;
+    //temprorary needs to be this=this->createTree()...
+    this->helper=this->createTree(aParameters,aParameters2,depth,nchildren,gcount,ecount);
+} 
+
+Node* Node::createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
+{
+    if (depth==0)
+        return new NormalExpert("E" + std::to_string((*ecount)++), aParameters2);
+    Gate* root = new Gate("G" + std::to_string((*gcount)++), aParameters);
+    for (int i=0; i<nchildren; i++)
+        root->addChild(createTree(aParameters,aParameters2, depth-1, nchildren, gcount, ecount));
+    return root;
+} 
+
 
 /**
  * @brief Prints the name of the parent of the node.

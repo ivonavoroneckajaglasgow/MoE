@@ -8,9 +8,6 @@
 
 using namespace std;
 
-// I am testing gitHub commit
-//06/04/2050 16:12
-
 NormalParameters generalNormalParams{
         {0.0,0.0},
         1.0,
@@ -43,6 +40,7 @@ Node* createTree(int depth, int nchildren, int* gcount, int* ecount) {
         root->addChild(createTree(depth-1, nchildren, gcount, ecount));
     return root;
 }
+
 
 /**
  * @brief Internal function, used in the translateTree function
@@ -105,9 +103,20 @@ int  n_e=0;
 int  d=2;
 int  chl=2;
 
-Gate* Gtest= new Gate("Gtest",generalGateParams, generalNormalParams,d,chl,&n_g,&n_e);
+Node* Ntest= new Node("Ntest",generalGateParams, generalNormalParams,d,chl,&n_g,&n_e);
 
-Gtest->printChildren(); 
+cout<<Ntest->name<<endl;
+Ntest->printChildren(); 
+Ntest->helper->printChildren();
+
+//int  n_g2=0;
+//int  n_e2=0;
+
+//Node* test;
+//test=Ntest->createTree(generalGateParams, generalNormalParams,d,chl,&n_g2,&n_e2);
+
+//test->printChildren(); 
+
 
 return 0;
 }

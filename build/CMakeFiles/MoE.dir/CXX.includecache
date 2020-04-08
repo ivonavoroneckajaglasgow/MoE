@@ -6,6 +6,14 @@
 
 #IncludeRegexTransform: 
 
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.cpp
+Expert.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
+iostream
+-
+vector
+-
+
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
 iostream
 -
@@ -13,6 +21,20 @@ vector
 -
 Node.h
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
+
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.cpp
+Gate.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.h
+Node.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
+NormalExpert.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
+iostream
+-
+vector
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
 
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.h
 iostream
@@ -30,11 +52,27 @@ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GateParameters.h
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
 
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.cpp
+Node.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
+Gate.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.h
+NormalExpert.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
+
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
 iostream
 -
 vector
 -
+GateParameters.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GateParameters.h
+NormalParameters.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalParameters.h
+
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.cpp
+NormalExpert.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
 
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
 Expert.h

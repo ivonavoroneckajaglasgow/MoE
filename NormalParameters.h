@@ -8,6 +8,10 @@
 #include "armadillo"
 using namespace arma;
 
+/**
+ * @brief Parameters for a normal expert.
+ * 
+ */
 struct NormalParameters{
     vec beta;
     double sigma;

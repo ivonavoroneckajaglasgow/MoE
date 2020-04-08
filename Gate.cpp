@@ -40,6 +40,8 @@ Gate::Gate(string aName, GateParameters aParameters,NormalParameters aParameters
 
 Node* Gate::createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
 {
+    //Also tried using this instead of root, but then it keeps on overriting in line 46 and can't get the 
+    //syntax
     if (depth==0)
         return new NormalExpert("E" + std::to_string((*ecount)++), aParameters2);
     Gate* root = new Gate("G" + std::to_string((*gcount)++), aParameters);
