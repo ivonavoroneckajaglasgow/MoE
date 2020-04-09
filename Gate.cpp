@@ -27,29 +27,6 @@ Gate::Gate(string aName,GateParameters aParameters)
     cout<<"Gate "<<name<<" has been created."<<endl;
 }
 
-Gate::Gate(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
-        :Node()
-{
-    this->type="G";
-    this->name=aName;
-    this->parameters=aParameters;
-    this->createTree(aParameters,aParameters2,depth,nchildren,gcount,ecount);
-    //this=this->createTree(aParameters,aParameters2,depth,nchildren,gcount,ecount);
-    //cout<<"Gate "<<name<<" has been created. It has a depth of "<<depth<<" with "<<nchildren<<" children at each split."<<endl;
-} 
-
-Node* Gate::createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount)
-{
-    //Also tried using this instead of root, but then it keeps on overriting in line 46 and can't get the 
-    //syntax
-    if (depth==0)
-        return new NormalExpert("E" + std::to_string((*ecount)++), aParameters2);
-    Gate* root = new Gate("G" + std::to_string((*gcount)++), aParameters);
-    for (int i=0; i<nchildren; i++)
-        root->addChild(createTree(aParameters,aParameters2, depth-1, nchildren, gcount, ecount));
-    return root;
-} 
-
 /**
  * @brief Destroy the Gate:: Gate object.
  * 

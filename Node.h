@@ -25,7 +25,6 @@ public:
     string name;
     string type;
     Node();
-    Node(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount);
     void printParent();
     virtual void printChildren();
     void printAncestors();
@@ -47,8 +46,11 @@ public:
     virtual void issueID();
     virtual void issueID_helper1(int* gate_id, int* expert_id);
     virtual void issueID_helper2(int* gate_id, int* expert_id);
-    static Node* createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount);
-};
+    static Node* createTreeInternal(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount);
+    Node* createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren);
+    int populateGate(Gate* parent, vector<int> description, int start, int* gcount, int* ecount, GateParameters aParameters, NormalParameters aParameters2);
+    Node* translateTree(vector<int> description, GateParameters aParameters, NormalParameters aParameters2);
+    };
 
 
 #endif //MOE_3_NODE_H

@@ -19,7 +19,6 @@ public:
     vector<Node*>  Children;
     GateParameters parameters;
     Gate(string aName, GateParameters aParameters);
-    Gate(string aName, GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount);
     ~Gate();
     void addChild(Node* aChild);
     void printChildren();
@@ -34,7 +33,6 @@ public:
     void issueID();
     void issueID_helper1(int* gate_id, int* expert_id);
     void issueID_helper2(int* gate_id, int* expert_id);
-    static Node* createTree(GateParameters aParameters,NormalParameters aParameters2, int depth, int nchildren, int* gcount, int* ecount);
  };
 
 
