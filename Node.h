@@ -12,6 +12,7 @@
 #include "NormalParameters.h"
 
 using namespace std;
+using namespace arma;
 
 class Gate;
 class Expert;

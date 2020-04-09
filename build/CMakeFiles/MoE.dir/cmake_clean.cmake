@@ -1,8 +1,12 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/MoE.dir/BinomialFamily.cpp.obj"
   "CMakeFiles/MoE.dir/Expert.cpp.obj"
+  "CMakeFiles/MoE.dir/Family.cpp.obj"
   "CMakeFiles/MoE.dir/Gate.cpp.obj"
   "CMakeFiles/MoE.dir/Node.cpp.obj"
   "CMakeFiles/MoE.dir/NormalExpert.cpp.obj"
+  "CMakeFiles/MoE.dir/NormalFamily.cpp.obj"
+  "CMakeFiles/MoE.dir/PoissonFamily.cpp.obj"
   "CMakeFiles/MoE.dir/main.cpp.obj"
   "MoE.exe"
   "MoE.exe.manifest"

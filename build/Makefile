@@ -122,6 +122,33 @@ MoE/fast:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/build
 .PHONY : MoE/fast
 
+BinomialFamily.obj: BinomialFamily.cpp.obj
+
+.PHONY : BinomialFamily.obj
+
+# target to build an object file
+BinomialFamily.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/BinomialFamily.cpp.obj
+.PHONY : BinomialFamily.cpp.obj
+
+BinomialFamily.i: BinomialFamily.cpp.i
+
+.PHONY : BinomialFamily.i
+
+# target to preprocess a source file
+BinomialFamily.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/BinomialFamily.cpp.i
+.PHONY : BinomialFamily.cpp.i
+
+BinomialFamily.s: BinomialFamily.cpp.s
+
+.PHONY : BinomialFamily.s
+
+# target to generate assembly for a file
+BinomialFamily.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/BinomialFamily.cpp.s
+.PHONY : BinomialFamily.cpp.s
+
 Expert.obj: Expert.cpp.obj
 
 .PHONY : Expert.obj
@@ -148,6 +175,33 @@ Expert.s: Expert.cpp.s
 Expert.cpp.s:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/Expert.cpp.s
 .PHONY : Expert.cpp.s
+
+Family.obj: Family.cpp.obj
+
+.PHONY : Family.obj
+
+# target to build an object file
+Family.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/Family.cpp.obj
+.PHONY : Family.cpp.obj
+
+Family.i: Family.cpp.i
+
+.PHONY : Family.i
+
+# target to preprocess a source file
+Family.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/Family.cpp.i
+.PHONY : Family.cpp.i
+
+Family.s: Family.cpp.s
+
+.PHONY : Family.s
+
+# target to generate assembly for a file
+Family.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/Family.cpp.s
+.PHONY : Family.cpp.s
 
 Gate.obj: Gate.cpp.obj
 
@@ -230,6 +284,60 @@ NormalExpert.cpp.s:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalExpert.cpp.s
 .PHONY : NormalExpert.cpp.s
 
+NormalFamily.obj: NormalFamily.cpp.obj
+
+.PHONY : NormalFamily.obj
+
+# target to build an object file
+NormalFamily.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalFamily.cpp.obj
+.PHONY : NormalFamily.cpp.obj
+
+NormalFamily.i: NormalFamily.cpp.i
+
+.PHONY : NormalFamily.i
+
+# target to preprocess a source file
+NormalFamily.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalFamily.cpp.i
+.PHONY : NormalFamily.cpp.i
+
+NormalFamily.s: NormalFamily.cpp.s
+
+.PHONY : NormalFamily.s
+
+# target to generate assembly for a file
+NormalFamily.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalFamily.cpp.s
+.PHONY : NormalFamily.cpp.s
+
+PoissonFamily.obj: PoissonFamily.cpp.obj
+
+.PHONY : PoissonFamily.obj
+
+# target to build an object file
+PoissonFamily.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/PoissonFamily.cpp.obj
+.PHONY : PoissonFamily.cpp.obj
+
+PoissonFamily.i: PoissonFamily.cpp.i
+
+.PHONY : PoissonFamily.i
+
+# target to preprocess a source file
+PoissonFamily.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/PoissonFamily.cpp.i
+.PHONY : PoissonFamily.cpp.i
+
+PoissonFamily.s: PoissonFamily.cpp.s
+
+.PHONY : PoissonFamily.s
+
+# target to generate assembly for a file
+PoissonFamily.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/PoissonFamily.cpp.s
+.PHONY : PoissonFamily.cpp.s
+
 main.obj: main.cpp.obj
 
 .PHONY : main.obj
@@ -266,9 +374,15 @@ help:
 	@echo ... edit_cache
 	@echo ... MoE
 	@echo ... rebuild_cache
+	@echo ... BinomialFamily.obj
+	@echo ... BinomialFamily.i
+	@echo ... BinomialFamily.s
 	@echo ... Expert.obj
 	@echo ... Expert.i
 	@echo ... Expert.s
+	@echo ... Family.obj
+	@echo ... Family.i
+	@echo ... Family.s
 	@echo ... Gate.obj
 	@echo ... Gate.i
 	@echo ... Gate.s
@@ -278,6 +392,12 @@ help:
 	@echo ... NormalExpert.obj
 	@echo ... NormalExpert.i
 	@echo ... NormalExpert.s
+	@echo ... NormalFamily.obj
+	@echo ... NormalFamily.i
+	@echo ... NormalFamily.s
+	@echo ... PoissonFamily.obj
+	@echo ... PoissonFamily.i
+	@echo ... PoissonFamily.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

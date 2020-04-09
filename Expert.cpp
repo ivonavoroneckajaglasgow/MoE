@@ -8,6 +8,8 @@
 #include <vector>
 
 using namespace std;
+using namespace arma;
+
 
 /**
  * @brief Construct a new Expert:: Expert object.

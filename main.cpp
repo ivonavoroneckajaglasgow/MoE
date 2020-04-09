@@ -7,6 +7,7 @@
 #include "GateParameters.h"
 
 using namespace std;
+using namespace arma;
 
 NormalParameters generalNormalParams{
         {0.0,0.0},
@@ -91,31 +92,9 @@ Node* translateTree(vector<int> description) {
 
 int main(){
 
-Gate* G = new Gate("G",generalGateParams);
-NormalExpert* E1 = new NormalExpert("E1",generalNormalParams);
-NormalExpert* E2 = new NormalExpert("E2",generalNormalParams);
+vec y = zeros<vec>(10);
+y.print("y:");
 
-G->addChild(E1);
-G->addChild(E2);
-
-int  n_g=0;
-int  n_e=0;
-int  d=2;
-int  chl=2;
-
-Node* Ntest= new Node("Ntest",generalGateParams, generalNormalParams,d,chl,&n_g,&n_e);
-
-cout<<Ntest->name<<endl;
-Ntest->printChildren(); 
-Ntest->helper->printChildren();
-
-//int  n_g2=0;
-//int  n_e2=0;
-
-//Node* test;
-//test=Ntest->createTree(generalGateParams, generalNormalParams,d,chl,&n_g2,&n_e2);
-
-//test->printChildren(); 
 
 
 return 0;

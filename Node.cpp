@@ -7,6 +7,8 @@
 #include "NormalExpert.h"
 
 using namespace std;
+using namespace arma;
+
 
 /**
  * @brief Construct a new Node:: Node object.

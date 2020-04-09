@@ -11,6 +11,8 @@
 #include "Node.h"
 
 using namespace std;
+using namespace arma;
+
 
 class Expert: public Node{
 public:
