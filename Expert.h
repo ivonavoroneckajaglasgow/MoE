@@ -9,6 +9,7 @@
 #include <iostream>
 #include <vector>
 #include "Node.h"
+#include "Family.h"
 
 using namespace std;
 using namespace arma;
@@ -17,6 +18,7 @@ using namespace arma;
 class Expert: public Node{
 public:
     Expert(string aName);
+    Family family;
     int countChildren();
     void printChildren();
     vector<Node*> getDescendantsInternal(vector<Node*>* desc);

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <cmath>
 #include "Gate.h"
 #include "Expert.h"
 #include "NormalExpert.h"
@@ -26,7 +27,9 @@ GateParameters generalGateParams{
 
 int main(){
 
-Node* my_node;
+cout<<log(5)<<endl;
+
+/* Node* my_node;
 int d=2;
 int chl=2;
 Node* new_node;
@@ -38,7 +41,7 @@ cout<<desc[i]<<endl;
 
 Node* new_node_recreated;
 new_node_recreated=my_node->translateTree(desc,generalGateParams,generalNormalParams);
-
+ */
 return 0;
 }
 
