@@ -647,7 +647,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "C:/Program Files (x86)/MoE_3"
+			"value" : "C:/Program Files (x86)/MoE"
 		},
 		{
 			"name" : "CMAKE_LINKER",
@@ -1260,30 +1260,6 @@
 			],
 			"type" : "BOOL",
 			"value" : "FALSE"
-		},
-		{
-			"name" : "MoE_3_BINARY_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build"
-		},
-		{
-			"name" : "MoE_3_SOURCE_DIR",
-			"properties" : 
-			[
-				{
-					"name" : "HELPSTRING",
-					"value" : "Value Computed by CMake"
-				}
-			],
-			"type" : "STATIC",
-			"value" : "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE"
 		},
 		{
 			"name" : "MoE_BINARY_DIR",

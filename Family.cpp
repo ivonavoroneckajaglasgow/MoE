@@ -12,3 +12,7 @@ vector<double> Family::linkfun_vec(vector<double> x){
     result[i]=this->linkfun(x[i]);
 return result;
 }
+
+double Family::linkfun(double mu){
+
+}

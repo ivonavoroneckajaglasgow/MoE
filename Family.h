@@ -1,9 +1,14 @@
+
+//#ifndef MOE_3_FAMILY_H
+//#define MOE_3_FAMILY_H
+
 #include <iostream>
 #include <vector>
+#include "armadillo"
 
 
 using namespace std;
-//using namespace arma;
+using namespace arma;
 
 class Family {
     public:
@@ -12,3 +17,5 @@ class Family {
       vector<double> linkfun_vec(vector<double> x);
       //virtual arma::vector<double> linkfun_vec(arma::vector<double> x); // has a default which applies linkfun to every element, but can be overwritten
 };
+
+//#endif //MOE_3_FAMILY_H
