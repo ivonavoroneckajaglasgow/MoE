@@ -20,9 +20,11 @@ public:
    NormalExpert(); //a constructor 
    double loglik(vec x, vec y, vec beta, double sigma_sq); //returns the log-likelihood of the model for a vector of observations x
    double dloglik(vec x, vec y, vec beta, double sigma_sq, string which); //returns the derivative of log-likelihood wrt to param of the model for observation x
-   vec getMu(vec x, vec beta); //to be made PRIVATE. Gets a mu from beta and x
    vec dnorm(vec x, vec y, vec beta, double sigma_sq);//normal density
    vec dnorm_log(vec x, vec y, vec beta, double sigma_sq);//wrapper for returning derivatives
-   double transformSigma(double sigma);//to be made PRIVATE. Transforms sigma to a log scale
    vec dbeta(vec x, vec y, vec beta, double sigma_sq);
+   private:
+   double transformSigma(double sigma);//Transforms sigma to a log scale
+   vec getMu(vec x, vec beta); // Gets a mu from beta and x
+
 };
