@@ -58,7 +58,7 @@ vec NormalExpert::dnorm(vec x, vec y, vec beta, double sigma_sq){
  * @param sigma_sq variance parameter 
  * @return vec vector containing density of the normal distribution on a log scale
  */
-vec NormalExpert::dnorm_log(vec x, vec y, vec beta, double sigma_sq){
+vec NormalExpert::dnorm_log(vec x, vec y, vec beta, double sigma_sq){ //call log density
    double std;
    double sigma_tr=this->transformSigma(sigma_sq);
    vec mu;
@@ -76,7 +76,7 @@ vec NormalExpert::dnorm_log(vec x, vec y, vec beta, double sigma_sq){
  * @param sigma_sq variance parameter  
  * @return double value for log likelihood function 
  */
-double NormalExpert::loglik(vec x, vec y, vec beta, double sigma_sq){
+double NormalExpert::loglik(vec x, vec y, vec beta, double sigma_sq){ //up to super class
 //return sum(log(this->dnorm(x, beta, sigma_sq)));
 return sum(this->dnorm_log(x,y,beta,sigma_sq));
 }

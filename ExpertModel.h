@@ -11,6 +11,7 @@ using namespace arma;
 
 class ExpertModel{
     public:
+    vec x; //explanatory variables
     vec y; //observed data
     ExpertModel(); //constructor
     virtual double loglik(vec x); //returns the log-likelihood of the model for a vector of observations x

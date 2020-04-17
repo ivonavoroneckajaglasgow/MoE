@@ -14,6 +14,7 @@ using namespace arma;
 
 class NormalExpert: public ExpertModel{
 public:
+   vec x; //explanatory variables
    vec y; //observed data
    vec beta; //a vector of current beta=(intercept,slope) estimates
    double sigma_sq; //a current value of variance sigma^2

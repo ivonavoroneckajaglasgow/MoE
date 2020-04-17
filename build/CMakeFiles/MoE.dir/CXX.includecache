@@ -6,6 +6,18 @@
 
 #IncludeRegexTransform: 
 
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.cpp
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+ExpertModel.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
+
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
 iostream
 -
