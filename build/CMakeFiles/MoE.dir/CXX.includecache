@@ -6,104 +6,6 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.cpp
-Expert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
-iostream
--
-vector
--
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
-iostream
--
-vector
--
-Node.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
-Family.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.cpp
-Family.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
-iostream
--
-vector
--
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
-iostream
--
-vector
--
-armadillo
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.cpp
-Gate.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.h
-Node.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
-NormalExpert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
-iostream
--
-vector
--
-armadillo
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.h
-iostream
--
-vector
--
-Node.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
-GateParameters.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GateParameters.h
-NormalParameters.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalParameters.h
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GateParameters.h
-armadillo
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.cpp
-Node.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
-Gate.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.h
-NormalExpert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Node.h
-iostream
--
-vector
--
-GateParameters.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GateParameters.h
-NormalParameters.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalParameters.h
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.cpp
-NormalExpert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
-Expert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
-NormalParameters.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalParameters.h
-armadillo
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalParameters.h
-armadillo
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp
 iostream
 -
@@ -111,16 +13,8 @@ vector
 -
 cmath
 -
-Gate.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Gate.h
-Expert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
-NormalExpert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
-NormalParameters.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalParameters.h
-GateParameters.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GateParameters.h
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
 
 C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo
 cstdlib
