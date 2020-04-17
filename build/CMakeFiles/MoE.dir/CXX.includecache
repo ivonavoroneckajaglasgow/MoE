@@ -6,6 +6,28 @@
 
 #IncludeRegexTransform: 
 
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+ExpertModel.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
+
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp
 iostream
 -
@@ -15,6 +37,8 @@ cmath
 -
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+NormalExpert.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
 
 C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo
 cstdlib
