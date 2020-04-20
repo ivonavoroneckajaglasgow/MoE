@@ -1,6 +1,4 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/MoE.dir/ExpertModel.cpp.obj"
-  "CMakeFiles/MoE.dir/NormalExpert.cpp.obj"
   "CMakeFiles/MoE.dir/main.cpp.obj"
   "MoE.exe"
   "MoE.exe.manifest"

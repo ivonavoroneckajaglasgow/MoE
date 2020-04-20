@@ -122,60 +122,6 @@ MoE/fast:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/build
 .PHONY : MoE/fast
 
-ExpertModel.obj: ExpertModel.cpp.obj
-
-.PHONY : ExpertModel.obj
-
-# target to build an object file
-ExpertModel.cpp.obj:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/ExpertModel.cpp.obj
-.PHONY : ExpertModel.cpp.obj
-
-ExpertModel.i: ExpertModel.cpp.i
-
-.PHONY : ExpertModel.i
-
-# target to preprocess a source file
-ExpertModel.cpp.i:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/ExpertModel.cpp.i
-.PHONY : ExpertModel.cpp.i
-
-ExpertModel.s: ExpertModel.cpp.s
-
-.PHONY : ExpertModel.s
-
-# target to generate assembly for a file
-ExpertModel.cpp.s:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/ExpertModel.cpp.s
-.PHONY : ExpertModel.cpp.s
-
-NormalExpert.obj: NormalExpert.cpp.obj
-
-.PHONY : NormalExpert.obj
-
-# target to build an object file
-NormalExpert.cpp.obj:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalExpert.cpp.obj
-.PHONY : NormalExpert.cpp.obj
-
-NormalExpert.i: NormalExpert.cpp.i
-
-.PHONY : NormalExpert.i
-
-# target to preprocess a source file
-NormalExpert.cpp.i:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalExpert.cpp.i
-.PHONY : NormalExpert.cpp.i
-
-NormalExpert.s: NormalExpert.cpp.s
-
-.PHONY : NormalExpert.s
-
-# target to generate assembly for a file
-NormalExpert.cpp.s:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalExpert.cpp.s
-.PHONY : NormalExpert.cpp.s
-
 main.obj: main.cpp.obj
 
 .PHONY : main.obj
@@ -212,12 +158,6 @@ help:
 	@echo ... edit_cache
 	@echo ... MoE
 	@echo ... rebuild_cache
-	@echo ... ExpertModel.obj
-	@echo ... ExpertModel.i
-	@echo ... ExpertModel.s
-	@echo ... NormalExpert.obj
-	@echo ... NormalExpert.i
-	@echo ... NormalExpert.s
 	@echo ... main.obj
 	@echo ... main.i
 	@echo ... main.s

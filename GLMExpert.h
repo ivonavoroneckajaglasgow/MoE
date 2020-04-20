@@ -14,11 +14,10 @@ using namespace arma;
 
 class GLMExpert: public ExpertModel{
     public:
-    vec x; //explanatory variables
-    vec y; //observed data
-    mat eta; //eta=X'B
-    double var; //variance parameter
     Family aFamily; //family object
-    double loglik(vec x); //returns the log-likelihood of the model for a vector of observations x
-    double dloglik(vec x, string param); //returns the derivative of log-likelihood wrt to param of the model for observation x
+    virtual vec loglik_vec(vec y, vec eta); //returns the log-likelihood of the model 
+    virtual vec dloglik(vec y, vec eta); //returns the derivative of log-likelihood 
+    virtual vec density(vec y, vec eta); // returns density function
+    virtual vec logdensity(vec y, vec eta); // returns log density function
+    virtual double deta(vec y, vec eta);// returns the derivative of log likelihood wrt to eta
 };

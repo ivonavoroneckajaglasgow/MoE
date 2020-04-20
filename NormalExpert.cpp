@@ -5,127 +5,103 @@
 #include <cmath>
 #include "armadillo"
 
-
 #include "NormalExpert.h"
 
 using namespace std;
 using namespace arma;
 
+
 /**
- * @brief Construct a new Normal Expert:: Normal Expert object
+ * @brief function that transforms log(sigma_sq) to sigma_sq by exponentiating it
  * 
+ * @param logsigma_sq sigma squared on a log scale 
+ * @return double logsigma_sq exponentiated
  */
-NormalExpert::NormalExpert(){
-cout<<"You have created a NormalExpert object."<<endl;
+double NormalExpert::transformSigma(double logsigma_sq){
+    return exp(logsigma_sq);
 }
 
 /**
- * @brief Mean function mu=X'Beta
- * 
- * @param x vecor of explanatory variables
- * @param beta vector of slope and intercept
- * @return vec mu vector
+ * @brief Log density function for a normal distribution
+ * Equivalent of dnorm(...,log=TRUE) in R 
+ * @param y observed data
+ * @param eta vector XB
+ * @param logsigma_sq variance parameter
+ * @return vec log density function of observed data y for a normal distribution 
  */
-vec NormalExpert::getMu(vec x, vec beta){
-    vec mu;
-    mu=beta[0]+beta[1]*x;
-    return mu;
-}
-
-/**
- * @brief Density of the normal distribution
- * This function automatically transforms sigma by taking an exponential of the input for sigma_sq
- * @param x vector of explanatory variables
- * @param y vector of response variables
- * @param beta beta vector of slope and intercept
- * @param sigma_sq variance parameter 
- * @return vec vector containing density of the normal distribution
- */
-vec NormalExpert::dnorm(vec x, vec y, vec beta, double sigma_sq){
-   vec mu;
-   double sigma_tr;
-   sigma_tr=this->transformSigma(sigma_sq);
-   mu=this->getMu(x,beta);
-   return 1/sqrt(2*M_PI*sigma_tr)*exp(-pow(y-mu,2)/(2*sigma_tr));
-}
-
-/**
- * @brief Density of the normal distribution on a log scale
- * This function automatically transforms sigma by taking an exponential of the input for sigma_sq
- * @param x vector of explanatory variables
- * @param y vector of response variables
- * @param beta beta vector of slope and intercept
- * @param sigma_sq variance parameter 
- * @return vec vector containing density of the normal distribution on a log scale
- */
-vec NormalExpert::dnorm_log(vec x, vec y, vec beta, double sigma_sq){ //call log density
+vec NormalExpert::logdensity(vec y, vec eta, double logsigma_sq){
    double std;
-   double sigma_tr=this->transformSigma(sigma_sq);
-   vec mu;
-   mu=this->getMu(x,beta);
-   std=sqrt(sigma_tr);
-   return -0.5*(log(2*M_PI)+log(sigma_tr))-pow(y-mu,2)/(2*sigma_tr);
+   double logsigma_tr=this->transformSigma(logsigma_sq);
+   std=sqrt(logsigma_tr);
+   return -0.5*(log(2*M_PI)+log(logsigma_tr))-pow(y-eta,2)/(2*logsigma_tr);
 }
 
 /**
- * @brief Log likelihood function for the normal expert
- * sigma transform takes place on dnorm and dnorm_log level
- * @param x vector of explanatory variables
- * @param y vector of response variables
- * @param beta beta vector of slope and intercept
- * @param sigma_sq variance parameter  
- * @return double value for log likelihood function 
+ * @brief Density function for a normal distribution
+ * Equivalent of dnorm(...) in R 
+ * @param y observed data
+ * @param eta vector XB
+ * @param logsigma_sq variance parameter
+ * @return vec density function of observed data y for a normal distribution 
  */
-double NormalExpert::loglik(vec x, vec y, vec beta, double sigma_sq){ //up to super class
-//return sum(log(this->dnorm(x, beta, sigma_sq)));
-return sum(this->dnorm_log(x,y,beta,sigma_sq));
+vec NormalExpert::density(vec y, vec eta, double logsigma_sq){
+    return exp(this->logdensity(y,eta,logsigma_sq));
 }
 
 /**
- * @brief derivative of the log likelihood function wrt to the intercept or the slope
+ * @brief log likelihood function for a normal distribution
  * 
- * @param x vector of explanatory variables
- * @param y vector of response variables
- * @param beta vector of slope and intercept
- * @param sigma_sq variance parameter   
- * @param which a choice of intercept (beta0) or slope (beta1)
- * @return value of the derivative of the log likelihood function wrt to the intercept or the slope
+ * @param y observed data
+ * @param eta vector XB
+ * @param logsigma_sq variance parameter
+ * @return vec loglik_vec vector of contributions to the log likelihood of each observation y_i
  */
-double NormalExpert::dloglik(vec x, vec y, vec beta, double sigma_sq, string which){
-vec result;
-result=this->dbeta(x,y,beta,sigma_sq);
-if(which=="beta0") return result[0];
-if(which=="beta1") return result[1];
+vec NormalExpert:: loglik_vec(vec y, vec eta, double logsigma_sq){
+    return log(this->logdensity(y,eta,logsigma_sq));
 }
 
 /**
- * @brief Transforms supplied value of sigma squared by taking an exponential of it
+ * @brief derivative of log-likelihood function wrt eta
  * 
- * @param sigma_sq variance parameter
- * @return double transformed value of the variance parameter
+ * @param y observed data
+ * @param eta vector XB
+ * @param logsigma_sq variance parameter
+ * @return double derivative of log-likelihood function wrt eta
  */
-double NormalExpert::transformSigma(double sigma){
-    return exp(sigma);
-}
-
-/**
- * @brief derivative of the log likelihood function wrt to the intercept and the slope
- * 
- * @param x vector of explanatory variables
- * @param y vector of response variables
- * @param beta vector of slope and intercept
- * @param sigma_sq variance parameter   
- * @return vector of the derivative of the log likelihood function wrt to the intercept and the slope
- */
-vec NormalExpert::dbeta(vec x, vec y, vec beta, double sigma_sq){
-    vec mu;
-    vec result;
-    double sigma_tr;
-
-    mu=this->getMu(x,beta);
-    sigma_tr=this->transformSigma(sigma_sq);
-
-    result<<sum((y-mu)/sigma_tr)<<sum((y-mu)/sigma_tr%x);
+double NormalExpert::deta(vec y, vec eta, double logsigma_sq){
+    double logsigma_tr;
+    logsigma_tr=this->transformSigma(logsigma_sq);
     
-    return result;
+    return sum((y-eta)/logsigma_tr);
+}
+
+/**
+ * @brief derivative of log-likelihood function wrt sigma_sq
+ * 
+ * @param y observed data
+ * @param eta vector XB
+ * @param logsigma_sq variance parameter
+ * @return double derivative of log-likelihood function wrt to sigma_sq
+ */
+double NormalExpert::dsigma(vec y, vec eta, double logsigma_sq){
+    double logsigma_tr;
+    logsigma_tr=this->transformSigma(logsigma_sq);
+    double helper;
+    helper=sum(-this->density(y,eta,logsigma_sq)*1/(2*logsigma_tr)*(1-pow(y-eta,2)/logsigma_tr));
+    double sigma_sq;
+    sigma_sq=logsigma_tr*helper;
+    return sigma_sq;
+}
+
+/**
+ * @brief derivative of log-likelihood function wrt to eta and sigma_sq
+ * 
+ * @param y observed data
+ * @param eta vector XB
+ * @param logsigma_sq variance parameter
+ * @return vec vector containing derivative value of the log-likelihood function wrt eta and sigma_sq (in that order)
+ */
+vec NormalExpert::dloglik(vec y, vec eta, double logsigma_sq){
+    vec result;
+    result << this->deta(y,eta,logsigma_sq)<<this->dsigma(y,eta,logsigma_sq);
 }

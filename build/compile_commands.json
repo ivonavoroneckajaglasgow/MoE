@@ -3,15 +3,5 @@
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
   "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\main.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\main.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp"
-},
-{
-  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\ExpertModel.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\ExpertModel.cpp\"",
-  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.cpp"
-},
-{
-  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\NormalExpert.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalExpert.cpp\"",
-  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.cpp"
 }
 ]

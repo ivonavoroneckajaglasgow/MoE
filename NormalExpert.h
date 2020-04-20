@@ -14,18 +14,13 @@ using namespace arma;
 
 class NormalExpert: public ExpertModel{
 public:
-   vec x; //explanatory variables
-   vec y; //observed data
-   vec beta; //a vector of current beta=(intercept,slope) estimates
-   double sigma_sq; //a current value of variance sigma^2
-   NormalExpert(); //a constructor 
-   double loglik(vec x, vec y, vec beta, double sigma_sq); //returns the log-likelihood of the model for a vector of observations x
-   double dloglik(vec x, vec y, vec beta, double sigma_sq, string which); //returns the derivative of log-likelihood wrt to param of the model for observation x
-   vec dnorm(vec x, vec y, vec beta, double sigma_sq);//normal density
-   vec dnorm_log(vec x, vec y, vec beta, double sigma_sq);//wrapper for returning derivatives
-   vec dbeta(vec x, vec y, vec beta, double sigma_sq);
-   private:
-   double transformSigma(double sigma);//Transforms sigma to a log scale
-   vec getMu(vec x, vec beta); // Gets a mu from beta and x
-
-};
+  // NormalExpert(); //a constructor 
+   vec loglik_vec(vec y, vec eta, double logsigma_sq); //returns the log-likelihood 
+   vec dloglik(vec y, vec eta, double logsigma_sq); //returns the vector of derivatives of log-likelihood wrt all parameters
+   vec density(vec y, vec eta, double logsigma_sq);//normal density
+   vec logdensity(vec y, vec eta, double logsigma_sq);//log-normal density
+   double deta(vec y, vec eta, double logsigma_sq); //derivative of log-likelihod wrt to eta
+   double dsigma (vec y, vec eta, double logsigma_sq); //derivative of the log-likelihood wrt to sigma^2
+   private:   
+   double transformSigma(double logsigma_sq);//Transforms sigma to a log scale
+   };
