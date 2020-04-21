@@ -5,12 +5,11 @@
 #include <cmath>
 #include "armadillo"
 
+#include "Expert.h"
+
 using namespace std;
 using namespace arma;
 
-#include  "NormalExpert.h"
-
-int main(){
-
+Expert::Expert(){
+    cout<<"Expert has been created."<<endl;
 }
-

@@ -10,9 +10,10 @@
 using namespace std;
 using namespace arma;
 
-//NormalFamily::NormalFamily(){
-//
-//}
+NormalFamily::NormalFamily(){
+cout<<"Normal Family has been created"<<endl;
+}
+
 double NormalFamily::transformSigma(double logsigma_sq){
     return exp(logsigma_sq);
 }
@@ -32,11 +33,11 @@ vec NormalFamily::varfun(vec mu){
     return varvec; 
 }
 
-double NormalFamily::dmudeta(vec eta){
+vec NormalFamily::dmudeta(vec eta){
     //L said this has to be one number, but in R it is a vector - double-check this
     vec dvec(eta.size());
     dvec.ones();
-    //return dvec;
+    return dvec;
 }
 
 vec NormalFamily::logdensity(vec y, vec eta, double logsigma_sq){
@@ -60,8 +61,10 @@ double NormalFamily::deta(vec y, vec eta, double logsigma_sq){
 double NormalFamily::dsigma(vec y, vec eta, double logsigma_sq){
     double logsigma_tr;
     logsigma_tr=this->transformSigma(logsigma_sq);
+    vec density;
+    density=this->density(y,eta,logsigma_sq);
     double helper;
-    helper=sum(-this->density(y,eta,logsigma_sq)*1/(2*logsigma_tr)*(1-pow(y-eta,2)/logsigma_tr));
+    helper=sum(-density*1/(2*logsigma_tr)%(1-pow(y-eta,2)/logsigma_tr));
     double sigma_sq;
     sigma_sq=logsigma_tr*helper;
     return sigma_sq;
@@ -70,6 +73,7 @@ double NormalFamily::dsigma(vec y, vec eta, double logsigma_sq){
 vec NormalFamily::dloglik(vec y, vec eta, double logsigma_sq){
     vec result;
     result << this->deta(y,eta,logsigma_sq)<<this->dsigma(y,eta,logsigma_sq);
+    return result;
 }
 
 

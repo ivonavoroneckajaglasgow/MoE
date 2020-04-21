@@ -14,7 +14,7 @@ using namespace arma;
 
 class NormalExpert: public ExpertModel{
 public:
-  // NormalExpert(); //a constructor 
+   NormalExpert(); //a constructor 
    vec loglik_vec(vec y, vec eta, double logsigma_sq); //returns the log-likelihood 
    vec dloglik(vec y, vec eta, double logsigma_sq); //returns the vector of derivatives of log-likelihood wrt all parameters
    vec density(vec y, vec eta, double logsigma_sq);//normal density

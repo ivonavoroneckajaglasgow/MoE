@@ -4,5 +4,5 @@ set(Armadillo_DIR C:/Users/Ivona\ Voroneckaja/vcpkg/packages/armadillo_x64-windo
 find_package(Armadillo CONFIG REQUIRED)
 include_directories(${ARMADILLO_INCLUDE_DIRS})
 set(CMAKE_CXX_STANDARD 14)
-add_executable(MoE main.cpp Expert.h ExpertModel.h NormalExpert.h GLMExpert.h Family.h NormalFamily.h BinomialFamily.h PoissonFamily.h GammaFamily.h)
+add_executable(MoE main.cpp Expert.h Expert.cpp ExpertModel.h ExpertModel.cpp NormalExpert.h NormalExpert.cpp GLMExpert.h GLMExpert.cpp Family.h Family.cpp NormalFamily.h NormalFamily.cpp BinomialFamily.h PoissonFamily.h PoissonFamily.cpp GammaFamily.h)
 target_link_libraries(${ARMADILLO_LIBRARIES})

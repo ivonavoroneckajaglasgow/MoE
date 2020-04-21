@@ -3,6 +3,8 @@
 #include <cmath>
 #include "armadillo"
 
+#include "ExpertModel.h"
+
 using namespace std;
 using namespace arma;
 
@@ -13,6 +15,7 @@ class Expert{
     public:
     vec y;       //data observed
     vec eta;     // XB
-    double var;  // some variance parameter   
-    virtual double loglik(vec y, vec eta); //log likelihood function (returns one value summed up over observations)
+    double var;  // some variance parameter  
+    ExpertModel expertmodel; // the model for this expert
+    Expert();//constructor
 };

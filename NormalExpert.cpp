@@ -10,6 +10,13 @@
 using namespace std;
 using namespace arma;
 
+/**
+ * @brief Construct a new Normal Expert:: Normal Expert object
+ * 
+ */
+NormalExpert::NormalExpert(){
+cout<<"Normal Expert has been created"<<endl;
+}
 
 /**
  * @brief function that transforms log(sigma_sq) to sigma_sq by exponentiating it
@@ -71,7 +78,6 @@ vec NormalExpert:: loglik_vec(vec y, vec eta, double logsigma_sq){
 double NormalExpert::deta(vec y, vec eta, double logsigma_sq){
     double logsigma_tr;
     logsigma_tr=this->transformSigma(logsigma_sq);
-    
     return sum((y-eta)/logsigma_tr);
 }
 
@@ -86,8 +92,10 @@ double NormalExpert::deta(vec y, vec eta, double logsigma_sq){
 double NormalExpert::dsigma(vec y, vec eta, double logsigma_sq){
     double logsigma_tr;
     logsigma_tr=this->transformSigma(logsigma_sq);
+    vec density;
+    density=this->density(y,eta,logsigma_sq);
     double helper;
-    helper=sum(-this->density(y,eta,logsigma_sq)*1/(2*logsigma_tr)*(1-pow(y-eta,2)/logsigma_tr));
+    helper=sum(-density*1/(2*logsigma_tr)%(1-pow(y-eta,2)/logsigma_tr));
     double sigma_sq;
     sigma_sq=logsigma_tr*helper;
     return sigma_sq;
@@ -104,4 +112,5 @@ double NormalExpert::dsigma(vec y, vec eta, double logsigma_sq){
 vec NormalExpert::dloglik(vec y, vec eta, double logsigma_sq){
     vec result;
     result << this->deta(y,eta,logsigma_sq)<<this->dsigma(y,eta,logsigma_sq);
+    return result;
 }

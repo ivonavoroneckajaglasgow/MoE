@@ -3,17 +3,16 @@
 #include <cmath>
 #include "armadillo"
 
-#include "Expert.h"
-
 using namespace std;
 using namespace arma;
 
 //ExpertModel is a superclass and doesn't do anything itself
 //Most functions are virtual and overwritten at subclasses level
 
-class ExpertModel: public Expert{
+class ExpertModel{
     public:
     ExpertModel(); //constructor
+    double loglik(vec y, vec eta); //log likelihood function (returns one value summed up over observations)
     virtual vec loglik_vec(vec y, vec eta); //returns the log-likelihood as a vector of likelihood contribution of each observation
     virtual vec dloglik(vec y, vec eta); //returns the derivative of log-likelihood wrt to all parameters
     virtual vec density(vec y, vec eta); //returns the density function

@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
 iostream
 -
 vector
@@ -16,7 +16,7 @@ cmath
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.cpp
 iostream
 -
 vector
@@ -25,10 +25,10 @@ cmath
 -
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-Expert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
+PoissonFamily.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.h
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.h
 iostream
 -
 vector
@@ -37,20 +37,8 @@ cmath
 -
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-ExpertModel.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp
-iostream
--
-vector
--
-cmath
--
-armadillo
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-NormalExpert.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
+Family.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
 
 C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo
 cstdlib

@@ -73,12 +73,12 @@ clean: CMakeFiles/MoE.dir/clean
 CMakeFiles/MoE.dir/all:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/depend
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=1,2 "Built target MoE"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=1,2,3,4,5,6,7,8,9 "Built target MoE"
 .PHONY : CMakeFiles/MoE.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/MoE.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" 2
+	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" 9
 	$(MAKE) -f CMakeFiles\Makefile2 CMakeFiles/MoE.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" 0
 .PHONY : CMakeFiles/MoE.dir/rule

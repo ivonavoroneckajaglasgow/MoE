@@ -15,6 +15,7 @@ using namespace arma;
 class GLMExpert: public ExpertModel{
     public:
     Family aFamily; //family object
+    GLMExpert(); //constructor 
     virtual vec loglik_vec(vec y, vec eta); //returns the log-likelihood of the model 
     virtual vec dloglik(vec y, vec eta); //returns the derivative of log-likelihood 
     virtual vec density(vec y, vec eta); // returns density function
