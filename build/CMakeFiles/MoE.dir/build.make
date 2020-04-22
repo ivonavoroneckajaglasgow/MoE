@@ -154,10 +154,24 @@ CMakeFiles/MoE.dir/NormalFamily.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/NormalFamily.cpp.s"
 	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\NormalFamily.cpp" -o CMakeFiles\MoE.dir\NormalFamily.cpp.s
 
+CMakeFiles/MoE.dir/BinomialFamily.cpp.obj: CMakeFiles/MoE.dir/flags.make
+CMakeFiles/MoE.dir/BinomialFamily.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
+CMakeFiles/MoE.dir/BinomialFamily.cpp.obj: ../BinomialFamily.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MoE.dir/BinomialFamily.cpp.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\MoE.dir\BinomialFamily.cpp.obj -c "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\BinomialFamily.cpp"
+
+CMakeFiles/MoE.dir/BinomialFamily.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MoE.dir/BinomialFamily.cpp.i"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\BinomialFamily.cpp" > CMakeFiles\MoE.dir\BinomialFamily.cpp.i
+
+CMakeFiles/MoE.dir/BinomialFamily.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/BinomialFamily.cpp.s"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\BinomialFamily.cpp" -o CMakeFiles\MoE.dir\BinomialFamily.cpp.s
+
 CMakeFiles/MoE.dir/PoissonFamily.cpp.obj: CMakeFiles/MoE.dir/flags.make
 CMakeFiles/MoE.dir/PoissonFamily.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
 CMakeFiles/MoE.dir/PoissonFamily.cpp.obj: ../PoissonFamily.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/MoE.dir/PoissonFamily.cpp.obj"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/MoE.dir/PoissonFamily.cpp.obj"
 	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\MoE.dir\PoissonFamily.cpp.obj -c "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\PoissonFamily.cpp"
 
 CMakeFiles/MoE.dir/PoissonFamily.cpp.i: cmake_force
@@ -168,6 +182,20 @@ CMakeFiles/MoE.dir/PoissonFamily.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/PoissonFamily.cpp.s"
 	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\PoissonFamily.cpp" -o CMakeFiles\MoE.dir\PoissonFamily.cpp.s
 
+CMakeFiles/MoE.dir/GammaFamily.cpp.obj: CMakeFiles/MoE.dir/flags.make
+CMakeFiles/MoE.dir/GammaFamily.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
+CMakeFiles/MoE.dir/GammaFamily.cpp.obj: ../GammaFamily.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/MoE.dir/GammaFamily.cpp.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\MoE.dir\GammaFamily.cpp.obj -c "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GammaFamily.cpp"
+
+CMakeFiles/MoE.dir/GammaFamily.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MoE.dir/GammaFamily.cpp.i"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GammaFamily.cpp" > CMakeFiles\MoE.dir\GammaFamily.cpp.i
+
+CMakeFiles/MoE.dir/GammaFamily.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/GammaFamily.cpp.s"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GammaFamily.cpp" -o CMakeFiles\MoE.dir\GammaFamily.cpp.s
+
 # Object files for target MoE
 MoE_OBJECTS = \
 "CMakeFiles/MoE.dir/main.cpp.obj" \
@@ -177,7 +205,9 @@ MoE_OBJECTS = \
 "CMakeFiles/MoE.dir/GLMExpert.cpp.obj" \
 "CMakeFiles/MoE.dir/Family.cpp.obj" \
 "CMakeFiles/MoE.dir/NormalFamily.cpp.obj" \
-"CMakeFiles/MoE.dir/PoissonFamily.cpp.obj"
+"CMakeFiles/MoE.dir/BinomialFamily.cpp.obj" \
+"CMakeFiles/MoE.dir/PoissonFamily.cpp.obj" \
+"CMakeFiles/MoE.dir/GammaFamily.cpp.obj"
 
 # External object files for target MoE
 MoE_EXTERNAL_OBJECTS =
@@ -189,12 +219,14 @@ MoE.exe: CMakeFiles/MoE.dir/NormalExpert.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/GLMExpert.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/Family.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/NormalFamily.cpp.obj
+MoE.exe: CMakeFiles/MoE.dir/BinomialFamily.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/PoissonFamily.cpp.obj
+MoE.exe: CMakeFiles/MoE.dir/GammaFamily.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/build.make
 MoE.exe: CMakeFiles/MoE.dir/linklibs.rsp
 MoE.exe: CMakeFiles/MoE.dir/objects1.rsp
 MoE.exe: CMakeFiles/MoE.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_9) "Linking CXX executable MoE.exe"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable MoE.exe"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles\MoE.dir\link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

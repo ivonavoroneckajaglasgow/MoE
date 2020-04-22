@@ -1,3 +1,6 @@
+#ifndef MOE_NORMALEXPERT_H
+#define MOE_NORMALEXPERT_H
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -24,3 +27,5 @@ public:
    private:   
    double transformSigma(double logsigma_sq);//Transforms sigma to a log scale
    };
+
+#endif //MOE_NORMALEXPERT_H

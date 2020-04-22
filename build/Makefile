@@ -122,6 +122,33 @@ MoE/fast:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/build
 .PHONY : MoE/fast
 
+BinomialFamily.obj: BinomialFamily.cpp.obj
+
+.PHONY : BinomialFamily.obj
+
+# target to build an object file
+BinomialFamily.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/BinomialFamily.cpp.obj
+.PHONY : BinomialFamily.cpp.obj
+
+BinomialFamily.i: BinomialFamily.cpp.i
+
+.PHONY : BinomialFamily.i
+
+# target to preprocess a source file
+BinomialFamily.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/BinomialFamily.cpp.i
+.PHONY : BinomialFamily.cpp.i
+
+BinomialFamily.s: BinomialFamily.cpp.s
+
+.PHONY : BinomialFamily.s
+
+# target to generate assembly for a file
+BinomialFamily.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/BinomialFamily.cpp.s
+.PHONY : BinomialFamily.cpp.s
+
 Expert.obj: Expert.cpp.obj
 
 .PHONY : Expert.obj
@@ -229,6 +256,33 @@ GLMExpert.s: GLMExpert.cpp.s
 GLMExpert.cpp.s:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GLMExpert.cpp.s
 .PHONY : GLMExpert.cpp.s
+
+GammaFamily.obj: GammaFamily.cpp.obj
+
+.PHONY : GammaFamily.obj
+
+# target to build an object file
+GammaFamily.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GammaFamily.cpp.obj
+.PHONY : GammaFamily.cpp.obj
+
+GammaFamily.i: GammaFamily.cpp.i
+
+.PHONY : GammaFamily.i
+
+# target to preprocess a source file
+GammaFamily.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GammaFamily.cpp.i
+.PHONY : GammaFamily.cpp.i
+
+GammaFamily.s: GammaFamily.cpp.s
+
+.PHONY : GammaFamily.s
+
+# target to generate assembly for a file
+GammaFamily.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GammaFamily.cpp.s
+.PHONY : GammaFamily.cpp.s
 
 NormalExpert.obj: NormalExpert.cpp.obj
 
@@ -347,6 +401,9 @@ help:
 	@echo ... edit_cache
 	@echo ... MoE
 	@echo ... rebuild_cache
+	@echo ... BinomialFamily.obj
+	@echo ... BinomialFamily.i
+	@echo ... BinomialFamily.s
 	@echo ... Expert.obj
 	@echo ... Expert.i
 	@echo ... Expert.s
@@ -359,6 +416,9 @@ help:
 	@echo ... GLMExpert.obj
 	@echo ... GLMExpert.i
 	@echo ... GLMExpert.s
+	@echo ... GammaFamily.obj
+	@echo ... GammaFamily.i
+	@echo ... GammaFamily.s
 	@echo ... NormalExpert.obj
 	@echo ... NormalExpert.i
 	@echo ... NormalExpert.s

@@ -11,7 +11,7 @@ using namespace std;
 using namespace arma;
 
 GLMExpert::GLMExpert(){
-
+ cout<<"GLM Expert has been created"<<endl;
 } 
 
 vec GLMExpert::loglik_vec(vec y, vec eta){

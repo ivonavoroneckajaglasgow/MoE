@@ -1,3 +1,6 @@
+#ifndef MOE_FAMILY_H
+#define MOE_FAMILY_H
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -24,3 +27,4 @@ virtual double deta(vec y, vec eta);// returns the derivative of log likelihood 
 };
 
 
+#endif //MOE_FAMILY_H

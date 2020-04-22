@@ -1,3 +1,6 @@
+#ifndef MOE_EXPERT_H
+#define MOE_EXPERT_H
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -19,3 +22,5 @@ class Expert{
     ExpertModel expertmodel; // the model for this expert
     Expert();//constructor
 };
+
+#endif //MOE_EXPERT_H

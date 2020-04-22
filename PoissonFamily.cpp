@@ -1,4 +1,5 @@
 #define _USE_MATH_DEFINES
+#define EPS 1e-9
 
 #include <iostream>
 #include <vector>
@@ -27,22 +28,33 @@ vec PoissonFamily::varfun(vec mu){
 }
 
 vec PoissonFamily::dmudeta(vec eta){
-    //return exp(eta).max();
+  vec result(eta.size());
+  for (int i=0; i<eta.size();i++) 
+  result[i]=max(exp(eta[i]),EPS);
+  return result;
 }
 
-vec PoissonFamily::loglik_vec(vec y, vec eta, double lambda){
-
+vec PoissonFamily::loglik_vec(vec y, vec eta){
+ return this->logdensity(y,eta);
 } 
-vec PoissonFamily::dloglik(vec y, vec eta, double lambda){
 
+vec PoissonFamily::dloglik(vec y, vec eta){
+   vec result(1);
+   result<<this->deta(y,eta);
+   return result;
 } 
-vec PoissonFamily::density(vec y, vec eta, double lambda){
 
+vec PoissonFamily::density(vec y, vec eta){
+ return exp(this->logdensity(y,eta));
 }
-vec PoissonFamily::logdensity(vec y, vec eta, double lambda){
 
+vec PoissonFamily::logdensity(vec y, vec eta){
+  vec lambda(eta.size()); 
+  lambda=exp(eta);
+  return -lambda+y%eta-lgamma(y+1);
 }
-double PoissonFamily::deta(vec y, vec eta, double lambda){
-    
+
+double PoissonFamily::deta(vec y, vec eta){
+return sum(y-exp(eta));
 }
 

@@ -1,3 +1,6 @@
+#ifndef MOE_GLMEXPERT_H
+#define MOE_GLMEXPERT_H
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -22,3 +25,5 @@ class GLMExpert: public ExpertModel{
     virtual vec logdensity(vec y, vec eta); // returns log density function
     virtual double deta(vec y, vec eta);// returns the derivative of log likelihood wrt to eta
 };
+
+#endif //MOE_GLMEXPERT_H

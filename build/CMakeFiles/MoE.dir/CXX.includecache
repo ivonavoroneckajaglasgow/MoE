@@ -16,7 +16,7 @@ cmath
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.cpp
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.cpp
 iostream
 -
 vector
@@ -25,10 +25,10 @@ cmath
 -
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-PoissonFamily.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.h
+GammaFamily.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.h
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.h
 iostream
 -
 vector

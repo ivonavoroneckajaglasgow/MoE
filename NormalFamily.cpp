@@ -51,6 +51,10 @@ vec NormalFamily::density(vec y, vec eta, double logsigma_sq){
     return exp(this->logdensity(y,eta,logsigma_sq));
 }
 
+vec NormalFamily::loglik_vec(vec y, vec eta, double logsigma_sq){
+    return this->logdensity(y,eta,logsigma_sq);
+}
+
 double NormalFamily::deta(vec y, vec eta, double logsigma_sq){
     double logsigma_tr;
     logsigma_tr=this->transformSigma(logsigma_sq);

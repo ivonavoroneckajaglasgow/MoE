@@ -1,3 +1,6 @@
+#ifndef MOE_EXPERTMODEL_H
+#define MOE_EXPERTMODEL_H
+
 #include <iostream>
 #include <vector>
 #include <cmath>
@@ -19,3 +22,5 @@ class ExpertModel{
     virtual vec logdensity(vec y, vec eta); // returns the log density function
     virtual double deta(vec y, vec eta);// returns the derivative of the log likelihood wrt eta
 };
+
+#endif //MOE_EXPERTMODEL_H

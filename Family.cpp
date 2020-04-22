@@ -11,7 +11,7 @@ using namespace std;
 using namespace arma;
 
 Family::Family(){
-
+ cout<<"Family has been created."<<endl;
 }
 
 vec Family::linkfun(vec mu){

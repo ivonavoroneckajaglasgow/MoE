@@ -15,7 +15,7 @@ using namespace arma;
  * 
  */
 NormalExpert::NormalExpert(){
-cout<<"Normal Expert has been created"<<endl;
+cout<<"Normal Expert has been created."<<endl;
 }
 
 /**
@@ -64,7 +64,7 @@ vec NormalExpert::density(vec y, vec eta, double logsigma_sq){
  * @return vec loglik_vec vector of contributions to the log likelihood of each observation y_i
  */
 vec NormalExpert:: loglik_vec(vec y, vec eta, double logsigma_sq){
-    return log(this->logdensity(y,eta,logsigma_sq));
+    return this->logdensity(y,eta,logsigma_sq);
 }
 
 /**

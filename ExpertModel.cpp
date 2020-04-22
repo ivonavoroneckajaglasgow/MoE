@@ -11,11 +11,11 @@ using namespace std;
 using namespace arma;
 
 ExpertModel::ExpertModel(){
-    cout<<"Expert Model has been creaeted."<<endl;
+    cout<<"Expert Model has been created."<<endl;
 }
 
 double ExpertModel::loglik(vec y, vec eta){
-
+// return sum(this->loglik_vec(y,eta));
 }
 
 vec ExpertModel::loglik_vec(vec y, vec eta){
