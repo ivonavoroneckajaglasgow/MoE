@@ -26,18 +26,18 @@ vec Family::varfun(vec mu){
 vec Family::dmudeta (vec eta){
 
 }
-vec Family::loglik_vec(vec y, vec eta){
+vec Family::loglik_vec(vec y, vec eta, double logsigma_sq){
 
 }
-vec Family::dloglik(vec y, vec eta){
+vec Family::dloglik(vec y, vec eta, double logsigma_sq){
 
 }
-vec Family::density(vec y, vec eta){
+vec Family::density(vec y, vec eta, double logsigma_sq){
 
 }
-vec Family::logdensity(vec y, vec eta){
+vec Family::logdensity(vec y, vec eta, double logsigma_sq){
     
 }
-double Family::deta(vec y, vec eta){
+double Family::deta(vec y, vec eta, double logsigma_sq){
 
 }

@@ -2271,11 +2271,11 @@ CMakeFiles/MoE.dir/Family.cpp.obj
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xtrans_mat_meat.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xvec_htrans_bones.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xvec_htrans_meat.hpp
-CMakeFiles/MoE.dir/GLMExpert.cpp.obj
+CMakeFiles/MoE.dir/GLMModel.cpp.obj
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMExpert.cpp
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMExpert.h
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMModel.cpp
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMModel.h
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/BaseCube_bones.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/BaseCube_meat.hpp
@@ -3408,10 +3408,10 @@ CMakeFiles/MoE.dir/GammaFamily.cpp.obj
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xtrans_mat_meat.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xvec_htrans_bones.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xvec_htrans_meat.hpp
-CMakeFiles/MoE.dir/NormalExpert.cpp.obj
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.cpp
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
+CMakeFiles/MoE.dir/NormalFamily.cpp.obj
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.cpp
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.h
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/BaseCube_bones.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/BaseCube_meat.hpp
@@ -3976,10 +3976,10 @@ CMakeFiles/MoE.dir/NormalExpert.cpp.obj
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xtrans_mat_meat.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xvec_htrans_bones.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/xvec_htrans_meat.hpp
-CMakeFiles/MoE.dir/NormalFamily.cpp.obj
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.cpp
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.h
+CMakeFiles/MoE.dir/NormalModel.cpp.obj
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalModel.cpp
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalModel.h
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/BaseCube_bones.hpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo_bits/BaseCube_meat.hpp
@@ -5117,9 +5117,9 @@ CMakeFiles/MoE.dir/main.cpp.obj
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.h
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMExpert.h
- C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.h
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMModel.h
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.h
+ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalModel.h
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.h
  C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp
  C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo

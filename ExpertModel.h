@@ -15,12 +15,12 @@ using namespace arma;
 class ExpertModel{
     public:
     ExpertModel(); //constructor
-    double loglik(vec y, vec eta); //log likelihood function (returns one value summed up over observations)
-    virtual vec loglik_vec(vec y, vec eta); //returns the log-likelihood as a vector of likelihood contribution of each observation
-    virtual vec dloglik(vec y, vec eta); //returns the derivative of log-likelihood wrt to all parameters
-    virtual vec density(vec y, vec eta); //returns the density function
-    virtual vec logdensity(vec y, vec eta); // returns the log density function
-    virtual double deta(vec y, vec eta);// returns the derivative of the log likelihood wrt eta
+    double loglik(vec y, vec eta, double logsigma_sq); //log likelihood function (returns one value summed up over observations)
+    virtual vec loglik_vec(vec y, vec eta, double logsigma_sq); //returns the log-likelihood as a vector of likelihood contribution of each observation
+    virtual vec dloglik(vec y, vec eta, double logsigma_sq); //returns the derivative of log-likelihood wrt to all parameters
+    virtual vec density(vec y, vec eta, double logsigma_sq); //returns the density function
+    virtual vec logdensity(vec y, vec eta, double logsigma_sq); // returns the log density function
+    virtual double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of the log likelihood wrt eta
 };
 
 #endif //MOE_EXPERTMODEL_H

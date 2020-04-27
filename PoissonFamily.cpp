@@ -34,27 +34,27 @@ vec PoissonFamily::dmudeta(vec eta){
   return result;
 }
 
-vec PoissonFamily::loglik_vec(vec y, vec eta){
- return this->logdensity(y,eta);
+vec PoissonFamily::loglik_vec(vec y, vec eta, double logsigma_sq){
+ return this->logdensity(y,eta,logsigma_sq);
 } 
 
-vec PoissonFamily::dloglik(vec y, vec eta){
+vec PoissonFamily::dloglik(vec y, vec eta, double logsigma_sq){
    vec result(1);
-   result<<this->deta(y,eta);
+   result<<this->deta(y,eta,logsigma_sq);
    return result;
 } 
 
-vec PoissonFamily::density(vec y, vec eta){
- return exp(this->logdensity(y,eta));
+vec PoissonFamily::density(vec y, vec eta, double logsigma_sq){
+ return exp(this->logdensity(y,eta,logsigma_sq));
 }
 
-vec PoissonFamily::logdensity(vec y, vec eta){
+vec PoissonFamily::logdensity(vec y, vec eta, double logsigma_sq){
   vec lambda(eta.size()); 
   lambda=exp(eta);
   return -lambda+y%eta-lgamma(y+1);
 }
 
-double PoissonFamily::deta(vec y, vec eta){
+double PoissonFamily::deta(vec y, vec eta, double logsigma_sq){
 return sum(y-exp(eta));
 }
 

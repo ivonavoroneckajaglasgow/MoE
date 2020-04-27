@@ -33,18 +33,18 @@ vec BinomialFamily::dmudeta (vec eta){
     return exp(eta)/(pow(1+exp(eta),2));
 }
 
-vec BinomialFamily::loglik_vec(vec y, vec eta){
-    return this->logdensity(y,eta);
+vec BinomialFamily::loglik_vec(vec y, vec eta, double logsigma_sq){
+    return this->logdensity(y,eta,logsigma_sq);
 }
 
-vec BinomialFamily::dloglik(vec y, vec eta){
+vec BinomialFamily::dloglik(vec y, vec eta, double logsigma_sq){
    vec result(1);
-   result<<this->deta(y,eta);
+   result<<this->deta(y,eta,logsigma_sq);
    return result;
 }
 
-vec BinomialFamily::density(vec y, vec eta){
-return exp(this->logdensity(y,eta));
+vec BinomialFamily::density(vec y, vec eta, double logsigma_sq){
+return exp(this->logdensity(y,eta,logsigma_sq));
 //OR
 /*     vec theta(eta.size());
     theta=this->linkinv(eta);
@@ -57,12 +57,12 @@ return exp(this->logdensity(y,eta));
     return first%second; */
 }
 
-vec BinomialFamily::logdensity(vec y, vec eta){
+vec BinomialFamily::logdensity(vec y, vec eta, double logsigma_sq){
     vec theta(eta.size());
     theta=this->linkinv(eta);
     return y%log(theta)+(1-y)%log(1-theta);
 }
 
-double BinomialFamily::deta(vec y, vec eta){
+double BinomialFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/(exp(eta)+1));
 }

@@ -26,23 +26,23 @@ vec GammaFamily::varfun(vec mu){
 vec GammaFamily::dmudeta (vec eta){
     return(-1/pow(eta,2));
 }
-vec GammaFamily::loglik_vec(vec y, vec eta){
-    return this->logdensity(y,eta); 
+vec GammaFamily::loglik_vec(vec y, vec eta, double logsigma_sq){
+    return this->logdensity(y,eta,logsigma_sq); 
 } 
-vec GammaFamily::dloglik(vec y, vec eta){
+vec GammaFamily::dloglik(vec y, vec eta, double logsigma_sq){
    vec result(1);
-   result<<this->deta(y,eta);
+   result<<this->deta(y,eta,logsigma_sq);
    return result;
 }
-vec GammaFamily::density(vec y, vec eta){
-    return exp(this->logdensity(y,eta));
+vec GammaFamily::density(vec y, vec eta, double logsigma_sq){
+    return exp(this->logdensity(y,eta,logsigma_sq));
     //OR
     //return eta%exp(-eta%y);
 }
 
-vec GammaFamily::logdensity(vec y, vec eta){
+vec GammaFamily::logdensity(vec y, vec eta, double logsigma_sq){
     return log(eta)-eta%y;    
 }
-double GammaFamily::deta(vec y, vec eta){
+double GammaFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/eta-y);
 }

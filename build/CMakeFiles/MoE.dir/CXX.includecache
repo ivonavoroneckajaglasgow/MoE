@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.cpp
 iostream
 -
 vector
@@ -15,8 +15,10 @@ cmath
 -
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+ExpertModel.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
 
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.cpp
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
 iostream
 -
 vector
@@ -25,20 +27,6 @@ cmath
 -
 armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-GammaFamily.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.h
-
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.h
-iostream
--
-vector
--
-cmath
--
-armadillo
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
-Family.h
-C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
 
 C:/Users/Ivona Voroneckaja/vcpkg/packages/armadillo_x64-windows-static/include/armadillo
 cstdlib

@@ -5,7 +5,7 @@
 #include <cmath>
 #include "armadillo"
 
-#include "NormalExpert.h"
+#include "NormalModel.h"
 
 using namespace std;
 using namespace arma;
@@ -14,8 +14,8 @@ using namespace arma;
  * @brief Construct a new Normal Expert:: Normal Expert object
  * 
  */
-NormalExpert::NormalExpert(){
-cout<<"Normal Expert has been created."<<endl;
+NormalModel::NormalModel(){
+cout<<"Normal Model has been created."<<endl;
 }
 
 /**
@@ -24,7 +24,7 @@ cout<<"Normal Expert has been created."<<endl;
  * @param logsigma_sq sigma squared on a log scale 
  * @return double logsigma_sq exponentiated
  */
-double NormalExpert::transformSigma(double logsigma_sq){
+double NormalModel::transformSigma(double logsigma_sq){
     return exp(logsigma_sq);
 }
 
@@ -36,7 +36,7 @@ double NormalExpert::transformSigma(double logsigma_sq){
  * @param logsigma_sq variance parameter
  * @return vec log density function of observed data y for a normal distribution 
  */
-vec NormalExpert::logdensity(vec y, vec eta, double logsigma_sq){
+vec NormalModel::logdensity(vec y, vec eta, double logsigma_sq){
    double std;
    double logsigma_tr=this->transformSigma(logsigma_sq);
    std=sqrt(logsigma_tr);
@@ -51,7 +51,7 @@ vec NormalExpert::logdensity(vec y, vec eta, double logsigma_sq){
  * @param logsigma_sq variance parameter
  * @return vec density function of observed data y for a normal distribution 
  */
-vec NormalExpert::density(vec y, vec eta, double logsigma_sq){
+vec NormalModel::density(vec y, vec eta, double logsigma_sq){
     return exp(this->logdensity(y,eta,logsigma_sq));
 }
 
@@ -63,7 +63,7 @@ vec NormalExpert::density(vec y, vec eta, double logsigma_sq){
  * @param logsigma_sq variance parameter
  * @return vec loglik_vec vector of contributions to the log likelihood of each observation y_i
  */
-vec NormalExpert:: loglik_vec(vec y, vec eta, double logsigma_sq){
+vec NormalModel:: loglik_vec(vec y, vec eta, double logsigma_sq){
     return this->logdensity(y,eta,logsigma_sq);
 }
 
@@ -75,7 +75,7 @@ vec NormalExpert:: loglik_vec(vec y, vec eta, double logsigma_sq){
  * @param logsigma_sq variance parameter
  * @return double derivative of log-likelihood function wrt eta
  */
-double NormalExpert::deta(vec y, vec eta, double logsigma_sq){
+double NormalModel::deta(vec y, vec eta, double logsigma_sq){
     double logsigma_tr;
     logsigma_tr=this->transformSigma(logsigma_sq);
     return sum((y-eta)/logsigma_tr);
@@ -89,7 +89,7 @@ double NormalExpert::deta(vec y, vec eta, double logsigma_sq){
  * @param logsigma_sq variance parameter
  * @return double derivative of log-likelihood function wrt to sigma_sq
  */
-double NormalExpert::dsigma(vec y, vec eta, double logsigma_sq){
+double NormalModel::dsigma(vec y, vec eta, double logsigma_sq){
     double logsigma_tr;
     logsigma_tr=this->transformSigma(logsigma_sq);
     vec density;
@@ -109,7 +109,7 @@ double NormalExpert::dsigma(vec y, vec eta, double logsigma_sq){
  * @param logsigma_sq variance parameter
  * @return vec vector containing derivative value of the log-likelihood function wrt eta and sigma_sq (in that order)
  */
-vec NormalExpert::dloglik(vec y, vec eta, double logsigma_sq){
+vec NormalModel::dloglik(vec y, vec eta, double logsigma_sq){
     vec result;
     result << this->deta(y,eta,logsigma_sq)<<this->dsigma(y,eta,logsigma_sq);
     return result;

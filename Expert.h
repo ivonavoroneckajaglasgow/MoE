@@ -19,7 +19,7 @@ class Expert{
     vec y;       //data observed
     vec eta;     // XB
     double var;  // some variance parameter  
-    ExpertModel expertmodel; // the model for this expert
+    ExpertModel* expertmodel; // the model for this expert
     Expert();//constructor
 };
 

@@ -230,32 +230,32 @@ Family.cpp.s:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/Family.cpp.s
 .PHONY : Family.cpp.s
 
-GLMExpert.obj: GLMExpert.cpp.obj
+GLMModel.obj: GLMModel.cpp.obj
 
-.PHONY : GLMExpert.obj
+.PHONY : GLMModel.obj
 
 # target to build an object file
-GLMExpert.cpp.obj:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GLMExpert.cpp.obj
-.PHONY : GLMExpert.cpp.obj
+GLMModel.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GLMModel.cpp.obj
+.PHONY : GLMModel.cpp.obj
 
-GLMExpert.i: GLMExpert.cpp.i
+GLMModel.i: GLMModel.cpp.i
 
-.PHONY : GLMExpert.i
+.PHONY : GLMModel.i
 
 # target to preprocess a source file
-GLMExpert.cpp.i:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GLMExpert.cpp.i
-.PHONY : GLMExpert.cpp.i
+GLMModel.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GLMModel.cpp.i
+.PHONY : GLMModel.cpp.i
 
-GLMExpert.s: GLMExpert.cpp.s
+GLMModel.s: GLMModel.cpp.s
 
-.PHONY : GLMExpert.s
+.PHONY : GLMModel.s
 
 # target to generate assembly for a file
-GLMExpert.cpp.s:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GLMExpert.cpp.s
-.PHONY : GLMExpert.cpp.s
+GLMModel.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GLMModel.cpp.s
+.PHONY : GLMModel.cpp.s
 
 GammaFamily.obj: GammaFamily.cpp.obj
 
@@ -284,33 +284,6 @@ GammaFamily.cpp.s:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/GammaFamily.cpp.s
 .PHONY : GammaFamily.cpp.s
 
-NormalExpert.obj: NormalExpert.cpp.obj
-
-.PHONY : NormalExpert.obj
-
-# target to build an object file
-NormalExpert.cpp.obj:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalExpert.cpp.obj
-.PHONY : NormalExpert.cpp.obj
-
-NormalExpert.i: NormalExpert.cpp.i
-
-.PHONY : NormalExpert.i
-
-# target to preprocess a source file
-NormalExpert.cpp.i:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalExpert.cpp.i
-.PHONY : NormalExpert.cpp.i
-
-NormalExpert.s: NormalExpert.cpp.s
-
-.PHONY : NormalExpert.s
-
-# target to generate assembly for a file
-NormalExpert.cpp.s:
-	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalExpert.cpp.s
-.PHONY : NormalExpert.cpp.s
-
 NormalFamily.obj: NormalFamily.cpp.obj
 
 .PHONY : NormalFamily.obj
@@ -337,6 +310,33 @@ NormalFamily.s: NormalFamily.cpp.s
 NormalFamily.cpp.s:
 	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalFamily.cpp.s
 .PHONY : NormalFamily.cpp.s
+
+NormalModel.obj: NormalModel.cpp.obj
+
+.PHONY : NormalModel.obj
+
+# target to build an object file
+NormalModel.cpp.obj:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalModel.cpp.obj
+.PHONY : NormalModel.cpp.obj
+
+NormalModel.i: NormalModel.cpp.i
+
+.PHONY : NormalModel.i
+
+# target to preprocess a source file
+NormalModel.cpp.i:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalModel.cpp.i
+.PHONY : NormalModel.cpp.i
+
+NormalModel.s: NormalModel.cpp.s
+
+.PHONY : NormalModel.s
+
+# target to generate assembly for a file
+NormalModel.cpp.s:
+	$(MAKE) -f CMakeFiles\MoE.dir\build.make CMakeFiles/MoE.dir/NormalModel.cpp.s
+.PHONY : NormalModel.cpp.s
 
 PoissonFamily.obj: PoissonFamily.cpp.obj
 
@@ -413,18 +413,18 @@ help:
 	@echo ... Family.obj
 	@echo ... Family.i
 	@echo ... Family.s
-	@echo ... GLMExpert.obj
-	@echo ... GLMExpert.i
-	@echo ... GLMExpert.s
+	@echo ... GLMModel.obj
+	@echo ... GLMModel.i
+	@echo ... GLMModel.s
 	@echo ... GammaFamily.obj
 	@echo ... GammaFamily.i
 	@echo ... GammaFamily.s
-	@echo ... NormalExpert.obj
-	@echo ... NormalExpert.i
-	@echo ... NormalExpert.s
 	@echo ... NormalFamily.obj
 	@echo ... NormalFamily.i
 	@echo ... NormalFamily.s
+	@echo ... NormalModel.obj
+	@echo ... NormalModel.i
+	@echo ... NormalModel.s
 	@echo ... PoissonFamily.obj
 	@echo ... PoissonFamily.i
 	@echo ... PoissonFamily.s

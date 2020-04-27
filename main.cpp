@@ -11,8 +11,8 @@ using namespace arma;
 
 #include "Expert.h"
 #include "ExpertModel.h"
-#include "NormalExpert.h"
-#include "GLMExpert.h"
+#include "NormalModel.h"
+#include "GLMModel.h"
 #include "Family.h"
 #include "NormalFamily.h"
 #include "PoissonFamily.h"
@@ -21,12 +21,12 @@ using namespace arma;
 int main(){
  cout<<"Creating expert:"<<endl;
  Expert* E= new Expert(); //creates expert model as well
- cout<<"Creating expert model:"<<endl;
+ cout<<"Creating normal model:"<<endl;
  ExpertModel* EM=new ExpertModel();
  cout<<"Creating normal expert:"<<endl;
- NormalExpert* NE= new NormalExpert(); //creates expert model as well
- cout<<"Creating GLM expert:"<<endl;
- GLMExpert* GE= new GLMExpert(); //creates expert model as well
+ NormalModel* NE= new NormalModel(); //creates expert model as well
+ cout<<"Creating GLM model:"<<endl;
+ GLMModel* GE= new GLMModel(); //creates expert model as well
  cout<<"Creating a family:"<<endl;
  Family* F=new Family();
  cout<<"Creating a normal family:"<<endl;

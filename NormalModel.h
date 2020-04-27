@@ -1,5 +1,5 @@
-#ifndef MOE_NORMALEXPERT_H
-#define MOE_NORMALEXPERT_H
+#ifndef MOE_NormalModel_H
+#define MOE_NormalModel_H
 
 #include <iostream>
 #include <vector>
@@ -15,9 +15,9 @@ using namespace arma;
 //f(y)=beta_0+beta_1*x+e
 //e~N(0,sigma^2)
 
-class NormalExpert: public ExpertModel{
+class NormalModel: public ExpertModel{
 public:
-   NormalExpert(); //a constructor 
+   NormalModel(); //a constructor 
    vec loglik_vec(vec y, vec eta, double logsigma_sq); //returns the log-likelihood 
    vec dloglik(vec y, vec eta, double logsigma_sq); //returns the vector of derivatives of log-likelihood wrt all parameters
    vec density(vec y, vec eta, double logsigma_sq);//normal density
@@ -28,4 +28,4 @@ public:
    double transformSigma(double logsigma_sq);//Transforms sigma to a log scale
    };
 
-#endif //MOE_NORMALEXPERT_H
+#endif //MOE_NormalModel_H

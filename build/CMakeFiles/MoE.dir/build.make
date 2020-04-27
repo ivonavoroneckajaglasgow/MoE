@@ -98,33 +98,33 @@ CMakeFiles/MoE.dir/ExpertModel.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/ExpertModel.cpp.s"
 	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\ExpertModel.cpp" -o CMakeFiles\MoE.dir\ExpertModel.cpp.s
 
-CMakeFiles/MoE.dir/NormalExpert.cpp.obj: CMakeFiles/MoE.dir/flags.make
-CMakeFiles/MoE.dir/NormalExpert.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
-CMakeFiles/MoE.dir/NormalExpert.cpp.obj: ../NormalExpert.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/MoE.dir/NormalExpert.cpp.obj"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\MoE.dir\NormalExpert.cpp.obj -c "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\NormalExpert.cpp"
+CMakeFiles/MoE.dir/NormalModel.cpp.obj: CMakeFiles/MoE.dir/flags.make
+CMakeFiles/MoE.dir/NormalModel.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
+CMakeFiles/MoE.dir/NormalModel.cpp.obj: ../NormalModel.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/MoE.dir/NormalModel.cpp.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\MoE.dir\NormalModel.cpp.obj -c "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\NormalModel.cpp"
 
-CMakeFiles/MoE.dir/NormalExpert.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MoE.dir/NormalExpert.cpp.i"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\NormalExpert.cpp" > CMakeFiles\MoE.dir\NormalExpert.cpp.i
+CMakeFiles/MoE.dir/NormalModel.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MoE.dir/NormalModel.cpp.i"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\NormalModel.cpp" > CMakeFiles\MoE.dir\NormalModel.cpp.i
 
-CMakeFiles/MoE.dir/NormalExpert.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/NormalExpert.cpp.s"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\NormalExpert.cpp" -o CMakeFiles\MoE.dir\NormalExpert.cpp.s
+CMakeFiles/MoE.dir/NormalModel.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/NormalModel.cpp.s"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\NormalModel.cpp" -o CMakeFiles\MoE.dir\NormalModel.cpp.s
 
-CMakeFiles/MoE.dir/GLMExpert.cpp.obj: CMakeFiles/MoE.dir/flags.make
-CMakeFiles/MoE.dir/GLMExpert.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
-CMakeFiles/MoE.dir/GLMExpert.cpp.obj: ../GLMExpert.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/MoE.dir/GLMExpert.cpp.obj"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\MoE.dir\GLMExpert.cpp.obj -c "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GLMExpert.cpp"
+CMakeFiles/MoE.dir/GLMModel.cpp.obj: CMakeFiles/MoE.dir/flags.make
+CMakeFiles/MoE.dir/GLMModel.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
+CMakeFiles/MoE.dir/GLMModel.cpp.obj: ../GLMModel.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\build\CMakeFiles" --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/MoE.dir/GLMModel.cpp.obj"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles\MoE.dir\GLMModel.cpp.obj -c "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GLMModel.cpp"
 
-CMakeFiles/MoE.dir/GLMExpert.cpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MoE.dir/GLMExpert.cpp.i"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GLMExpert.cpp" > CMakeFiles\MoE.dir\GLMExpert.cpp.i
+CMakeFiles/MoE.dir/GLMModel.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/MoE.dir/GLMModel.cpp.i"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GLMModel.cpp" > CMakeFiles\MoE.dir\GLMModel.cpp.i
 
-CMakeFiles/MoE.dir/GLMExpert.cpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/GLMExpert.cpp.s"
-	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GLMExpert.cpp" -o CMakeFiles\MoE.dir\GLMExpert.cpp.s
+CMakeFiles/MoE.dir/GLMModel.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/MoE.dir/GLMModel.cpp.s"
+	C:\PROGRA~1\MINGW-~1\X86_64~1.0-P\mingw64\bin\G__~1.EXE $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S "C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\GLMModel.cpp" -o CMakeFiles\MoE.dir\GLMModel.cpp.s
 
 CMakeFiles/MoE.dir/Family.cpp.obj: CMakeFiles/MoE.dir/flags.make
 CMakeFiles/MoE.dir/Family.cpp.obj: CMakeFiles/MoE.dir/includes_CXX.rsp
@@ -201,8 +201,8 @@ MoE_OBJECTS = \
 "CMakeFiles/MoE.dir/main.cpp.obj" \
 "CMakeFiles/MoE.dir/Expert.cpp.obj" \
 "CMakeFiles/MoE.dir/ExpertModel.cpp.obj" \
-"CMakeFiles/MoE.dir/NormalExpert.cpp.obj" \
-"CMakeFiles/MoE.dir/GLMExpert.cpp.obj" \
+"CMakeFiles/MoE.dir/NormalModel.cpp.obj" \
+"CMakeFiles/MoE.dir/GLMModel.cpp.obj" \
 "CMakeFiles/MoE.dir/Family.cpp.obj" \
 "CMakeFiles/MoE.dir/NormalFamily.cpp.obj" \
 "CMakeFiles/MoE.dir/BinomialFamily.cpp.obj" \
@@ -215,8 +215,8 @@ MoE_EXTERNAL_OBJECTS =
 MoE.exe: CMakeFiles/MoE.dir/main.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/Expert.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/ExpertModel.cpp.obj
-MoE.exe: CMakeFiles/MoE.dir/NormalExpert.cpp.obj
-MoE.exe: CMakeFiles/MoE.dir/GLMExpert.cpp.obj
+MoE.exe: CMakeFiles/MoE.dir/NormalModel.cpp.obj
+MoE.exe: CMakeFiles/MoE.dir/GLMModel.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/Family.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/NormalFamily.cpp.obj
 MoE.exe: CMakeFiles/MoE.dir/BinomialFamily.cpp.obj

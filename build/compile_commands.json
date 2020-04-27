@@ -16,13 +16,13 @@
 },
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\NormalExpert.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalExpert.cpp\"",
-  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalExpert.cpp"
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\NormalModel.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalModel.cpp\"",
+  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalModel.cpp"
 },
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\GLMExpert.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\GLMExpert.cpp\"",
-  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMExpert.cpp"
+  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\G__~1.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\GLMModel.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\GLMModel.cpp\"",
+  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMModel.cpp"
 },
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
