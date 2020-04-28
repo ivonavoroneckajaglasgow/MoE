@@ -19,21 +19,20 @@ using namespace arma;
 #include "BinomialFamily.h" 
 
 int main(){
- cout<<"Creating expert:"<<endl;
- Expert* E= new Expert(); //creates expert model as well
- cout<<"Creating normal model:"<<endl;
- ExpertModel* EM=new ExpertModel();
- cout<<"Creating normal expert:"<<endl;
- NormalModel* NE= new NormalModel(); //creates expert model as well
- cout<<"Creating GLM model:"<<endl;
- GLMModel* GE= new GLMModel(); //creates expert model as well
- cout<<"Creating a family:"<<endl;
- Family* F=new Family();
- cout<<"Creating a normal family:"<<endl;
- NormalFamily* NF=new NormalFamily(); //creates a family as well
- cout<<"Creating a poisson family:"<<endl;
- PoissonFamily* PF=new PoissonFamily(); //creates a family as well
-cout<<"Creating a binomial family:"<<endl;
- BinomialFamily* BF=new BinomialFamily(); //creates a family as well
+mat X(3,2);
+X="1 3; 1 2; 1 5";
+X.print("My matrix: ");
+mat Xt;
+Xt=X.t();
+Xt.print("My matrix transposed: ");
+cout<<"Matrix X has "<<X.n_rows<<" rows and "<<X.n_cols<<" columns."<<endl;
+cout<<"Matrix Xt has "<<Xt.n_rows<<" rows and "<<Xt.n_cols<<" columns."<<endl;
+mat XtX(2,2);
+//XtX=Xt * X; //THIS DOES NOT WORK
+
+mat A = randu<mat>(5,10);
+mat C = randu<mat>(10,5);
+//mat U = A * C; //THIS DOES NOT WORK
+
 }
 

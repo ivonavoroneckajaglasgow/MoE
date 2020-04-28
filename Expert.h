@@ -18,6 +18,8 @@ class Expert{
     public:
     vec y;       //data observed
     vec eta;     // XB
+    mat X;
+    vec beta;
     double var;  // some variance parameter  
     ExpertModel* expertmodel; // the model for this expert
     Expert();//constructor

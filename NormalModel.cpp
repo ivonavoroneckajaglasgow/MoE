@@ -114,3 +114,7 @@ vec NormalModel::dloglik(vec y, vec eta, double logsigma_sq){
     result << this->deta(y,eta,logsigma_sq)<<this->dsigma(y,eta,logsigma_sq);
     return result;
 }
+
+vec NormalModel::findBeta(vec y, mat X, vec beta){
+
+}

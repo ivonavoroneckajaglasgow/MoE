@@ -37,3 +37,7 @@ vec ExpertModel::logdensity(vec y, vec eta, double logsigma_sq){
 double ExpertModel::deta(vec y, vec eta, double logsigma_sq){
 
 }
+
+vec ExpertModel::findBeta(vec y, mat X, vec beta){
+    
+}
