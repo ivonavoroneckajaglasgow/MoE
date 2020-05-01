@@ -66,3 +66,7 @@ vec BinomialFamily::logdensity(vec y, vec eta, double logsigma_sq){
 double BinomialFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/(exp(eta)+1));
 }
+
+vec BinomialFamily::findBeta(vec y, mat X, vec beta){
+
+}

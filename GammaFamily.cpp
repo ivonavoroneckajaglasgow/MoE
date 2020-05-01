@@ -46,3 +46,7 @@ vec GammaFamily::logdensity(vec y, vec eta, double logsigma_sq){
 double GammaFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/eta-y);
 }
+
+vec GammaFamily::findBeta(vec y, mat X, vec beta){
+
+}

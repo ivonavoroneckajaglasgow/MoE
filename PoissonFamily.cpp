@@ -58,3 +58,6 @@ double PoissonFamily::deta(vec y, vec eta, double logsigma_sq){
 return sum(y-exp(eta));
 }
 
+vec PoissonFamily::findBeta(vec y, mat X, vec beta){
+
+}

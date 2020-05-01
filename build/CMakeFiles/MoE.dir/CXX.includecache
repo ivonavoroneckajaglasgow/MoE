@@ -6,6 +6,18 @@
 
 #IncludeRegexTransform: 
 
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/BinomialFamily.cpp
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+BinomialFamily.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/BinomialFamily.h
+
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/BinomialFamily.h
 iostream
 -
@@ -64,6 +76,42 @@ C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
 Family.h
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
 
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.cpp
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+GammaFamily.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.h
+
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.h
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+Family.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.h
+
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.cpp
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+NormalFamily.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.h
+
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.h
 iostream
 -
@@ -87,6 +135,18 @@ armadillo
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
 ExpertModel.h
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.h
+
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.cpp
+iostream
+-
+vector
+-
+cmath
+-
+armadillo
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/armadillo
+PoissonFamily.h
+C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.h
 
 C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.h
 iostream

@@ -28,6 +28,7 @@ vec dloglik(vec y, vec eta, double logsigma_sq); //returns the derivative of log
 vec density(vec y, vec eta, double logsigma_sq); // returns density function
 vec logdensity(vec y, vec eta, double logsigma_sq); // returns log density function
 double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log likelihood wrt to eta
+vec findBeta(vec y, mat X, vec beta);
 };
 
 #endif //MOE_GAMMAFAMILY_H

@@ -24,6 +24,7 @@ class GLMModel: public ExpertModel{
     virtual vec density(vec y, vec eta, double logsigma_sq); // returns density function
     virtual vec logdensity(vec y, vec eta, double logsigma_sq); // returns log density function
     virtual double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log likelihood wrt to eta
+    virtual vec findBeta(vec y, mat X, vec beta);
 };
 
 #endif //MOE_GLMModel_H

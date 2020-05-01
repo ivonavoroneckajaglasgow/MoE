@@ -33,3 +33,7 @@ vec GLMModel::logdensity(vec y, vec eta, double logsigma_sq){
 double GLMModel::deta(vec y, vec eta, double logsigma_sq){
 
 }
+
+vec GLMModel::findBeta(vec y, mat X, vec beta){
+
+}

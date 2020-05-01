@@ -41,3 +41,7 @@ vec Family::logdensity(vec y, vec eta, double logsigma_sq){
 double Family::deta(vec y, vec eta, double logsigma_sq){
 
 }
+
+vec Family::findBeta(vec y, mat X, vec beta){
+
+}
