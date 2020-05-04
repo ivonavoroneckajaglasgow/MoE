@@ -1,52 +1,61 @@
 [
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\main.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\main.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\main.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\main.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/main.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\Expert.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Expert.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\Expert.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Expert.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Expert.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\ExpertModel.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\ExpertModel.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\ExpertModel.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\ExpertModel.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/ExpertModel.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\NormalModel.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalModel.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\NormalModel.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalModel.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalModel.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\GLMModel.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\GLMModel.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\GLMModel.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\GLMModel.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GLMModel.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\Family.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Family.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\Family.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Family.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\NormalFamily.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalFamily.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\NormalFamily.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalFamily.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\BinomialFamily.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\BinomialFamily.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\BinomialFamily.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\BinomialFamily.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/BinomialFamily.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\PoissonFamily.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\PoissonFamily.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\PoissonFamily.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\PoissonFamily.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/PoissonFamily.cpp"
 },
+
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~1\\MINGW-~1\\X86_64~1.0-P\\mingw64\\bin\\X86_64~2.EXE   @CMakeFiles/MoE.dir/includes_CXX.rsp -g   -std=gnu++14 -o CMakeFiles\\MoE.dir\\GammaFamily.cpp.obj -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\GammaFamily.cpp\"",
+  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\GammaFamily.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\GammaFamily.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/GammaFamily.cpp"
 }
 ]

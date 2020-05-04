@@ -1,0 +1,14 @@
+# ninja log v5
+6	9275	610315714	CMakeFiles/MoE.dir/Expert.cpp.obj	7e4bd2c2d462b4c2
+62	9428	610315714	CMakeFiles/MoE.dir/GLMModel.cpp.obj	e4f67067b290904b
+68	9489	610315714	CMakeFiles/MoE.dir/ExpertModel.cpp.obj	2554759ae4f766f9
+56	9509	610315714	CMakeFiles/MoE.dir/Family.cpp.obj	2c46f24b236543f9
+49	10075	610315714	CMakeFiles/MoE.dir/NormalModel.cpp.obj	dc7ab3c74f07add0
+43	11523	610315716	CMakeFiles/MoE.dir/main.cpp.obj	5c95a843f9f64db8
+9510	16964	610315721	CMakeFiles/MoE.dir/PoissonFamily.cpp.obj	63354b8454c488ec
+9490	17213	610315722	CMakeFiles/MoE.dir/NormalFamily.cpp.obj	dbaa264ed6dc2527
+9429	17244	610315722	CMakeFiles/MoE.dir/GammaFamily.cpp.obj	1bf6fcd64c6e0708
+9291	17889	610315722	CMakeFiles/MoE.dir/BinomialFamily.cpp.obj	11937420d2ea6b0
+17889	21909	610315725	MoE.exe	3524f2790e44755b
+10	3936	610315783	CMakeFiles/MoE.dir/main.cpp.obj	5c95a843f9f64db8
+3937	5970	610315784	MoE.exe	3524f2790e44755b

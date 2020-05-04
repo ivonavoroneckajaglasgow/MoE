@@ -68,5 +68,5 @@ double BinomialFamily::deta(vec y, vec eta, double logsigma_sq){
 }
 
 vec BinomialFamily::findBeta(vec y, mat X, vec beta){
-
+ return 0;
 }

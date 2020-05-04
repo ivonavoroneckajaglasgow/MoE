@@ -15,25 +15,25 @@ GLMModel::GLMModel(){
 } 
 
 vec GLMModel::loglik_vec(vec y, vec eta, double logsigma_sq){
-
+return 0;
 }
 
 vec GLMModel::dloglik(vec y, vec eta, double logsigma_sq){
-
+return 0;
 }
     
 vec GLMModel::density(vec y, vec eta, double logsigma_sq){
-
+return 0;
 }
     
 vec GLMModel::logdensity(vec y, vec eta, double logsigma_sq){
-    
+    return 0;
 }
     
 double GLMModel::deta(vec y, vec eta, double logsigma_sq){
-
+return 0;
 }
 
 vec GLMModel::findBeta(vec y, mat X, vec beta){
-
+return 0;
 }

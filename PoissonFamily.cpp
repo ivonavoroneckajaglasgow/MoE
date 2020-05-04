@@ -59,5 +59,5 @@ return sum(y-exp(eta));
 }
 
 vec PoissonFamily::findBeta(vec y, mat X, vec beta){
-
+return 0;
 }

@@ -48,5 +48,5 @@ double GammaFamily::deta(vec y, vec eta, double logsigma_sq){
 }
 
 vec GammaFamily::findBeta(vec y, mat X, vec beta){
-
+return 0;
 }

@@ -28,11 +28,12 @@ Xt.print("My matrix transposed: ");
 cout<<"Matrix X has "<<X.n_rows<<" rows and "<<X.n_cols<<" columns."<<endl;
 cout<<"Matrix Xt has "<<Xt.n_rows<<" rows and "<<Xt.n_cols<<" columns."<<endl;
 mat XtX(2,2);
-//XtX=Xt * X; //THIS DOES NOT WORK
+XtX=Xt * X; //THIS DOES NOT WORK
+XtX.print("XtX:");
 
 mat A = randu<mat>(5,10);
 mat C = randu<mat>(10,5);
-//mat U = A * C; //THIS DOES NOT WORK
-
+mat U = A * C; //THIS DOES NOT WORK
+U.print("U:");
 }
 

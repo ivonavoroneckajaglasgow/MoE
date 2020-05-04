@@ -81,5 +81,5 @@ vec NormalFamily::dloglik(vec y, vec eta, double logsigma_sq){
 }
 
 vec NormalFamily::findBeta(vec y, mat X, vec beta){
-
+ return 0;
 }

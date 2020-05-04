@@ -116,5 +116,5 @@ vec NormalModel::dloglik(vec y, vec eta, double logsigma_sq){
 }
 
 vec NormalModel::findBeta(vec y, mat X, vec beta){
-
+return 0;
 }
