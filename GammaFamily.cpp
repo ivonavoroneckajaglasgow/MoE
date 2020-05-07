@@ -20,6 +20,11 @@ vec GammaFamily::linkfun(vec mu){
 vec GammaFamily::linkinv(vec eta){
     return (1/eta);
 }
+
+vec GammaFamily::dlinkfun(vec mu){
+return -1/pow(mu,2);
+}
+
 vec GammaFamily::varfun(vec mu){
     return(pow(mu,2));
 }
@@ -29,6 +34,7 @@ vec GammaFamily::dmudeta (vec eta){
 vec GammaFamily::loglik_vec(vec y, vec eta, double logsigma_sq){
     return this->logdensity(y,eta,logsigma_sq); 
 } 
+
 vec GammaFamily::dloglik(vec y, vec eta, double logsigma_sq){
    vec result(1);
    result<<this->deta(y,eta,logsigma_sq);
@@ -47,6 +53,13 @@ double GammaFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/eta-y);
 }
 
-vec GammaFamily::findBeta(vec y, mat X, vec beta){
-return 0;
+vec GammaFamily::a(vec phi){
+    vec result(phi.size());
+    result.ones();
+    return -result;
 }
+
+vec GammaFamily::V(vec theta){
+    return -1/pow(theta,2);
+}
+

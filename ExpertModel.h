@@ -21,7 +21,7 @@ class ExpertModel{
     virtual vec density(vec y, vec eta, double logsigma_sq); //returns the density function
     virtual vec logdensity(vec y, vec eta, double logsigma_sq); // returns the log density function
     virtual double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of the log likelihood wrt eta
-    virtual vec findBeta(vec y, mat X, vec beta);
+    virtual vec findBeta(vec y, mat X, vec phi);
 };
 
 #endif //MOE_EXPERTMODEL_H

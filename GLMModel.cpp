@@ -34,6 +34,6 @@ double GLMModel::deta(vec y, vec eta, double logsigma_sq){
 return 0;
 }
 
-vec GLMModel::findBeta(vec y, mat X, vec beta){
+vec GLMModel::findBeta(vec y, mat X){
 return 0;
 }

@@ -16,13 +16,17 @@ BinomialFamily::BinomialFamily(){
 }
 
 vec BinomialFamily::linkfun(vec mu){
-  return log(mu/(1-mu));
+  return log(mu/(1+mu));
 }
 
 vec BinomialFamily::linkinv(vec eta){
   return exp(eta)/(1+exp(eta)); 
   //OR
   //return 1/(1+exp(-eta)); 
+}
+
+vec BinomialFamily::dlinkfun(vec mu){
+  return 1/(mu%(1-mu));
 }
 
 vec BinomialFamily::varfun(vec mu){
@@ -67,6 +71,13 @@ double BinomialFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/(exp(eta)+1));
 }
 
-vec BinomialFamily::findBeta(vec y, mat X, vec beta){
- return 0;
+vec BinomialFamily::a(vec phi){
+    vec result(phi.size());
+    result.ones();
+    return result; 
 }
+
+vec BinomialFamily::V(vec theta){
+    return exp(theta)/pow(1+exp(theta),2);
+}
+

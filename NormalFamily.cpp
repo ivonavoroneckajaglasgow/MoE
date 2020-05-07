@@ -27,6 +27,12 @@ vec NormalFamily::linkinv(vec eta){
     return eta;
 }
 
+vec NormalFamily::dlinkfun(vec mu){
+    vec result(mu.size());
+    result.ones();
+    return result;
+}
+
 vec NormalFamily::varfun(vec mu){
     vec varvec(mu.size());
     varvec.ones();
@@ -80,6 +86,15 @@ vec NormalFamily::dloglik(vec y, vec eta, double logsigma_sq){
     return result;
 }
 
-vec NormalFamily::findBeta(vec y, mat X, vec beta){
- return 0;
+vec NormalFamily::a(vec phi){
+    vec result(phi.size());
+    result.ones();
+    return result;
 }
+
+vec NormalFamily::V(vec theta){
+    vec result(theta.size());
+    result.ones();
+    return result;
+}
+

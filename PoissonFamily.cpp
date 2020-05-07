@@ -23,6 +23,10 @@ vec PoissonFamily::linkinv(vec eta){
     return exp(eta);
 }
 
+vec PoissonFamily::dlinkfun(vec mu){
+  return 1/mu;
+}
+
 vec PoissonFamily::varfun(vec mu){
     return mu;
 }
@@ -58,6 +62,13 @@ double PoissonFamily::deta(vec y, vec eta, double logsigma_sq){
 return sum(y-exp(eta));
 }
 
-vec PoissonFamily::findBeta(vec y, mat X, vec beta){
-return 0;
+vec PoissonFamily::a(vec phi){
+  vec result(phi.size());
+  result.ones();
+  return result;
 }
+
+vec PoissonFamily::V(vec theta){
+  return exp(theta);
+}
+

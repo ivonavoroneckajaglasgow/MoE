@@ -24,7 +24,8 @@ public:
    vec logdensity(vec y, vec eta, double logsigma_sq);//log-normal density
    double deta(vec y, vec eta, double logsigma_sq); //derivative of log-likelihod wrt to eta
    double dsigma (vec y, vec eta, double logsigma_sq); //derivative of the log-likelihood wrt to sigma^2
-   vec findBeta(vec y, mat X, vec beta);
+   vec findBeta(vec y, mat X);
+
    private:   
    double transformSigma(double logsigma_sq);//Transforms sigma to a log scale
    };

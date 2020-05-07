@@ -1,4 +1,5 @@
 #define _USE_MATH_DEFINES
+#define EPS 1e-5
 
 #include <iostream>
 #include <vector>
@@ -19,6 +20,9 @@ return 0;
 }
 vec Family::linkinv(vec eta){
 return 0;
+}
+vec Family::dlinkfun(vec mu){
+    return 0;
 }
 vec Family::varfun(vec mu){
 return 0;
@@ -42,6 +46,48 @@ double Family::deta(vec y, vec eta, double logsigma_sq){
 return 0;
 }
 
-vec Family::findBeta(vec y, mat X, vec beta){
-return 0;
+vec Family::etafun(mat X, vec beta){
+return X*beta;
+}
+
+vec Family::a(vec phi){
+    return 0;
+}
+
+vec Family::V(vec theta){
+    return 0;
+}
+
+vec Family::findBeta(vec y, mat X, vec phi){
+    vec beta;
+    beta=this->initialiseBeta(y,X,phi);
+
+for (int i=0; i<100; i++){
+    vec beta_old=beta;
+    vec eta=this->etafun(X,beta);
+    vec mu=this->linkinv(eta);
+    vec Z= eta+(y-mu)%this->dlinkfun(mu);
+    vec w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
+    mat W(X.n_rows,X.n_rows);
+    W=diagmat(w);
+    beta=solve(X.t()*W*X,X.t()*W*Z);
+    if(any(abs(beta-beta_old)<EPS)) break;
+}
+return beta;
+}
+
+vec Family::initialiseBeta(vec y, mat X, vec phi){
+    vec mu(y.size());
+    mu = y+0.1;
+    vec eta(y.size());
+    eta= this->linkfun(mu);
+    vec Z(y.size());
+    Z=eta+(y-mu)%this->dlinkfun(mu);
+    vec w(y.size());
+    w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
+    mat W(X.n_rows,X.n_rows);
+    W=diagmat(w);
+    vec beta(X.n_cols);
+    beta=solve(X.t()*W*X,X.t()*W*Z);
+    return beta ;
 }

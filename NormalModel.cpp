@@ -115,6 +115,12 @@ vec NormalModel::dloglik(vec y, vec eta, double logsigma_sq){
     return result;
 }
 
-vec NormalModel::findBeta(vec y, mat X, vec beta){
-return 0;
+vec NormalModel::findBeta(vec y, mat X){
+mat Xt(X.n_cols,X.n_rows);
+Xt=X.t();
+mat XtX(X.n_rows,X.n_rows);
+XtX=Xt*X;
+mat XtXinv(X.n_rows,X.n_rows);
+XtXinv=XtX.i();
+return XtXinv*Xt*y;
 }
