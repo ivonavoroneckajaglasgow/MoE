@@ -68,26 +68,19 @@ for (int i=0; i<100; i++){
     vec mu=this->linkinv(eta);
     vec Z= eta+(y-mu)%this->dlinkfun(mu);
     vec w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
-    mat W(X.n_rows,X.n_rows);
-    W=diagmat(w);
-    beta=solve(X.t()*W*X,X.t()*W*Z);
+    vec wsqrt=sqrt(w);
+    vec beta=solve(diagmat(wsqrt)*X,diagmat(wsqrt)*Z);
     if(any(abs(beta-beta_old)<EPS)) break;
 }
 return beta;
 }
 
 vec Family::initialiseBeta(vec y, mat X, vec phi){
-    vec mu(y.size());
-    mu = y+0.1;
-    vec eta(y.size());
-    eta= this->linkfun(mu);
-    vec Z(y.size());
-    Z=eta+(y-mu)%this->dlinkfun(mu);
-    vec w(y.size());
-    w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
-    mat W(X.n_rows,X.n_rows);
-    W=diagmat(w);
-    vec beta(X.n_cols);
-    beta=solve(X.t()*W*X,X.t()*W*Z);
-    return beta ;
+    vec mu = y+0.1;
+    vec eta= this->linkfun(mu);
+    vec Z=eta+(y-mu)%this->dlinkfun(mu);
+    vec w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
+    vec wsqrt=sqrt(w);
+    vec beta=solve(diagmat(wsqrt)*X,diagmat(wsqrt)*Z);
+    return beta;
 }

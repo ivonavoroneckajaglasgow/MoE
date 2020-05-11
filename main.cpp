@@ -84,7 +84,6 @@ betahatrow2.print("Compare to betahat:");
 cout<<"Estimated Sigma:"<<endl;
 cout<<cov(result2);
 cout<<"Compare to:"<<endl;
-cout<<(X.t()*W*X).i()<<endl;
-
+cout<<(X.t()*W*X).i()<<endl; 
 }
 
