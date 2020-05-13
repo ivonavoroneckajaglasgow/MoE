@@ -38,6 +38,6 @@ double ExpertModel::deta(vec y, vec eta, double logsigma_sq){
   return 0;
 }
 
-vec ExpertModel::findBeta(vec y, mat X, vec phi){
-   return 0; 
-}
+//vec ExpertModel::findBeta(vec y, mat X, vec phi){
+ //  return 0; 
+//}

@@ -6,7 +6,7 @@
 #include <cmath>
 #include "armadillo"
 
-#include "Family.h"
+#include "GLMModel.h"
 
 using namespace std;
 using namespace arma;
@@ -16,7 +16,7 @@ using namespace arma;
 //g(mu)=g(p)=log(p/(1-p))=X'B=eta
 //mu=p=exp(eta)/(1+exp(eta))=1/(1+exp(-eta))
 
-class BinomialFamily : public Family {
+class BinomialFamily : public GLMModel {
 public:
 BinomialFamily();
 vec linkfun(vec mu); //link function for a vector of values of mu

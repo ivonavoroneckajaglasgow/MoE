@@ -31,12 +31,6 @@
 
 {
   "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
-  "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\Family.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\Family.cpp\"",
-  "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/Family.cpp"
-},
-
-{
-  "directory": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/build",
   "command": "C:\\PROGRA~2\\MICROS~2\\2019\\BUILDT~1\\VC\\Tools\\MSVC\\1425~1.286\\bin\\Hostx64\\x64\\cl.exe  /nologo /TP  -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\share\\Armadillo\\..\\..\\include\" -I\"C:\\Users\\Ivona Voroneckaja\\vcpkg\\installed\\x64-windows\\include\"  /DWIN32 /D_WINDOWS /W3 /GR /EHsc /MDd /Zi /Ob0 /Od /RTC1   -std:c++14 /FoCMakeFiles\\MoE.dir\\NormalFamily.cpp.obj /FdTARGET_COMPILE_PDB /FS -c \"C:\\Users\\Ivona Voroneckaja\\Desktop\\MoE\\MoE\\NormalFamily.cpp\"",
   "file": "C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE/NormalFamily.cpp"
 },

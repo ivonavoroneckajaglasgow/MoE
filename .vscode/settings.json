@@ -3,6 +3,7 @@
         "iostream": "cpp",
         "vector": "cpp",
         "cmath": "cpp",
-        "armadillo": "cpp"
+        "armadillo": "cpp",
+        "cstdlib": "cpp"
     }
 }

@@ -6,7 +6,7 @@
 #include <cmath>
 #include "armadillo"
 
-#include "Family.h"
+#include "GLMModel.h"
 
 using namespace std;
 using namespace arma;
@@ -16,7 +16,7 @@ using namespace arma;
 //g(mu)=mu=X'B=eta
 //mu=eta
 
-class NormalFamily : public Family {
+class NormalFamily : public GLMModel {
 public:
 NormalFamily();
 vec linkfun(vec mu); //link function for a vector of values of mu
