@@ -1,5 +1,6 @@
 #define _USE_MATH_DEFINES
 #define EPS 1e-5
+#define SigmaMultiple 2
 
 #include <iostream>
 #include <vector>
@@ -58,10 +59,10 @@ vec GLMModel::V(vec theta){
     return 0;
 }
 
-vec GLMModel::findBeta(vec y, mat X, vec phi){
+vec GLMModel::findBeta(vec y, mat X, vec phi, mat* R){
     vec beta;
     beta=this->initialiseBeta(y,X,phi);
-
+    mat Q;
 for (int i=0; i<100; i++){
     vec beta_old=beta;
     vec eta=this->etafun(X,beta);
@@ -69,34 +70,16 @@ for (int i=0; i<100; i++){
     vec Z= eta+(y-mu)%this->dlinkfun(mu);
     vec w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
     vec wsqrt=sqrt(w);
-    mat Q,R;
-    qr_econ(Q,R,diagmat(wsqrt)*X);
-    vec beta=solve(R,Q.t()*diagmat(wsqrt)*Z);
-    //vec beta=solve(diagmat(wsqrt)*X,diagmat(wsqrt)*Z); //line without QR decomp
+    qr_econ(Q,*R,diagmat(wsqrt)*X);
+    vec beta=solve(*R,Q.t()*diagmat(wsqrt)*Z);
     if(all(abs(beta-beta_old)<(EPS,EPS*abs(beta)).max())) break;
 }
 return beta;
 }
 
-mat GLMModel::findR(vec y, mat X, vec phi){
-    vec beta;
-    beta=this->initialiseBeta(y,X,phi);
-
-for (int i=0; i<100; i++){
-    vec beta_old=beta;
-    vec eta=this->etafun(X,beta);
-    vec mu=this->linkinv(eta);
-    vec Z= eta+(y-mu)%this->dlinkfun(mu);
-    vec w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
-    vec wsqrt=sqrt(w);
-    mat Q,R;
-    qr_econ(Q,R,diagmat(wsqrt)*X);
-    vec beta=solve(R,Q.t()*diagmat(wsqrt)*Z);
-    //vec beta=solve(diagmat(wsqrt)*X,diagmat(wsqrt)*Z); //line without QR decomp
-    if(all(abs(beta-beta_old)<(EPS,EPS*abs(beta)).max())) break;
-}
-return 0;
-//return R; will not work  
+vec GLMModel::findBeta(vec y, mat X, vec phi){
+    mat R;
+    return this->findBeta(y,X,phi,&R);
 }
 
 vec GLMModel::initialiseBeta(vec y, mat X, vec phi){
@@ -111,7 +94,7 @@ vec GLMModel::initialiseBeta(vec y, mat X, vec phi){
 
 vec GLMModel::proposeBeta(vec beta, mat R){
   vec v(2,fill::randn);
-  vec newbeta=beta+solve(R,v);
+  vec newbeta=beta+solve(sqrt(SigmaMultiple)*R,v);
   //need to add accept reject step based on likelihood
   return newbeta; 
 }

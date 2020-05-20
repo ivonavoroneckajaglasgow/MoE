@@ -19,22 +19,24 @@ using namespace arma;
 #include "GammaFamily.h"
 
 int main(){
- vec x("1 2 3 4 5 6 7 8 9 10");
- vec y("12 2.3 3.4 0.4 25 36 17 8.5 9.1 0.10");
- vec w("0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1 0.1");
- vec wsqrt=sqrt(w);
- vec phi(x.size());
- phi.ones();
- mat X(10,2);
- X.col(0).ones();
- X.col(1)=x;
- NormalFamily* NF=new NormalFamily();
- vec betahat=NF->findBeta(y,X,phi);
- betahat.print("Estimated betahat:");
- mat Q,R;
- qr_econ(Q,R,diagmat(wsqrt)*X);
- R.print("My R matrix from QR:");
- vec betaproposal=NF->proposeBeta(betahat,R);
- betaproposal.print("Proposed beta:");
+vec y("0.1 12 2.3 4.7 0.5 16 7.3 8 0.9 0.1");
+vec x("1 2 3 4 5 6 7 8 9 10");
+mat X(10,2);
+X.col(0).ones();
+X.col(1)=x;
+vec w("0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1");
+vec wsqrt=sqrt(w);
+vec phi(x.size());
+phi.ones();
+
+NormalFamily* GLM = new NormalFamily();
+vec beta=GLM->findBeta(y,X,phi);
+beta.print("beta:");
+//How do I access R?
+
+mat R;
+vec beta2=GLM->findBeta(y,X,phi,&R);
+R.print("R:");
+
 }
 

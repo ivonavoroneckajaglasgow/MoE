@@ -29,8 +29,8 @@ vec etafun(mat X, vec beta);
 virtual vec a(vec phi); //a(phi) function in the exponential family expression for the family
 virtual vec V(vec theta); //b''(theta) function in the exponential family expression for the family
 vec initialiseBeta(vec y, mat X, vec phi);
+vec findBeta(vec y, mat X, vec phi, mat* R);
 vec findBeta(vec y, mat X, vec phi);
-mat findR(vec y, mat X, vec phi);
 vec proposeBeta(vec beta, mat R);
 };
 
