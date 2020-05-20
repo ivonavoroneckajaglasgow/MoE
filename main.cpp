@@ -32,7 +32,8 @@ phi.ones();
 NormalFamily* GLM = new NormalFamily();
 vec beta=GLM->findBeta(y,X,phi);
 beta.print("beta:");
-//How do I access R?
+//How do I access R from this? R s created inside findBeta.
+//R.print("Initial R:") //this is not recognised 
 
 mat R;
 vec beta2=GLM->findBeta(y,X,phi,&R);
