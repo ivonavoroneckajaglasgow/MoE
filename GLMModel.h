@@ -31,7 +31,8 @@ virtual vec V(vec theta); //b''(theta) function in the exponential family expres
 vec initialiseBeta(vec y, mat X, vec phi);
 vec findBeta(vec y, mat X, vec phi, mat* R);
 vec findBeta(vec y, mat X, vec phi);
-vec proposeBeta(vec beta, mat R);
+vec proposeBeta(mat X, vec y, vec phi,double logsigma_sq);
+vec logmvndensity(vec response, vec mean, mat Sigma);
 };
 
 

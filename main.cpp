@@ -24,20 +24,16 @@ vec x("1 2 3 4 5 6 7 8 9 10");
 mat X(10,2);
 X.col(0).ones();
 X.col(1)=x;
-vec w("0.1 0.2 0.3 0.4 0.5 0.6 0.7 0.8 0.9 1");
-vec wsqrt=sqrt(w);
 vec phi(x.size());
 phi.ones();
 
-NormalFamily* GLM = new NormalFamily();
-vec beta=GLM->findBeta(y,X,phi);
-beta.print("beta:");
-//How do I access R from this? R s created inside findBeta.
-//R.print("Initial R:") //this is not recognised 
-
+NormalFamily* NF= new NormalFamily();
 mat R;
-vec beta2=GLM->findBeta(y,X,phi,&R);
+vec beta=NF->findBeta(y,X,phi,&R);
+beta.print("beta:");
 R.print("R:");
+vec newbeta=NF->proposeBeta(X,y,phi,5.856);
+newbeta.print("newbeta:");
 
 }
 
