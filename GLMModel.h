@@ -32,6 +32,7 @@ vec initialiseBeta(vec y, mat X, vec phi);
 vec findBeta(vec y, mat X, vec phi, mat* R);
 vec findBeta(vec y, mat X, vec phi);
 vec proposeBeta(mat X, vec y, vec phi,double logsigma_sq);
+vec proposeBeta(vec betaold, mat X, vec y, vec phi,double logsigma_sq);
 vec logmvndensity(vec response, vec mean, mat Sigma);
 };
 

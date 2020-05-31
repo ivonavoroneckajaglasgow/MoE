@@ -108,6 +108,22 @@ vec GLMModel::proposeBeta(mat X, vec y, vec phi, double logsigma_sq){
   if(accept==0) return beta; 
 }
 
+vec GLMModel::proposeBeta(vec betaold, mat X, vec y, vec phi,double logsigma_sq){
+ mat R;
+  vec betahat=this->findBeta(y,X,phi,&R);//Uses IWLS to estimate beta
+  vec v(2,fill::randn);
+  vec newbeta=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
+  double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));
+  double density_new=sum(this->logdensity(y,this->etafun(X,newbeta),logsigma_sq));
+  double proposal_old=sum(this->logmvndensity(betaold,betahat,(R.t()*R).i()));
+  double proposal_new=sum(this->logmvndensity(newbeta,betahat,(R.t()*R).i()));
+  double acceptance= density_new-density_old+proposal_old-proposal_new;
+  double u=randu();
+  bool accept=u<exp(acceptance);
+  if(accept==1) return newbeta;
+  if(accept==0) return betaold; 
+}
+
 vec GLMModel::logmvndensity(vec response, vec mean, mat Sigma){
    int k = Sigma.n_cols;
    //return 1/(pow(2*M_PI,k/2)*sqrt(det(Sigma)))*exp(-0.5*(response-mean).t()*Sigma.i()*(response-mean)); - not log scale

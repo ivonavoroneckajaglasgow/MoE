@@ -25,6 +25,7 @@ public:
    double deta(vec y, vec eta, double logsigma_sq); //derivative of log-likelihod wrt to eta
    double dsigma (vec y, vec eta, double logsigma_sq); //derivative of the log-likelihood wrt to sigma^2
    vec findBeta(vec y, mat X);
+   vec test(vec a);
 
    private:   
    double transformSigma(double logsigma_sq);//Transforms sigma to a log scale
