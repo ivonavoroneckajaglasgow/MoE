@@ -86,10 +86,11 @@ vec NormalFamily::dloglik(vec y, vec eta, double logsigma_sq){
     return result;
 }
 
-vec NormalFamily::a(vec phi){
-    vec result(phi.size());
-    result.ones();
-    return result;
+double NormalFamily::a(double phi){
+    //vec result(phi.size());
+    //result.ones();
+    //return result;
+    return phi;
 }
 
 vec NormalFamily::V(vec theta){

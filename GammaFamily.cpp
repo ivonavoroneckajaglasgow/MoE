@@ -53,10 +53,8 @@ double GammaFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/eta-y);
 }
 
-vec GammaFamily::a(vec phi){
-    vec result(phi.size());
-    result.ones();
-    return -result;
+double GammaFamily::a(double phi){
+     return -1;
 }
 
 vec GammaFamily::V(vec theta){

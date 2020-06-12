@@ -71,10 +71,8 @@ double BinomialFamily::deta(vec y, vec eta, double logsigma_sq){
     return sum(1/(exp(eta)+1));
 }
 
-vec BinomialFamily::a(vec phi){
-    vec result(phi.size());
-    result.ones();
-    return result; 
+double BinomialFamily::a(double phi){
+    return 1;
 }
 
 vec BinomialFamily::V(vec theta){

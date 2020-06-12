@@ -26,13 +26,15 @@ virtual vec density(vec y, vec eta, double logsigma_sq); // returns density func
 virtual vec logdensity(vec y, vec eta, double logsigma_sq); // returns log density function
 virtual double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log likelihood wrt to eta
 vec etafun(mat X, vec beta);
-virtual vec a(vec phi); //a(phi) function in the exponential family expression for the family
+virtual double a(double phi); //a(phi) function in the exponential family expression for the family
 virtual vec V(vec theta); //b''(theta) function in the exponential family expression for the family
-vec initialiseBeta(vec y, mat X, vec phi);
-vec findBeta(vec y, mat X, vec phi, mat* R);
-vec findBeta(vec y, mat X, vec phi);
-vec proposeBeta(mat X, vec y, vec phi,double logsigma_sq);
-vec proposeBeta(vec betaold, mat X, vec y, vec phi,double logsigma_sq);
+vec initialiseBeta(vec y, mat X, double logsigma_sq);
+vec findBeta(vec y, mat X, mat* R, double logsigma_sq);
+vec findBeta(vec y, mat X, double logsigma_sq);
+vec findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_beta);
+vec findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
+vec proposeBeta(vec betaold, vec y, mat X, double logsigma_sq);
+vec proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
 vec logmvndensity(vec response, vec mean, mat Sigma);
 };
 

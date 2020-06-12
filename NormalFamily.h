@@ -30,7 +30,7 @@ vec density(vec y, vec eta, double logsigma_sq); // returns density function
 vec logdensity(vec y, vec eta, double logsigma_sq); // returns log density function
 double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log likelihood wrt to eta
 double dsigma (vec y, vec eta, double logsigma_sq); //derivative of the log-likelihood wrt to sigma^2
-vec a(vec phi); //a(phi) function in the exponential family expression for the family
+double a(double phi); //a(phi) function in the exponential family expression for the family
 vec V(vec theta); //b''(theta) function in the exponential family expression for the family
 private:   
 double transformSigma(double logsigma_sq);//Transforms sigma to a log scale

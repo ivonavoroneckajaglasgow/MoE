@@ -51,7 +51,7 @@ vec GLMModel::etafun(mat X, vec beta){
 return X*beta;
 }
 
-vec GLMModel::a(vec phi){
+double GLMModel::a(double phi){
     return 0;
 }
 
@@ -59,16 +59,16 @@ vec GLMModel::V(vec theta){
     return 0;
 }
 
-vec GLMModel::findBeta(vec y, mat X, vec phi, mat* R){
+vec GLMModel::findBeta(vec y, mat X, mat* R, double logsigma_sq){
     vec beta;
-    beta=this->initialiseBeta(y,X,phi);
+    beta=this->initialiseBeta(y,X, logsigma_sq);
     mat Q;
 for (int i=0; i<100; i++){
     vec beta_old=beta;
     vec eta=this->etafun(X,beta);
     vec mu=this->linkinv(eta);
     vec Z= eta+(y-mu)%this->dlinkfun(mu);
-    vec w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
+    vec w=1/(this->a(logsigma_sq)*pow(this->dlinkfun(mu),2)%this->V(mu));
     vec wsqrt=sqrt(w);
     qr_econ(Q,*R,diagmat(wsqrt)*X);
     vec beta=solve(*R,Q.t()*diagmat(wsqrt)*Z);
@@ -77,52 +77,83 @@ for (int i=0; i<100; i++){
 return beta;
 }
 
-vec GLMModel::findBeta(vec y, mat X, vec phi){
+vec GLMModel::findBeta(vec y, mat X, double logsigma_sq){
     mat R;
-    return this->findBeta(y,X,phi,&R);
+    return this->findBeta(y,X,&R,logsigma_sq);
 }
 
-vec GLMModel::initialiseBeta(vec y, mat X, vec phi){
+vec GLMModel::findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+    vec beta;
+    beta=this->initialiseBeta(y,X,logsigma_sq);
+    mat sqrtSigma_beta=sqrtmat_sympd(Sigma_beta);
+    vec helper(beta.size());
+    helper.zeros();
+    mat Q;
+for (int i=0; i<100; i++){
+    vec beta_old=beta;
+    vec eta=this->etafun(X,beta-mu_beta); //should I subrtact prior mean for all steps or just in the calculation of Z?
+    //vec eta=this->etafun(X,beta);
+    vec mu=this->linkinv(eta);
+    vec Z= eta+(y-mu)%this->dlinkfun(mu);
+    vec w=1/(this->a(logsigma_sq)*pow(this->dlinkfun(mu),2)%this->V(mu));
+    vec wsqrt=sqrt(w);
+    mat X_star=join_cols(diagmat(wsqrt)*X,sqrtSigma_beta);
+    qr_econ(Q,*R,X_star);
+    vec Z_star=join_cols(wsqrt%Z,helper);
+    beta=solve(*R,Q.t()*Z_star);
+    if(all(abs(beta-beta_old)<(EPS,EPS*abs(beta)).max())) break;
+}
+return beta;
+}
+
+vec GLMModel::findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+    mat R;
+    return this->findBeta(y,X,&R, logsigma_sq, mu_beta, Sigma_beta);
+}
+
+vec GLMModel::initialiseBeta(vec y, mat X, double logsigma_sq){
     vec mu = y+0.1;
     vec eta= this->linkfun(mu);
     vec Z=eta+(y-mu)%this->dlinkfun(mu);
-    vec w=1/(this->a(phi)%pow(this->dlinkfun(mu),2)%this->V(mu));
+    vec w=1/(this->a(logsigma_sq)*pow(this->dlinkfun(mu),2)%this->V(mu));
     vec wsqrt=sqrt(w);
     vec beta=solve(diagmat(wsqrt)*X,diagmat(wsqrt)*Z);
     return beta;
 }
 
-vec GLMModel::proposeBeta(mat X, vec y, vec phi, double logsigma_sq){
+vec GLMModel::proposeBeta(vec betaold,vec y, mat X, double logsigma_sq){
   mat R;
-  vec beta=this->findBeta(y,X,phi,&R);//Uses IWLS to estimate beta
+  vec betahat=this->findBeta(y,X,&R,logsigma_sq);//Uses IWLS to estimate beta
   vec v(2,fill::randn);
-  vec newbeta=beta+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
-  double density_old=sum(this->logdensity(y,this->etafun(X,beta),logsigma_sq));
-  double density_new=sum(this->logdensity(y,this->etafun(X,newbeta),logsigma_sq));
-  double proposal_old=sum(this->logmvndensity(beta,newbeta,(R.t()*R).i()));
-  double proposal_new=sum(this->logmvndensity(newbeta,beta,(R.t()*R).i()));
-  double acceptance= density_new-density_old+proposal_old-proposal_new;
-  double u=randu();
-  bool accept=u<exp(acceptance);
-  if(accept==1) return newbeta;
-  if(accept==0) return beta; 
-}
-
-vec GLMModel::proposeBeta(vec betaold, mat X, vec y, vec phi,double logsigma_sq){
- mat R;
-  vec betahat=this->findBeta(y,X,phi,&R);//Uses IWLS to estimate beta
-  vec v(2,fill::randn);
-  vec newbeta=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
+  vec betanew=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
   double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));
-  double density_new=sum(this->logdensity(y,this->etafun(X,newbeta),logsigma_sq));
+  double density_new=sum(this->logdensity(y,this->etafun(X,betanew),logsigma_sq));
   double proposal_old=sum(this->logmvndensity(betaold,betahat,(R.t()*R).i()));
-  double proposal_new=sum(this->logmvndensity(newbeta,betahat,(R.t()*R).i()));
+  double proposal_new=sum(this->logmvndensity(betanew,betahat,(R.t()*R).i()));
   double acceptance= density_new-density_old+proposal_old-proposal_new;
   double u=randu();
   bool accept=u<exp(acceptance);
-  if(accept==1) return newbeta;
+  if(accept==1) return betanew;
   if(accept==0) return betaold; 
-}
+} 
+
+vec GLMModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+  mat R;
+  vec betahat=this->findBeta(y,X,&R, logsigma_sq);//Uses IWLS to estimate beta
+  vec v(2,fill::randn);
+  vec betanew=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
+  double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));
+  double density_new=sum(this->logdensity(y,this->etafun(X,betanew),logsigma_sq));
+  double proposal_old=sum(this->logmvndensity(betaold,betahat,(R.t()*R).i()));
+  double proposal_new=sum(this->logmvndensity(betanew,betahat,(R.t()*R).i()));
+  double prior_old=sum(this->logmvndensity(betaold,mu_beta,Sigma_beta));
+  double prior_new=sum(this->logmvndensity(betanew,mu_beta,Sigma_beta));
+  double acceptance=density_new-density_old+proposal_old-proposal_new+prior_new-prior_old;
+  double u=randu();
+  bool accept=u<exp(acceptance);
+  if(accept==1) return betanew;
+  if(accept==0) return betaold; 
+} 
 
 vec GLMModel::logmvndensity(vec response, vec mean, mat Sigma){
    int k = Sigma.n_cols;

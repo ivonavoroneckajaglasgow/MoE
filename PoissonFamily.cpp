@@ -62,10 +62,8 @@ double PoissonFamily::deta(vec y, vec eta, double logsigma_sq){
 return sum(y-exp(eta));
 }
 
-vec PoissonFamily::a(vec phi){
-  vec result(phi.size());
-  result.ones();
-  return result;
+double PoissonFamily::a(double phi){
+  return 1;
 }
 
 vec PoissonFamily::V(vec theta){

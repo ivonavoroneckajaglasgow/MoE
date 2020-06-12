@@ -10,10 +10,6 @@
 using namespace std;
 using namespace arma;
 
-vec NormalModel::test(vec a){
-    return 0;
-}
-
 /**
  * @brief Construct a new Normal Expert:: Normal Expert object
  * 
