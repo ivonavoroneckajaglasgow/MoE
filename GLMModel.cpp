@@ -91,10 +91,9 @@ vec GLMModel::findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, ma
     mat Q;
 for (int i=0; i<100; i++){
     vec beta_old=beta;
-    vec eta=this->etafun(X,beta-mu_beta); //should I subrtact prior mean for all steps or just in the calculation of Z?
-    //vec eta=this->etafun(X,beta);
+    vec eta=this->etafun(X,beta);
     vec mu=this->linkinv(eta);
-    vec Z= eta+(y-mu)%this->dlinkfun(mu);
+    vec Z=this->etafun(X,beta-mu_beta)+(y-mu)%this->dlinkfun(mu);
     vec w=1/(this->a(logsigma_sq)*pow(this->dlinkfun(mu),2)%this->V(mu));
     vec wsqrt=sqrt(w);
     mat X_star=join_cols(diagmat(wsqrt)*X,sqrtSigma_beta);
