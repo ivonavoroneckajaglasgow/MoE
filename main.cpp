@@ -1,5 +1,5 @@
 #define _USE_MATH_DEFINES
-#define EPS 1e-9
+#define EPS 1e-16
 
 #include <iostream>
 #include <vector>
@@ -9,100 +9,76 @@
 using namespace std;
 using namespace arma;
 
-#include "Expert.h"
-#include "ExpertModel.h"
-#include "NormalModel.h"
-#include "GLMModel.h"
-#include "NormalFamily.h"
-#include "PoissonFamily.h"
-#include "BinomialFamily.h" 
-#include "GammaFamily.h"
-
-vec p_calculator(vec gamma, mat X){
-    vec helper=exp(X*gamma);
-    return helper/(1+helper);
-}
-
-vec etafun(mat X, vec beta){
-return X*beta;
-}
-
-double transformSigma(double logsigma_sq){
-    return exp(logsigma_sq);
-}
-
-vec logdensity(vec y, vec eta, double logsigma_sq){ // this should include all experts, now it is just one
-   double std;
-   double logsigma_tr=transformSigma(logsigma_sq);
-   std=sqrt(logsigma_tr);
-   return -0.5*(log(2*M_PI)+log(logsigma_tr))-pow(y-eta,2)/(2*logsigma_tr);
-}
-
-double loglik(vec y, vec beta, mat X, double logsigma_sq, vec p){
-    vec eta=etafun(X,beta);
-    double l=sum(log(p)+logdensity(y,eta,logsigma_sq));
-    return l;
-}
-
-vec logpriordiff_gamma(vec gamma, vec gamma_star, mat gamma_Sigma){
-  return -0.5*gamma_star.t()*gamma_Sigma.i()*gamma_star+0.5*gamma.t()*gamma_Sigma.i()*gamma;
-}
-
- vec gammaUpdate(vec gamma, vec y, mat X, vec beta, double logsigma_sq, vec sigma_proposal, mat gamma_Sigma){
-    vec p=p_calculator(gamma,X);
-    vec v(2,fill::randn);
-    vec u=sigma_proposal%v;
-    vec gamma_star(gamma.size());
-    //gamma_star[0]=gamma[0]+gamma[0]/gamma[1]*u[1]+u[0];
-    //gamma_star[1]=gamma[1]+u[1];
-    gamma_star[0]=gamma[0]+u[0];
-    gamma_star[1]=gamma[1]+u[1];
-    vec p_star=p_calculator(gamma_star,X);
-    double l=loglik(y,beta,X,logsigma_sq,p);
-    double l_star=loglik(y,beta,X,logsigma_sq,p_star);
-    double prior_diff=sum(logpriordiff_gamma(gamma,gamma_star,gamma_Sigma));
-    double acceptance=l_star-l+prior_diff;
-    double m=randu();
-    bool   accept=log(m)<acceptance;
-    if(accept==1) return gamma_star;
-    if(accept==0) return gamma;
-}
-
-vec initialiseGamma(vec x){ //only works for a nx2 X
-    std::random_device                      rand_dev;
-    std::mt19937                            generator(rand_dev());
-    std::uniform_real_distribution<double>  distr(x.min(), x.max());
-    double x_star=distr(generator);
-    vec gamma(2);
-    std::random_device rd; 
-    std::mt19937       rnd_gen (rd());
-    std::exponential_distribution<> rng (0.5);
-    double b=rng(rnd_gen);
-    gamma[1]=b;
-    gamma[0]=-b*x_star;
-    return gamma;
-}
+#include "Gate.h"
 
 int main(){
+cout<<"SETTING UP GATE"<<endl;
 
-vec y("0.1 12 2.3 4.7 0.5 16 7.3 8 0.9 0.1");
-vec x("1 2 3 4 5 6 7 8 9 10");
-mat X(10,2);
-X.col(0).ones();
-X.col(1)=x;
-double logsigma_sq=5.8;
-vec gamma("4 3");
-vec sigma_proposal("0.5 0.5");
-vec beta("5 -0.1");
-vec gamma_star("1 2");
-vec gamma_mu ("1 3");
-vec vars("2 2");
-mat gamma_Sigma=diagmat(vars);
+mat X={{0.1,0.4,0.7,1},
+       {0.2,0.5,0.8,1.1},
+       {0.3,0.6,0.9,1.2}};
+X.print("Design matrix X:");
+int n=X.n_rows;
+cout<<"Number of observations n="<<n<<endl;
+int p=X.n_cols;
+cout<<"Number of covariates p="<<p<<endl;
 
-vec gamma0=initialiseGamma(x);
-gamma0.print("Initial gamma:");
-vec gamma_new=gammaUpdate(gamma0,y,X,beta,logsigma_sq,sigma_proposal,gamma_Sigma);
-gamma_new.print("New gamma:");
-return 0;
+mat z={{0,1},
+       {0,0},
+       {1,0}};
+
+int r=z.n_cols;
+cout<<"Number of splits (excluding ref class) r="<<r<<endl;
+z.print("Matrix of allocations z:");
+cout<<"Each row corresponds to an observation and each column to a split."<<endl;
+
+Gate* G= new Gate();
+
+vec gamma("-0.84085548,1.38435934,-1.25549186,0.07014277,1.71144087,-0.60290798,-0.47216639,-0.63537131");
+gamma.print("Gating parameters gamma:");
+cout<<"Length of gamma (rp): "<<gamma.size()<<endl;
+
+mat pi=G->pi_calculator(X,gamma);
+pi.print("pi:");
+
+double loglik=G->loglik(z,pi);
+cout<<"Log-likelihood:"<<loglik<<endl;
+
+vec score=G->score(X,z,pi);
+score.print("Score:");
+
+mat H=G->hessian(X,pi);
+H.print("Hessian:");
+
+vec diagonals(X.n_cols*z.n_cols);
+diagonals.fill(0.001);
+mat Omega=diagmat(diagonals);
+Omega.print("Omega (inverse of a prior varcov matrix):");
+
+vec gamma_hat=G->findGamma(X,z,Omega);
+gamma_hat.print("gammahat:");
+
+// mat test=G->makeAchol(vectorise(pi.row(1)));
+// test.print("test:");
+
+mat Xout=G->getXout(X,pi);
+cout<<"Xout is a matrix of size nr x pr: "<<Xout.n_rows<<" x "<<Xout.n_cols<<endl;
+Xout.print("Xout:");
+
+//perform a couple random checks and compare to R
+cout<<Xout(4,7)<<endl;
+cout<<Xout(3,0)<<endl;
+cout<<Xout(2,6)<<endl;
+cout<<Xout(3,3)<<endl;
+
+vec zeta=G->getZeta(z,pi);
+zeta.print("zeta:");
+
+vec gamma_hatQR= G->findGammaQR(X,z,Omega);
+gamma_hatQR.print("gammahat QR:");
+
+cout<<"Differences in estimates with and without QR:"<<endl;
+cout<<abs(gamma_hat-gamma_hatQR)<<endl;
+
+return 0; 
 }
-

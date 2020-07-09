@@ -86,19 +86,19 @@ vec GLMModel::findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, ma
     vec beta;
     beta=this->initialiseBeta(y,X,logsigma_sq);
     mat sqrtSigma_beta=sqrtmat_sympd(Sigma_beta);
-    vec helper(beta.size());
-    helper.zeros();
+    mat invSigma_beta=Sigma_beta.i();
+    mat sqrt_invSigma_beta=sqrtmat_sympd(invSigma_beta);
     mat Q;
 for (int i=0; i<100; i++){
     vec beta_old=beta;
     vec eta=this->etafun(X,beta);
     vec mu=this->linkinv(eta);
-    vec Z=this->etafun(X,beta-mu_beta)+(y-mu)%this->dlinkfun(mu);
+    vec Z=eta+(y-mu)%this->dlinkfun(mu);
     vec w=1/(this->a(logsigma_sq)*pow(this->dlinkfun(mu),2)%this->V(mu));
     vec wsqrt=sqrt(w);
-    mat X_star=join_cols(diagmat(wsqrt)*X,sqrtSigma_beta);
+    mat X_star=join_cols(diagmat(wsqrt)*X,sqrt_invSigma_beta);
     qr_econ(Q,*R,X_star);
-    vec Z_star=join_cols(wsqrt%Z,helper);
+    vec Z_star=join_cols(wsqrt%Z,sqrt_invSigma_beta*mu_beta);
     beta=solve(*R,Q.t()*Z_star);
     if(all(abs(beta-beta_old)<(EPS,EPS*abs(beta)).max())) break;
 }
