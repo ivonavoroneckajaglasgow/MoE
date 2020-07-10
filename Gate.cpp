@@ -25,14 +25,8 @@ mat Gate::pi_calculator(mat X, vec gamma){
     int p=X.n_cols;
     int r=gamma.size()/p;
     mat gamma2=gamma;
-    mat gamma_mat(p,r);
-
-    for(int i=0; i<r;i++){
-        mat a=gamma2.rows((i*p),((i+1)*p-1));
-        gamma_mat.col(i)=a;
-    }
-
-    mat helper=exp(X*gamma_mat);
+    gamma2.reshape(p,r);
+    mat helper=exp(X*gamma2);
     mat rowsums(helper.n_rows,helper.n_cols);
         for(int i=0; i<helper.n_cols; i++){
             rowsums.col(i)=sum(helper,1);
@@ -149,4 +143,35 @@ vec Gate::findGammaQR(mat X, mat z, mat Omega){
         if(all(abs(gamma-gamma_old)<(sqrt(EPS),sqrt(EPS)*abs(gamma)).max())) break;
     }
     return gamma;
+}
+
+vec Gate::proposeGamma(vec gammaold, mat X, mat z, mat Omega){
+   vec mu_gamma(gammaold.size());
+   mu_gamma.zeros();
+   vec gammahat = this->findGamma(X, z, Omega); //Can use either of the two
+   //vec gammahat = this->findGammaQR(X, z, Omega);
+   vec v(gammaold.size(),fill::randn);
+   mat Sigma=(z.t()*z).i();
+   mat Sigma_sqrt=sqrtmat_sympd(Sigma);
+   mat Sigma_gamma=Omega.i();
+   vec gammanew=gammahat+solve(Sigma_sqrt,v);
+   double loglik_old=this->loglik(z,this->pi_calculator(X,gammaold));
+   double loglik_new=this->loglik(z,this->pi_calculator(X,gammanew));
+   double proposal_old=sum(this->logmvndensity(gammaold,gammahat,Sigma));
+   double proposal_new=sum(this->logmvndensity(gammanew,gammahat,Sigma));
+   double prior_old=sum(this->logmvndensity(gammaold,mu_gamma, Sigma_gamma));
+   double prior_new=sum(this->logmvndensity(gammanew,mu_gamma, Sigma_gamma));
+   double acceptance=loglik_new-loglik_old+proposal_old-proposal_new+prior_new-prior_old;
+   double u=randu();
+   bool accept=u<exp(acceptance);
+   if(accept==1) return gammanew;
+   if(accept==0) return gammaold; 
+return 0;
+}
+
+
+vec Gate::logmvndensity(vec response, vec mean, mat Sigma){
+   int k = Sigma.n_cols;
+   //return 1/(pow(2*M_PI,k/2)*sqrt(det(Sigma)))*exp(-0.5*(response-mean).t()*Sigma.i()*(response-mean)); - not log scale
+   return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
 }

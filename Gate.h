@@ -22,6 +22,8 @@ class Gate{
     mat getXout(mat X, mat pi);
     vec getZeta(mat z, mat pi);
     vec findGammaQR(mat X, mat z, mat Omega);
+    vec proposeGamma(vec gammaold, mat X, mat z, mat Omega);
+    vec logmvndensity(vec response, vec mean, mat Sigma);
 };
 
 #endif //MOE_GATE_H

@@ -80,5 +80,8 @@ gamma_hatQR.print("gammahat QR:");
 cout<<"Differences in estimates with and without QR:"<<endl;
 cout<<abs(gamma_hat-gamma_hatQR)<<endl;
 
+vec gammanew=G->proposeGamma(gamma,X,z,Omega);
+gammanew.print("One MCMC step update:");
+
 return 0; 
 }
