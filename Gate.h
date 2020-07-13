@@ -15,6 +15,8 @@ class Gate{
     Gate(); //constructor
     double loglik(mat z, mat pi);
     mat pi_calculator(mat X, vec gamma);
+    mat pi_calculator2(mat X, vec gamma);
+    mat pi_calculator3(mat X, vec gamma);
     vec score(mat X, mat z, mat pi);
     mat hessian(mat X, mat pi);
     vec findGamma(mat X, mat z, mat Omega);

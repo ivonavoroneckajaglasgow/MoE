@@ -31,13 +31,69 @@ mat Gate::pi_calculator(mat X, vec gamma){
         for(int i=0; i<helper.n_cols; i++){
             rowsums.col(i)=sum(helper,1);
         }
-
     mat final=helper/(1+rowsums);
     mat E(final.n_rows,final.n_cols);
     E.fill(sqrt(EPS));
 
 return arma::min(1-E,arma::max(final,E));
 }
+
+ mat Gate::pi_calculator2(mat X, vec gamma) {
+    int p = X.n_cols;
+    int rp= gamma.size();
+    int r = rp/p;
+    double current;
+    mat result(X.n_rows,r);
+    for (int i=0; i<X.n_rows; i++) {
+          double sum=1;
+          for (int k=0; k<r; k++) {
+            current = as_scalar(exp(X.row(i)*gamma(span(k*p, (k+1)*p-1))));
+            sum += current;
+            result(i,k) = current;
+        } 
+          for (int k=0; k<r; k++) {
+            current = result(i,k) / sum;
+            if (current < sqrt(EPS))
+            current=sqrt(EPS);
+            if (current > 1-sqrt(EPS))
+            current=1-sqrt(EPS);
+            result(i,k) = current;
+         }
+    }
+    return result;
+}       
+
+mat Gate::pi_calculator3(mat X, vec gamma) {
+    int p = X.n_cols;
+    int rp= gamma.size();
+    int r = rp/p;
+    mat result(X.n_rows,r);
+    double current;
+    // try reshaping gamma here
+    for (int i=0; i<X.n_rows; i++) {
+        double max=0;
+        for (int k=0; k<r; k++) {
+            current = as_scalar(exp(X.row(i)*gamma(span(k*p, (k+1)*p-1))));
+            if (current>max)
+                max=current;
+            result(i,k) = current;
+        }
+        double sum = exp(-max);
+        for (int k=0; k<r; k++) {
+            result(i,k) = exp(result(i,k)-max);
+            sum += result(i,k);
+        }
+        for (int k=0; k<r; k++) {
+            current = result(i,k) / sum;
+            if (current < sqrt(EPS))
+                current=sqrt(EPS);
+            if (current > 1-sqrt(EPS))
+                current=1-sqrt(EPS);
+            result(i,k) = current;
+        }
+    }
+    return result;
+}       
 
 vec Gate::score(mat X, mat z, mat pi){
     return vectorise(X.t()*(z-pi));

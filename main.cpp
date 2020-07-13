@@ -5,9 +5,11 @@
 #include <vector>
 #include <cmath>
 #include "armadillo"
+#include <chrono>
 
 using namespace std;
 using namespace arma;
+using namespace std::chrono; 
 
 #include "Gate.h"
 
@@ -39,49 +41,50 @@ gamma.print("Gating parameters gamma:");
 cout<<"Length of gamma (rp): "<<gamma.size()<<endl;
 
 mat pi=G->pi_calculator(X,gamma);
-pi.print("pi:");
+pi.print("pi calculator 1:");
 
-double loglik=G->loglik(z,pi);
-cout<<"Log-likelihood:"<<loglik<<endl;
+mat pi2=G->pi_calculator2(X,gamma);
+pi2.print("pi calculator 2:");
 
-vec score=G->score(X,z,pi);
-score.print("Score:");
+mat pi3=G->pi_calculator2(X,gamma);
+pi3.print("pi calculator 3:");
 
-mat H=G->hessian(X,pi);
-H.print("Hessian:");
+cout<<"Simulation:"<<endl;
 
-vec diagonals(X.n_cols*z.n_cols);
-diagonals.fill(0.001);
-mat Omega=diagmat(diagonals);
-Omega.print("Omega (inverse of a prior varcov matrix):");
+int N=10;
 
-vec gamma_hat=G->findGamma(X,z,Omega);
-gamma_hat.print("gammahat:");
+mat runtime(N,2);
 
-// mat test=G->makeAchol(vectorise(pi.row(1)));
-// test.print("test:");
+int n_star=10000;
+int p_star=10000;
+int r_star=5;
 
-mat Xout=G->getXout(X,pi);
-cout<<"Xout is a matrix of size nr x pr: "<<Xout.n_rows<<" x "<<Xout.n_cols<<endl;
-Xout.print("Xout:");
+cout<<"n="<<n_star<<endl;
+cout<<"p="<<p_star<<endl;
+cout<<"r="<<r_star<<endl;
 
-//perform a couple random checks and compare to R
-cout<<Xout(4,7)<<endl;
-cout<<Xout(3,0)<<endl;
-cout<<Xout(2,6)<<endl;
-cout<<Xout(3,3)<<endl;
+for(int i=0; i<N; i++){
+cout<<i<<endl;
+mat X_star(n_star,p_star,fill::randu);
+vec gamma_star(r_star*p_star,fill::randn);
 
-vec zeta=G->getZeta(z,pi);
-zeta.print("zeta:");
+auto start= high_resolution_clock::now();
+clock_t c_start = clock();
+mat pi=G->pi_calculator(X_star,gamma_star);
+//mat pi=G->pi_calculator2(X_star,gamma_star);
+//mat pi=G->pi_calculator3(X_star,gamma_star);
+clock_t c_end = clock();
+auto stop = high_resolution_clock::now(); 
+auto duration = duration_cast<microseconds>(stop - start); 
+double time_elapsed_ms = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
 
-vec gamma_hatQR= G->findGammaQR(X,z,Omega);
-gamma_hatQR.print("gammahat QR:");
+runtime(i,0)=time_elapsed_ms;
+runtime(i,1)=duration.count()/1000;
+}
 
-cout<<"Differences in estimates with and without QR:"<<endl;
-cout<<abs(gamma_hat-gamma_hatQR)<<endl;
-
-vec gammanew=G->proposeGamma(gamma,X,z,Omega);
-gammanew.print("One MCMC step update:");
+cout<<"Pi calculator:"<<endl;
+cout<<"Average CPU and System time used (respectively):"<<endl;
+cout<<mean(runtime,0)<<" ms\n";
 
 return 0; 
 }
