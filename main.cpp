@@ -12,79 +12,102 @@ using namespace arma;
 using namespace std::chrono; 
 
 #include "Gate.h"
+#include "NormalFamily.h"
 
 int main(){
-cout<<"SETTING UP GATE"<<endl;
+cout<<"Structure in C++:"<<endl;
 
-mat X={{0.1,0.4,0.7,1},
-       {0.2,0.5,0.8,1.1},
-       {0.3,0.6,0.9,1.2}};
-X.print("Design matrix X:");
+mat X={{0.5,5,87,11},
+       {14,1,0.3,0.01},
+       {17,7,9.3,11.6}};
 int n=X.n_rows;
-cout<<"Number of observations n="<<n<<endl;
 int p=X.n_cols;
-cout<<"Number of covariates p="<<p<<endl;
-
 mat z={{0,1},
        {0,0},
        {1,0}};
 
 int r=z.n_cols;
-cout<<"Number of splits (excluding ref class) r="<<r<<endl;
-z.print("Matrix of allocations z:");
-cout<<"Each row corresponds to an observation and each column to a split."<<endl;
 
-Gate* G= new Gate();
+vec diagonals(X.n_cols*z.n_cols);
+diagonals.fill(0.001);
+mat Omega=diagmat(diagonals);
+vec gamma("0.120139084, -1.812376850,  0.151582984, -1.119221005,  0.001908206,  1.188518494, -0.505343855, -0.099234393");
 
-vec gamma("-0.84085548,1.38435934,-1.25549186,0.07014277,1.71144087,-0.60290798,-0.47216639,-0.63537131");
-gamma.print("Gating parameters gamma:");
-cout<<"Length of gamma (rp): "<<gamma.size()<<endl;
+Gate* G1= new Gate();
+G1->name="G1";
+Gate* G2= new Gate();
+G2->name="G2";
+Gate* G3= new Gate();
+G3->name="G3";
+Gate* G4= new Gate();
+G4->name="G4";
+Expert* E1= new Expert();
+E1->name="E1";
+Expert* E2= new Expert();
+E2->name="E2";
+Expert* E3= new Expert();
+E3->name="E3";
+Expert* E4= new Expert();
+E4->name="E4";
+Expert* E5= new Expert();
+E5->name="E5";
 
-mat pi=G->pi_calculator(X,gamma);
-pi.print("pi calculator 1:");
+G1->addChild(G2);
+G1->addChild(G3);
+G2->addChild(E1);
+G2->addChild(G4);
+G3->addChild(E2);
+G3->addChild(E3);
+G4->addChild(E4);
+G4->addChild(E5);
 
-mat pi2=G->pi_calculator2(X,gamma);
-pi2.print("pi calculator 2:");
+G1->printChildren();
+G4->printChildren();
 
-mat pi3=G->pi_calculator2(X,gamma);
-pi3.print("pi calculator 3:");
+E4->printParent();
+G3->printParent();
 
-cout<<"Simulation:"<<endl;
+cout<<"Descendants of G1:"<<endl;
+G1->printDescendants();
+cout<<"Terminal nodes of G1:"<<endl;
+G1->printTerminalNodes();
 
-int N=10;
+cout<<"Descendants of G2:"<<endl;
+G2->printDescendants();
+cout<<"Terminal nodes of G2:"<<endl;
+G2->printTerminalNodes();
 
-mat runtime(N,2);
+G1->gamma=gamma;
+G1->Omega=Omega;
 
-int n_star=10000;
-int p_star=10000;
-int r_star=5;
+vec gammahat=G1->findGammaMLE(X,z,Omega);
+gammahat.print("G1 gamma hat:");
+vec gammanew=G1->proposeGamma(gamma,X,z,Omega);
+gammanew.print("G1 gamma new:");
 
-cout<<"n="<<n_star<<endl;
-cout<<"p="<<p_star<<endl;
-cout<<"r="<<r_star<<endl;
+NormalFamily* NF= new NormalFamily();
+// E1->expertmodel=NF; how do I do this?
 
-for(int i=0; i<N; i++){
-cout<<i<<endl;
-mat X_star(n_star,p_star,fill::randu);
-vec gamma_star(r_star*p_star,fill::randn);
+vec y("1,2,3");
+double logsigmasq=1;
 
-auto start= high_resolution_clock::now();
-clock_t c_start = clock();
-mat pi=G->pi_calculator(X_star,gamma_star);
-//mat pi=G->pi_calculator2(X_star,gamma_star);
-//mat pi=G->pi_calculator3(X_star,gamma_star);
-clock_t c_end = clock();
-auto stop = high_resolution_clock::now(); 
-auto duration = duration_cast<microseconds>(stop - start); 
-double time_elapsed_ms = 1000.0 * (c_end-c_start) / CLOCKS_PER_SEC;
+vec beta=NF->findBeta(y,X,logsigmasq);
+beta.print("betahat:");
 
-runtime(i,0)=time_elapsed_ms;
-runtime(i,1)=duration.count()/1000;
-}
+mat R;
+vec betahat=NF->findBeta(y,X,&R,logsigmasq);//Uses IWLS to estimate beta
+betahat.print("betahat:");
+vec v(beta.size(),fill::randn);
+v.print("v:");
+cout<<"R:"<<R.n_rows<<"x"<<R.n_cols<<endl;
+R.print("R:");
+//Issue occurs here:
+//vec betanew=betahat+solve(sqrt(2)*R,v);
+//betanew.print("betanew:");
 
-cout<<"Pi calculator:"<<endl;
-cout<<"Average CPU and System time used (respectively):"<<endl;
-cout<<mean(runtime,0)<<" ms\n";
+
+//vec betanew=NF->proposeBeta(beta,y,X,logsigmasq);
+//betanew.print("betanew:");
 
 return 0; 
 }

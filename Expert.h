@@ -7,6 +7,7 @@
 #include "armadillo"
 
 #include "ExpertModel.h"
+#include "Node.h"
 
 using namespace std;
 using namespace arma;
@@ -14,7 +15,7 @@ using namespace arma;
 //This is a superclass of NormalExert and ExpertModel objects 
 //Most functions are virtual and overwritten at subclass levels
 
-class Expert{
+class Expert: public Node{
     public:
     vec y;       //data observed
     vec eta;     // XB
