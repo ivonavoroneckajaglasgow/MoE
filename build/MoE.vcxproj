@@ -370,6 +370,8 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\main.cpp" />
+    <ClInclude Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Data.h" />
+    <ClCompile Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Data.cpp" />
     <ClInclude Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Node.h" />
     <ClCompile Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Node.cpp" />
     <ClInclude Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Gate.h" />

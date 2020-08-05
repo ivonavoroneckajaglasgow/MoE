@@ -21,6 +21,15 @@ class Gate: public Node{
     void printChildren();
     void printDescendants();
     void printTerminalNodes();
+    vector<Node*> getChildren();
+    vector<Node*> getDescendantsInternal(vector<Node*>* desc);
+    vector<Node*> getTerminalNodesInternal(vector<Node*>* terminal);
+    int countChildren();
+    int countDescendants();
+    int refId();
+    void issueID();
+    void issueID_helper1(int* gate_id, int* expert_id);
+    void issueID_helper2(int* gate_id, int* expert_id);
     double loglik(mat z, mat pi);
     double loglik(mat X, vec gamma, mat z);
     mat pi_calculator(mat X, vec gamma);
@@ -42,6 +51,14 @@ class Gate: public Node{
     vec proposeGamma(vec gammaold, mat X, mat z, mat Omega);
     vec logmvndensity(vec response, vec mean, mat Sigma);
     mat getRowSumsMat(mat A);
+    int getDescendantIndex(Node* node);
+    int issueIDLR(int start);
+    int issueIDLR();
+    //vec getDescendantRange(); 
+    int rightMostNodeID();
+    int isInRange(Node* node);
+    rowvec getZ_perpoint(Node* node);
+    mat getZ(vector<Node*> z_final);
 };
 
 #endif //MOE_GATE_H

@@ -138,7 +138,7 @@ vec GLMModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq){
 
 vec GLMModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
   mat R;
-  vec betahat=this->findBeta(y,X,&R, logsigma_sq);//Uses IWLS to estimate beta
+  vec betahat=this->findBeta(y,X,&R, logsigma_sq,mu_beta,Sigma_beta);//Uses IWLS to estimate beta
   vec v(betaold.size(),fill::randn);
   vec betanew=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
   double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));

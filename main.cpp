@@ -13,34 +13,19 @@ using namespace std::chrono;
 
 #include "Gate.h"
 #include "NormalFamily.h"
+#include "Data.h"
+
 
 int main(){
 cout<<"Structure in C++:"<<endl;
 
-mat X={{0.5,5,87,11},
-       {14,1,0.3,0.01},
-       {17,7,9.3,11.6}};
-int n=X.n_rows;
-int p=X.n_cols;
-mat z={{0,1},
-       {0,0},
-       {1,0}};
-
-int r=z.n_cols;
-
-vec diagonals(X.n_cols*z.n_cols);
-diagonals.fill(0.001);
-mat Omega=diagmat(diagonals);
-vec gamma("0.120139084, -1.812376850,  0.151582984, -1.119221005,  0.001908206,  1.188518494, -0.505343855, -0.099234393");
-
 Gate* G1= new Gate();
 G1->name="G1";
+G1->Parent=NULL;
 Gate* G2= new Gate();
 G2->name="G2";
 Gate* G3= new Gate();
 G3->name="G3";
-Gate* G4= new Gate();
-G4->name="G4";
 Expert* E1= new Expert();
 E1->name="E1";
 Expert* E2= new Expert();
@@ -51,63 +36,58 @@ Expert* E4= new Expert();
 E4->name="E4";
 Expert* E5= new Expert();
 E5->name="E5";
+Expert* E6= new Expert();
+E6->name="E6";
 
 G1->addChild(G2);
 G1->addChild(G3);
-G2->addChild(E1);
-G2->addChild(G4);
-G3->addChild(E2);
-G3->addChild(E3);
-G4->addChild(E4);
-G4->addChild(E5);
+G1->addChild(E1);
+G2->addChild(E2);
+G2->addChild(E3);
+G3->addChild(E4);
+G3->addChild(E5);
+G3->addChild(E6);
 
-G1->printChildren();
-G4->printChildren();
+G1->issueIDLR();
 
-E4->printParent();
-G3->printParent();
+int n=10;
+int p=2;
 
-cout<<"Descendants of G1:"<<endl;
-G1->printDescendants();
-cout<<"Terminal nodes of G1:"<<endl;
-G1->printTerminalNodes();
+mat X(n,p,fill::randn);
+X.print("X:");
 
-cout<<"Descendants of G2:"<<endl;
-G2->printDescendants();
-cout<<"Terminal nodes of G2:"<<endl;
-G2->printTerminalNodes();
+vector<Node*> all_experts=G1->getTerminalNodes();
+vector<Node*> z_final(n);
 
-G1->gamma=gamma;
-G1->Omega=Omega;
+for(int i=0;i<n;i++){
+  int sub=rand() % all_experts.size();
+  z_final[i]=all_experts[sub];
+}
 
-vec gammahat=G1->findGammaMLE(X,z,Omega);
-gammahat.print("G1 gamma hat:");
-vec gammanew=G1->proposeGamma(gamma,X,z,Omega);
-gammanew.print("G1 gamma new:");
+ cout<<"Allocations:"<<endl;
 
-NormalFamily* NF= new NormalFamily();
-// E1->expertmodel=NF; how do I do this?
+for(int i=0;i<z_final.size();i++){
+   cout<<z_final[i]->name<<endl;
+}
 
-vec y("1,2,3");
-double logsigmasq=1;
+mat z_G1=G1->getZ(z_final);
+z_G1.print("z for G1:");
 
-vec beta=NF->findBeta(y,X,logsigmasq);
-beta.print("betahat:");
+mat z_G2=G2->getZ(z_final);
+z_G2.print("z for G2:");
 
-mat R;
-vec betahat=NF->findBeta(y,X,&R,logsigmasq);//Uses IWLS to estimate beta
-betahat.print("betahat:");
-vec v(beta.size(),fill::randn);
-v.print("v:");
-cout<<"R:"<<R.n_rows<<"x"<<R.n_cols<<endl;
-R.print("R:");
-//Issue occurs here:
-//vec betanew=betahat+solve(sqrt(2)*R,v);
-//betanew.print("betanew:");
+mat z_G3=G3->getZ(z_final);
+z_G3.print("z for G3:");
 
+vec G3_points=G3->getPointIndices(z_final);
+G3_points.print("Points that went through G3:");
 
-//vec betanew=NF->proposeBeta(beta,y,X,logsigmasq);
-//betanew.print("betanew:");
+vec E4_points=E4->getPointIndices(z_final);
+E4_points.print("Points that have been assigned to E4:");
+
+vec E3_points=E3->getPointIndices(z_final);
+E3_points.print("Points that have been assigned to E3:");
+
 
 return 0; 
 }

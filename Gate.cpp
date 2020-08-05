@@ -66,6 +66,133 @@ void Gate::printTerminalNodes(){
         }
     }
 }
+vector<Node*> Gate::getChildren() {
+    return Children;
+}
+
+/**
+ * @brief An internal function which helps retrieve all descendents of the gate.
+ * An internal function that is then called at the Node level to retrieve all descendants of the gate.
+ * @param desc vector to be filled in with the descendants of the gate.
+ * @return vector<Node*> vector of pointers to the descendants of the gate.
+ */
+
+vector<Node*> Gate::getDescendantsInternal(vector<Node*>* desc) {
+
+    for(int i=0; i<this->Children.size();i++){
+        desc->push_back(this->Children[i]);
+         if(this->Children[i]->countChildren()!=0){
+            this->Children[i]->getDescendantsInternal(desc);
+        }
+    }
+    return *desc;
+}
+
+/**
+ * @brief An internal function which helps retrieve all terminal nodes descending from the gate.
+ * An internal function that is then called at the node level to retrieve all terminal nodes of the gate.
+ * @param terminal vector to be filled in with the terminal nodes descending from the gate.
+ * @return vector<Node*> vector of pointers to the terminal nodes descending from the gate.
+ */
+
+vector<Node*> Gate::getTerminalNodesInternal(vector<Node*>* terminal){
+    for(int i=0; i<this->Children.size();i++){
+        if(this->Children[i]->countChildren()==0){
+            //cout<<"I can see you are an expert "<<Children[i]->name<<endl;
+            terminal->push_back(this->Children[i]);
+        }else{
+            //cout<<"I can see you are a gate "<<Children[i]->name<<endl;
+            this->Children[i]->getTerminalNodesInternal(terminal);
+        }
+    }
+    return *terminal;
+};
+
+int Gate::countChildren(){
+    int n;
+    n=Children.size();
+    return n;
+};
+
+/**
+ * @brief Counts the number of descendants of the gate.
+ * 
+ * @return int integer number of descendants of the gate.
+ */
+int Gate::countDescendants(){
+    vector<Node*> desc;
+    desc=this->getDescendants();
+    return desc.size();
+};
+
+int Gate::refId(){
+    return Children[0]->id;
+}
+
+/**
+ * @brief A top layer function for assigning ID.
+ * 
+ * Sets the gate id to start at 2 (the root gate is automatically determined in issueID_helper2()) and 
+ * the expert id to start at 1. Calls the helper functions to perform the task.
+ * 
+ */
+void Gate::issueID(){
+
+    int gateid=2;
+    int expertid=1;
+
+    this->issueID_helper2(&gateid,&expertid);
+}
+/**
+ * @brief First internal function which helps to assign the id's to the nodes of tree vertically.
+ * This function checks each child of the Node. If a child doesn't have any children, it assumes that it is an expert and 
+ * assigns expert id to it. If a child has some children, a gate id is assigned. 
+ * @param gate_id pointer to an integer which tracks gate id's.
+ * @param expert_id pointer to an integer which tracks expert id's.
+ */
+void Gate::issueID_helper1(int* gate_id, int* expert_id){
+
+    for(int i=0;i<this->Children.size();i++){
+        if(this->Children[i]->countChildren()==0){
+            cout<<"I know "<< this->Children[i]->name <<" is an expert so I assign the ID "<<*expert_id<<endl;
+            this->Children[i]->id=*expert_id;
+            (*expert_id)++;
+        }else{
+            cout<<"I know "<< this->Children[i]->name <<" is a gate so I assign ID "<<*gate_id<<endl;
+            this->Children[i]->id=*gate_id;
+            (*gate_id)++;
+        }
+    }
+}
+
+/**
+ * @brief Second internal function which helps to assign the id's to the nodes of tree vertically.
+ * This function identifies a root gate by checking the presence of the parent node. If there is no parent 
+ * node, an id of 1 is assigned. Next, issueID_helper1() is called to assign the id's to the children of the 
+ * gate. The process is repeated for every node in the tree by calling this function recursively.
+ * @param gate_id pointer to an integer which tracks gate id's.
+ * @param expert_id pointer to an integer which tracks expert id's.
+ */
+void Gate::issueID_helper2(int* gate_id, int* expert_id){
+
+    if(this->Parent==NULL){
+        this->id=1;
+        cout<<"I know "<<this->name<<" is a root gate, so I assign ID "<<this->id<<endl;
+    }
+
+    if(this->id==1) {
+       this->issueID_helper1(gate_id, expert_id);
+    }
+
+     for(int i=0;i<this->Children.size();i++){
+        this->Children[i]->issueID_helper1(gate_id,expert_id);
+     }
+
+    for(int i=0;i<this->Children.size();i++) {
+        if (this->Children[i]->countChildren()!=0)
+            this->Children[i]->issueID_helper2(gate_id,expert_id);
+    }
+}
 
 double Gate::loglik(mat z, mat pi){
     return sum(vectorise(z%log(pi)))+sum((1-sum(z,1))%log(1-sum(pi,1)));
@@ -357,4 +484,72 @@ vec Gate::logmvndensity(vec response, vec mean, mat Sigma){
    int k = Sigma.n_cols;
    //return 1/(pow(2*M_PI,k/2)*sqrt(det(Sigma)))*exp(-0.5*(response-mean).t()*Sigma.i()*(response-mean)); - not log scale
    return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
+}
+
+int Gate::getDescendantIndex(Node* node){
+    //cout<<node->name<<endl;
+    for (int i=0;i<this->countChildren();i++){
+        if(node==this->Children[i])
+            return i;
+    }
+    Gate* Parent=node->getParent();
+    if(Parent==NULL) return -1;
+    cout<<Parent->name<<endl;
+    //return -99;
+   return this->getDescendantIndex(Parent);
+}
+
+int Gate::issueIDLR(int start){
+    this->idLR=start++;
+    for(int i=0;i<countChildren();i++){
+        start=this->Children[i]->issueIDLR(start);
+    }
+    return start;
+}
+
+int Gate::issueIDLR(){
+    int start=0;
+    return this->issueIDLR(start);
+}
+
+  
+ int Gate::rightMostNodeID(){
+     return this->Children[countChildren()-1]->rightMostNodeID();
+ }
+
+
+// vec Gate::getDescendantRange(){
+//     vec result;
+//     result<<this->leftMostNodeID()<<this->rightMostNodeID();
+//     return result;
+// }
+
+int Gate::isInRange(Node* node){
+    vec range=this->getDescendantRange(); 
+    return range[0] <= node->idLR && node->idLR <= range[1];
+}
+
+rowvec Gate::getZ_perpoint(Node* node){
+    rowvec z(this->countChildren());   
+    int    test=this->isInRange(node); //check if node is in the list of descendants for this gate
+    if(test==1){ //if it is
+        for(int i=0;i<this->countChildren();i++){ //for each child/split of the gate
+            z[i]=this->Children[i]->isInRange(node);//check which split this point went down
+        }
+    }else{
+        z.fill(-1); // if node is not in the list of descendants, then return -1
+    }
+return z;
+}
+
+mat Gate::getZ(vector<Node*> z_final){
+mat z(1,this->countChildren());
+z.fill(-1);
+for(int i=0;i<z_final.size();i++){
+rowvec v=this->getZ_perpoint(z_final[i]);
+if(sum(v)>=0) z=join_cols(z,v); //if that point is relevant (not -1) add it to the final z matrix
+}
+z.shed_row(0); //get rid of the first row
+z.shed_col(0); //get rid of the reference column
+return z;
 }

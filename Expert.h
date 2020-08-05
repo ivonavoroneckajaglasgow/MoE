@@ -17,13 +17,20 @@ using namespace arma;
 
 class Expert: public Node{
     public:
-    vec y;       //data observed
-    vec eta;     // XB
-    mat X;
+    vec* y;       //data observed
+    vec  eta;     // XB
+    mat* X;
     vec beta;
     double var;  // some variance parameter  
     ExpertModel* expertmodel; // the model for this expert
     Expert();//constructor
+    vec etafun(mat X, vec beta);
+    int countChildren();
+    vector<Node*> getDescendantsInternal(vector<Node*>* desc);
+    vector<Node*> getTerminalNodesInternal(vector<Node*>* terminal);
+    int issueIDLR(int start);
+    int rightMostNodeID();
+    int isInRange(Node* node);
 };
 
 #endif //MOE_EXPERT_H

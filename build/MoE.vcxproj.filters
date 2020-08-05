@@ -4,6 +4,9 @@
     <ClCompile Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Data.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -36,6 +39,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Data.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="C:\Users\Ivona Voroneckaja\Desktop\MoE\MoE\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>

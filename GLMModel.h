@@ -9,10 +9,12 @@
 using namespace std;
 using namespace arma;
 
+#include "ExpertModel.h"
+
 //This is a superclass of all Family objects 
 //Most functions are virtual and overwritten at subclass levels
 
-class GLMModel {
+class GLMModel:public ExpertModel {
     public:
 GLMModel();
 virtual vec linkfun(vec mu); //link function for a vector of values of mu
