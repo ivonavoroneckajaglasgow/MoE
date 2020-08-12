@@ -65,3 +65,9 @@ int Expert::isInRange(Node* node){
     if(this->idLR==node->idLR) return 1;
     else return 0;
 }
+
+mat Expert::pi_calculator(mat X, vec gamma){
+    mat result(X.n_rows,gamma.size()/X.n_cols);
+    result.fill(1);
+    return result;
+}

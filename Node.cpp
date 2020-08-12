@@ -175,3 +175,28 @@ vec Node::getPointIndices(vector<Node*> node){
     }
     return result;
 }
+
+mat Node::subsetX(mat X, vec index){
+    mat result(index.size(),X.n_cols);
+    for(int i=0;i<index.size();i++){
+        result.row(i)=X.row(index[i]);
+    }
+    return result;
+}
+
+vec Node::subsetY(vec y, vec index){
+    vec result(index.size());
+    for(int i=0;i<index.size();i++){
+        result[i]=y[index[i]];
+    }
+    return result;
+}
+
+// mat Node::getPathProbs(mat X, vector<Node*> z_final){
+//     return 0;
+// }
+
+mat Node::pi_calculator(mat X, vec gamma){
+    return 0;
+}
+

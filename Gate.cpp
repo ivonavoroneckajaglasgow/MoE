@@ -362,6 +362,9 @@ vec Gate::findGammaMLEQR(mat X, mat z, mat Omega){
 vec Gate::findGammaMLE(mat X, mat z, mat Omega){
     vec gamma(X.n_cols*z.n_cols);
     gamma.zeros();
+    vec diagonals(X.n_cols*z.n_cols);
+    diagonals.fill(0.001);
+    Omega=diagmat(diagonals);
     for(int i=0; i<100; i++){
         mat pi=this->pi_calculator(X,gamma);
         vec gamma_old=gamma;
@@ -454,6 +457,10 @@ vec Gate::findGammaQR(mat X, mat z, mat Omega){
 }
 
 vec Gate::proposeGamma(vec gammaold, mat X, mat z, mat Omega){
+   vec diagonals(gammaold.size());
+   diagonals.fill(0.001);
+   Omega=diagmat(diagonals);
+   //Omega.print("Omega");
    vec mu_gamma(gammaold.size());
    mu_gamma.zeros();
    mat R;
@@ -474,7 +481,7 @@ vec Gate::proposeGamma(vec gammaold, mat X, mat z, mat Omega){
    double acceptance=loglik_new-loglik_old+proposal_old-proposal_new+prior_new-prior_old;
    double u=randu();
    bool accept=u<exp(acceptance);
-   cout<<"Accept/Reject:"<<accept<<endl;
+   //cout<<"Accept/Reject:"<<accept<<endl;
   if(accept==1) return gammanew;
   if(accept==0) return gammaold; 
 }
@@ -517,13 +524,6 @@ int Gate::issueIDLR(){
      return this->Children[countChildren()-1]->rightMostNodeID();
  }
 
-
-// vec Gate::getDescendantRange(){
-//     vec result;
-//     result<<this->leftMostNodeID()<<this->rightMostNodeID();
-//     return result;
-// }
-
 int Gate::isInRange(Node* node){
     vec range=this->getDescendantRange(); 
     return range[0] <= node->idLR && node->idLR <= range[1];
@@ -553,3 +553,86 @@ z.shed_row(0); //get rid of the first row
 z.shed_col(0); //get rid of the reference column
 return z;
 }
+
+vector<Node*> Gate::updateZ(vec y, mat X,vector<Node*> z_final){
+    vec points=this->getPointIndices(z_final);
+    //points.print("Points:");
+    vector<Node*> result=z_final;
+    
+    for(int i=0;i<points.size();i++){
+        vec index(1);
+        index.fill(points[i]);
+        vec alpha=this->updateZ_getTerminalProbs(this->subsetY(y,index),X.row(points[i]),z_final[points[i]]);
+        result[points[i]]=this->updateZ_onepoint_sample(alpha);
+    }
+    return result;
+}
+
+vec Gate::updateZ_getTerminalProbs(vec y, mat X, Node* z_final){
+     vector<Node*> terminals=this->getTerminalNodes();
+     vec alpha(terminals.size());
+     for(int i=0;i<terminals.size();i++){
+         Node* current=terminals[i];
+         vec beta=current->beta;
+         double logsigma_sq=current->logsigma_sq;
+         alpha[i]=log(this->getPathProb(current,X))+current->expertmodel->loglik(y,X*beta,logsigma_sq);
+        }
+     double sums=sum(alpha);
+     alpha=alpha/sums;
+     //alpha.print("alpha: ");
+     return alpha;
+ }
+
+ Node* Gate::updateZ_onepoint_sample(vec alpha){
+     vector<Node*> terminals=this->getTerminalNodes();
+     double rnum = randu();
+     int size=1;
+        for(int i=0; i<alpha.size(); i++){
+            if (rnum < alpha[i]) return terminals[i];
+            else{
+                rnum -= alpha[i];
+            }
+        }
+ }
+
+ vec Gate::getChildrenIndicesLR(){
+     vec result(this->countChildren());
+     for(int i=0; i<this->countChildren(); i++)
+     result[i]=this->Children[i]->idLR;
+     return result;
+ }
+
+ int Gate::whichChild(Node* node){
+     vec children=this->getChildrenIndicesLR();
+     uvec index=find(children==node->idLR);
+     return as_scalar(index);
+ }
+
+ double Gate::getPathProb_internal(Node* node, mat X, double result){
+     //cout<<"Inside Internal"<<endl;
+     if(node->idLR!=this->idLR){
+         Gate* parent=node->getParent();
+         //cout<<"Considering "<<node->name<<" as a child"<<endl;
+         //cout<<"and "<<parent->name<<" as a parent"<<endl;
+         int   which=parent->whichChild(node);
+         //cout<<node->name<<" is the "<< which<<"-th child of "<<parent->name<<endl;
+         vec pi_helper=vectorise(parent->pi_calculator(X,parent->gamma));
+         //pi_helper.print("Original pi:");
+         double pi;
+         if(which==0) pi=as_scalar(1-sum(pi_helper));
+         if(which>0)  pi=as_scalar(pi_helper[which-1]);
+         //cout<<"pi that I need: "<<pi<<endl;
+         result=result*pi;
+         //cout<<"current result: "<<result<<endl;
+         this->getPathProb_internal(parent,X,result);
+     }else{
+     return result;
+     }
+ }
+
+ double Gate::getPathProb(Node* node, mat X){
+     //cout<<"Inside External"<<endl;
+     double result=1;
+     //cout<<"Setting result to be "<<result<<endl;
+    return this->getPathProb_internal(node,X,result);
+ }

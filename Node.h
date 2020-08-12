@@ -10,6 +10,7 @@ using namespace std;
 using namespace arma;
 
 class Gate;
+class ExpertModel;
 
 class Node{
     public:
@@ -18,6 +19,9 @@ class Node{
     int idLR;
     vector<Node*>  Children;
     Gate* Parent;
+    vec beta; //does nothing only here because terminal nodes are Node*
+    double logsigma_sq;   //does nothing only here because terminal nodes are Node* 
+    ExpertModel* expertmodel; //does nothing only here because terminal nodes are Node*
     void printParent();
     virtual void printDescendants();
     virtual void printTerminalNodes();
@@ -40,6 +44,11 @@ class Node{
     vec getDescendantRange(); 
     int countPoints(vector<Node*> node);
     vec getPointIndices(vector<Node*> node);
+    mat subsetX(mat X, vec index);
+    vec subsetY(vec Y, vec index);
+    //virtual mat getPathProbs(mat X, vector<Node*> z_final);
+    virtual mat pi_calculator(mat X, vec gamma);
+    
 
 };
 

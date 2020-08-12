@@ -54,11 +54,18 @@ class Gate: public Node{
     int getDescendantIndex(Node* node);
     int issueIDLR(int start);
     int issueIDLR();
-    //vec getDescendantRange(); 
     int rightMostNodeID();
     int isInRange(Node* node);
     rowvec getZ_perpoint(Node* node);
     mat getZ(vector<Node*> z_final);
+    vector<Node*> updateZ(vec y, mat X,vector<Node*> z_final);
+    vec updateZ_getTerminalProbs(vec y, mat X, Node* z_final);
+    Node* updateZ_onepoint_sample(vec alpha);
+    double getPathProb_internal(Node* node, mat X, double result);
+    double getPathProb(Node* node, mat X);
+    vec getChildrenIndicesLR();
+    int whichChild(Node* node);
+    
 };
 
 #endif //MOE_GATE_H

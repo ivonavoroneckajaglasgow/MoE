@@ -20,9 +20,9 @@ class Expert: public Node{
     vec* y;       //data observed
     vec  eta;     // XB
     mat* X;
-    vec beta;
-    double var;  // some variance parameter  
-    ExpertModel* expertmodel; // the model for this expert
+    //vec beta;
+    //double logsigma_sq;  // some variance parameter  
+    //ExpertModel* expertmodel; // the model for this expert
     Expert();//constructor
     vec etafun(mat X, vec beta);
     int countChildren();
@@ -31,6 +31,7 @@ class Expert: public Node{
     int issueIDLR(int start);
     int rightMostNodeID();
     int isInRange(Node* node);
+    mat pi_calculator(mat X, vec gamma);
 };
 
 #endif //MOE_EXPERT_H

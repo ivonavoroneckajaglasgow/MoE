@@ -38,6 +38,30 @@ double ExpertModel::deta(vec y, vec eta, double logsigma_sq){
   return 0;
 }
 
-//vec ExpertModel::findBeta(vec y, mat X, vec phi){
- //  return 0; 
-//}
+vec ExpertModel::etafun(mat X, vec beta){
+  return 0;
+}
+vec ExpertModel::initialiseBeta(vec y, mat X, double logsigma_sq){
+  return 0;
+}
+vec ExpertModel::findBeta(vec y, mat X, mat* R, double logsigma_sq){
+  return 0;
+}
+vec ExpertModel::findBeta(vec y, mat X, double logsigma_sq){
+  return 0;
+}
+vec ExpertModel::findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+  return 0;
+}
+vec ExpertModel::findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+  return 0;
+}
+vec ExpertModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq){
+  return 0;
+}
+vec ExpertModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+  return 0;
+}
+vec ExpertModel::logmvndensity(vec response, vec mean, mat Sigma){
+  return 0;
+}
