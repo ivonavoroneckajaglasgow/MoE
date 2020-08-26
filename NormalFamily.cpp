@@ -40,7 +40,6 @@ vec NormalFamily::varfun(vec mu){
 }
 
 vec NormalFamily::dmudeta(vec eta){
-    //L said this has to be one number, but in R it is a vector - double-check this
     vec dvec(eta.size());
     dvec.ones();
     return dvec;
@@ -97,5 +96,24 @@ vec NormalFamily::V(vec theta){
     vec result(theta.size());
     result.ones();
     return result;
+}
+
+double NormalFamily::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+    double alpha1=a+n/2;
+    double alpha2=b+sum(pow(y-X*beta,2))/2;
+    double sigma_new=1/randg( distr_param(alpha1,alpha2)); 
+    double density_old=sum(this->logdensity(y,this->etafun(X,beta),sigma_old));
+    double density_new=sum(this->logdensity(y,this->etafun(X,beta),sigma_new));
+    double prior_old=sum(this->IG_log(sigma_old,a,b));
+    double prior_new=sum(this->IG_log(sigma_new,a,b));
+    double acceptance=density_new-density_old+prior_new-prior_old;
+    double u=randu();
+    bool accept=u<exp(acceptance);
+    if(accept==1) return sigma_new;
+    if(accept==0) return sigma_old; 
+}
+
+double NormalFamily::IG_log(double y, double a, double b){
+    return  a*log(b)-lgamma(a)-(a+1)*log(y)-b/y;
 }
 

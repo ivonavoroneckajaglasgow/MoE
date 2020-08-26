@@ -120,7 +120,7 @@ vec GLMModel::initialiseBeta(vec y, mat X, double logsigma_sq){
     return beta;
 }
 
-vec GLMModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq){
+vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq){
   mat R;
   vec betahat=this->findBeta(y,X,&R,logsigma_sq);//Uses IWLS to estimate beta
   vec v(betaold.size(),fill::randn);
@@ -136,7 +136,7 @@ vec GLMModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq){
   if(accept==0) return betaold; 
 } 
 
-vec GLMModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
   mat R;
   vec betahat=this->findBeta(y,X,&R, logsigma_sq,mu_beta,Sigma_beta);//Uses IWLS to estimate beta
   vec v(betaold.size(),fill::randn);
@@ -160,3 +160,7 @@ vec GLMModel::logmvndensity(vec response, vec mean, mat Sigma){
    return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
 }
 
+
+double GLMModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+    return 0;
+}

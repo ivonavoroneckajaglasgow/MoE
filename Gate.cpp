@@ -456,7 +456,7 @@ vec Gate::findGammaQR(mat X, mat z, mat Omega){
     return this->findGammaQR(X,z,Omega,&R);
 }
 
-vec Gate::proposeGamma(vec gammaold, mat X, mat z, mat Omega){
+vec Gate::updateGamma(vec gammaold, mat X, mat z, mat Omega){
    vec diagonals(gammaold.size());
    diagonals.fill(0.001);
    Omega=diagmat(diagonals);
@@ -555,38 +555,36 @@ return z;
 }
 
 vector<Node*> Gate::updateZ(vec y, mat X,vector<Node*> z_final){
+    //if root node then just do all
     vec points=this->getPointIndices(z_final);
     //points.print("Points:");
-    vector<Node*> result=z_final;
-    
+    vector<Node*> result=z_final;    
     for(int i=0;i<points.size();i++){
         vec index(1);
         index.fill(points[i]);
-        vec alpha=this->updateZ_getTerminalProbs(this->subsetY(y,index),X.row(points[i]),z_final[points[i]]);
+        vec alpha=this->getSampleProbsForZ(this->subsetY(y,index),X.row(points[i]));
         result[points[i]]=this->updateZ_onepoint_sample(alpha);
     }
     return result;
 }
 
-vec Gate::updateZ_getTerminalProbs(vec y, mat X, Node* z_final){
+vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
      vector<Node*> terminals=this->getTerminalNodes();
      vec alpha(terminals.size());
      for(int i=0;i<terminals.size();i++){
-         Node* current=terminals[i];
+         Expert* current=dynamic_cast<Expert*>(terminals[i]);
          vec beta=current->beta;
          double logsigma_sq=current->logsigma_sq;
          alpha[i]=log(this->getPathProb(current,X))+current->expertmodel->loglik(y,X*beta,logsigma_sq);
         }
      double sums=sum(alpha);
      alpha=alpha/sums;
-     //alpha.print("alpha: ");
      return alpha;
  }
 
  Node* Gate::updateZ_onepoint_sample(vec alpha){
      vector<Node*> terminals=this->getTerminalNodes();
      double rnum = randu();
-     int size=1;
         for(int i=0; i<alpha.size(); i++){
             if (rnum < alpha[i]) return terminals[i];
             else{
@@ -608,31 +606,98 @@ vec Gate::updateZ_getTerminalProbs(vec y, mat X, Node* z_final){
      return as_scalar(index);
  }
 
- double Gate::getPathProb_internal(Node* node, mat X, double result){
+ double Gate::getPathProb_internal(Node* node, mat X, double result){ //just one i at a time
      //cout<<"Inside Internal"<<endl;
      if(node->idLR!=this->idLR){
          Gate* parent=node->getParent();
-         //cout<<"Considering "<<node->name<<" as a child"<<endl;
-         //cout<<"and "<<parent->name<<" as a parent"<<endl;
          int   which=parent->whichChild(node);
-         //cout<<node->name<<" is the "<< which<<"-th child of "<<parent->name<<endl;
          vec pi_helper=vectorise(parent->pi_calculator(X,parent->gamma));
-         //pi_helper.print("Original pi:");
          double pi;
          if(which==0) pi=as_scalar(1-sum(pi_helper));
          if(which>0)  pi=as_scalar(pi_helper[which-1]);
-         //cout<<"pi that I need: "<<pi<<endl;
          result=result*pi;
-         //cout<<"current result: "<<result<<endl;
          this->getPathProb_internal(parent,X,result);
      }else{
      return result;
      }
  }
 
- double Gate::getPathProb(Node* node, mat X){
+ double Gate::getPathProb(Node* node, mat X){ //X is for one i
      //cout<<"Inside External"<<endl;
      double result=1;
      //cout<<"Setting result to be "<<result<<endl;
     return this->getPathProb_internal(node,X,result);
  }
+
+vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and columns are experts
+     vec result(X.n_rows);     
+     for(int i=0;i<X.n_rows;i++){
+         result[i]=this->getPathProb(node,X.row(i));
+     }     
+     return result;
+ }
+
+ vec Gate::predict(mat X){
+     vector<Node*> terminals=this->getTerminalNodes();
+     mat helper(X.n_rows,terminals.size());
+     for(int i=0;i<terminals.size();i++){
+     vec pathprobs=this->getPathProb_mat(terminals[i],X);
+     vec est=X*(dynamic_cast<Expert*>(terminals[i])->beta);
+     helper.col(i)=pathprobs%est;
+     }
+     return sum(helper,1);
+ }
+
+ void Gate::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
+        cout<<"Updating gamma for gate "<<name<<endl;
+        mat z=this->getZ(z_final);
+       // z.print("z:");
+        mat Omega;
+        mat myX=this->subsetX(X,this->getPointIndices(z_final));
+        //cout<<"Before: "<<this->gamma<<endl;
+        this->gamma=this->updateGamma(this->gamma,myX,z,Omega);
+        for(int i=0;i<this->countChildren();i++){
+        this->Children[i]->MCMC_internal(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+        }
+        //cout<<"After: "<<this->gamma<<endl;   
+ }
+
+vector<Node*> Gate::MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
+    this->MCMC_internal(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+    z_final=this->updateZ(y,X,z_final);
+    return z_final;
+}
+
+vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
+    vector<Node*> z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+    for(int i=0;i<N;i++){
+        z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
+    }
+    return z_new;
+}
+
+string Gate::createJSON(){
+//Creating JSON output for expert//
+//create a template string
+    string GateJSON=("{type: Gate gamma: [GMA] children: CLD}");
+//change GMA to the values of gamma separated by a blank space
+    vec myvec=this->gamma;  
+
+    ostringstream ss;
+
+// .st() to transpose column vector into row vector
+    myvec.st().raw_print(ss);  
+
+// get string version of vector with an end-of-line character at end
+    string s1 = ss.str();
+
+// remove the end-of-line character at end
+    string mystring = s1.substr(0, (s1.size() > 0) ? (s1.size()-1) : 0);
+
+
+//replace GMA by the string containing gamma
+    GateJSON.replace(GateJSON.find("GMA"),3,mystring);
+
+    return GateJSON;
+
+}

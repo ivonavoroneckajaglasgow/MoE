@@ -200,3 +200,10 @@ mat Node::pi_calculator(mat X, vec gamma){
     return 0;
 }
 
+void Node::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
+    
+}
+
+mat Node::getZ(vector<Node*> z_final){
+    return 0;
+}

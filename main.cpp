@@ -6,6 +6,10 @@
 #include <cmath>
 #include "armadillo"
 #include <chrono>
+#include <string> 
+#include <algorithm> 
+#include <sstream> 
+#include <iterator> 
 
 using namespace std;
 using namespace arma;
@@ -133,9 +137,9 @@ E6->logsigma_sq=1;
 
 cout<<"Now we can update chosen betas and gammas."<<endl;
 
-E1->beta=E1->expertmodel->proposeBeta(E1->beta,E1->subsetY(y,E1->getPointIndices(z_final)),E1->subsetX(X,E1->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
+E1->beta=E1->expertmodel->updateBeta(E1->beta,E1->subsetY(y,E1->getPointIndices(z_final)),E1->subsetX(X,E1->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
 cout<<"New E1 beta:"<<E1->beta<<endl;
-G1->gamma=G1->proposeGamma(G1->gamma,X,z_G1,Omega);
+G1->gamma=G1->updateGamma(G1->gamma,X,z_G1,Omega);
 cout<<"New G1 gamma:"<<G1->gamma<<endl;
 
 cout<<"Finally, update z_final:"<<endl;
@@ -150,6 +154,38 @@ for(int i=0;i<z_final.size();i++){
 }
 
 cout<<"Now one can use getZ() to get new matrix z for any gate based on z_new"<<endl;
+
+
+mat X_new(n,p,fill::randn);
+vec yhat=G1->predict(X_new);
+yhat.print("yhat:");
+
+
+double y2=5;
+double a=1;
+double b=2;
+
+double sigma_new=NF->updateSigma(E1->logsigma_sq,y,X,E1->beta,a,b,y.size());
+cout<<"Sigma update test: "<<sigma_new<<endl;
+
+
+vector<Node*> z_MCMC=G1->MCMC(5,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+
+for(int i=0;i<z_final.size();i++){
+  cout<<"Before: "<<z_final[i]->name<<". After: "<<z_MCMC[i]->name<<endl;
+}
+
+
+string E1JSON=E1->createJSON();
+cout<<E1JSON<<endl;
+string E4JSON=E4->createJSON();
+cout<<E4JSON<<endl;
+string G1JSON=G1->createJSON();
+cout<<G1JSON<<endl;
+
+
+
+
 
 return 0; 
 }

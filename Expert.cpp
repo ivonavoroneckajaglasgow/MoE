@@ -71,3 +71,50 @@ mat Expert::pi_calculator(mat X, vec gamma){
     result.fill(1);
     return result;
 }
+
+void Expert::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
+    cout<<"Updating beta and sigma for Expert " <<this->name<<endl;
+    //cout<<"Before: "<<this->beta<<endl;
+    vec points=this->getPointIndices(z_final);
+    vec myY=this->subsetY(y,points);
+    mat myX=this->subsetX(X,points);
+    this->beta=this->expertmodel->updateBeta(this->beta,myY,myX,logsigma_sq,mu_beta,Sigma_beta);
+    this->logsigma_sq=this->expertmodel->updateSigma(this->logsigma_sq,myY,myX,this->beta,a,b,points.size());
+    //cout<<"After: "<<this->beta<<endl;
+}
+
+string Expert::createJSON(){
+    
+//Creating JSON output for expert//
+//create a template string
+    string ExpertJSON=("{type: Expert beta: [BTA] family: FML additional_parameters: ADPAR}");
+//change the FML part of the string to the family of the expert in question. Will need to create 
+// a string method that outputs "Gaussian","Binomial" etc based on the expertmodel.
+    ExpertJSON.replace(ExpertJSON.find("FML"),3,"Gaussian");
+
+//Turn beta into a string
+    vec myvec=this->beta;  
+    ostringstream ss;
+
+// .st() to transpose column vector into row vector
+    myvec.st().raw_print(ss);  
+
+// get string version of vector with an end-of-line character at end
+    string s1 = ss.str();
+
+// remove the end-of-line character at end
+    string mystring = s1.substr(0, (s1.size() > 0) ? (s1.size()-1) : 0);
+
+//replace BTA by the string containing beta */
+    ExpertJSON.replace(ExpertJSON.find("BTA"),3,mystring);
+
+//finally, if the family is Gaussian replace ADPAR by additional parameters
+    ostringstream s_2;
+    s_2 <<  this->logsigma_sq;
+    string mystring_2 = s_2.str();
+
+    ExpertJSON.replace(ExpertJSON.find("ADPAR"),5,mystring_2);
+
+    return ExpertJSON;
+
+}

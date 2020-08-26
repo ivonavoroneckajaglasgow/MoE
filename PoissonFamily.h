@@ -31,6 +31,7 @@ vec logdensity(vec y, vec eta, double logsigma_sq); // returns log density funct
 double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log likelihood wrt to eta
 double a(double phi); //a(phi) function in the exponential family expression for the family
 vec V(vec theta); //b''(theta) function in the exponential family expression for the family
+double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);
 };
 
 #endif //MOE_POISSONFAMILY_H

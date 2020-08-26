@@ -19,9 +19,9 @@ class Node{
     int idLR;
     vector<Node*>  Children;
     Gate* Parent;
-    vec beta; //does nothing only here because terminal nodes are Node*
-    double logsigma_sq;   //does nothing only here because terminal nodes are Node* 
-    ExpertModel* expertmodel; //does nothing only here because terminal nodes are Node*
+    //vec beta; //does nothing only here because terminal nodes are Node*
+    //double logsigma_sq;   //does nothing only here because terminal nodes are Node* 
+    //ExpertModel* expertmodel; //does nothing only here because terminal nodes are Node*
     void printParent();
     virtual void printDescendants();
     virtual void printTerminalNodes();
@@ -48,7 +48,8 @@ class Node{
     vec subsetY(vec Y, vec index);
     //virtual mat getPathProbs(mat X, vector<Node*> z_final);
     virtual mat pi_calculator(mat X, vec gamma);
-    
+    virtual void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);
+    virtual mat getZ(vector<Node*> z_final);
 
 };
 

@@ -79,3 +79,7 @@ vec BinomialFamily::V(vec theta){
     return exp(theta)/pow(1+exp(theta),2);
 }
 
+
+double BinomialFamily::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+    return 0;
+}

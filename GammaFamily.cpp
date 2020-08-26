@@ -61,3 +61,6 @@ vec GammaFamily::V(vec theta){
     return -1/pow(theta,2);
 }
 
+double GammaFamily::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+    return 0;
+}

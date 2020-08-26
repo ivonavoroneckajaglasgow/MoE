@@ -66,6 +66,10 @@ double PoissonFamily::a(double phi){
   return 1;
 }
 
+double PoissonFamily::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+    return 0;
+}
+
 vec PoissonFamily::V(vec theta){
   return exp(theta);
 }

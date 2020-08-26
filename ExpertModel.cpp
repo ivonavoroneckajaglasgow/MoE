@@ -56,12 +56,16 @@ vec ExpertModel::findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta,
 vec ExpertModel::findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
   return 0;
 }
-vec ExpertModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq){
+vec ExpertModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq){
   return 0;
 }
-vec ExpertModel::proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+vec ExpertModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
   return 0;
 }
 vec ExpertModel::logmvndensity(vec response, vec mean, mat Sigma){
+  return 0;
+}
+
+double ExpertModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
   return 0;
 }

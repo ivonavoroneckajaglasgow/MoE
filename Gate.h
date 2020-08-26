@@ -48,7 +48,7 @@ class Gate: public Node{
     vec getZeta(mat z, mat pi);
     vec findGammaQR(mat X, mat z, mat Omega, mat* R);
     vec findGammaQR(mat X, mat z, mat Omega);
-    vec proposeGamma(vec gammaold, mat X, mat z, mat Omega);
+    vec updateGamma(vec gammaold, mat X, mat z, mat Omega);
     vec logmvndensity(vec response, vec mean, mat Sigma);
     mat getRowSumsMat(mat A);
     int getDescendantIndex(Node* node);
@@ -58,14 +58,19 @@ class Gate: public Node{
     int isInRange(Node* node);
     rowvec getZ_perpoint(Node* node);
     mat getZ(vector<Node*> z_final);
-    vector<Node*> updateZ(vec y, mat X,vector<Node*> z_final);
-    vec updateZ_getTerminalProbs(vec y, mat X, Node* z_final);
-    Node* updateZ_onepoint_sample(vec alpha);
+    vector<Node*> updateZ(vec y, mat X, vector<Node*> z_final); //returns a vector of updated allocations as pointers to Experts 
+    vec getSampleProbsForZ(vec y, mat X); //y and X are for one i, returns alpha vector of pi*density
+    Node* updateZ_onepoint_sample(vec alpha);// allocates an expert with supplied probabilities
     double getPathProb_internal(Node* node, mat X, double result);
-    double getPathProb(Node* node, mat X);
-    vec getChildrenIndicesLR();
-    int whichChild(Node* node);
-    
+    double getPathProb(Node* node, mat X); //X is for one i, returns path probability down from this to node
+    vec getPathProb_mat(Node* node, mat X); //returns path probabilities (rows are observations and columns are experts)
+    vec getChildrenIndicesLR(); //returns LR indices of children
+    int whichChild(Node* node); //returns which child node is (to help identify the reference split)
+    vec predict(mat X);
+    void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final); 
+    vector<Node*> MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);  
+    vector<Node*> MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);    
+    string createJSON();
 };
 
 #endif //MOE_GATE_H

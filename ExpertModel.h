@@ -28,9 +28,10 @@ class ExpertModel{
     virtual vec findBeta(vec y, mat X, double logsigma_sq);
     virtual vec findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_beta);
     virtual vec findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
-    virtual vec proposeBeta(vec betaold, vec y, mat X, double logsigma_sq);
-    virtual vec proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
+    virtual vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq);
+    virtual vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
     virtual vec logmvndensity(vec response, vec mean, mat Sigma);
+    virtual double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);
 };
 
 #endif //MOE_EXPERTMODEL_H

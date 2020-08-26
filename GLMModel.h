@@ -35,9 +35,10 @@ vec findBeta(vec y, mat X, mat* R, double logsigma_sq);
 vec findBeta(vec y, mat X, double logsigma_sq);
 vec findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_beta);
 vec findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
-vec proposeBeta(vec betaold, vec y, mat X, double logsigma_sq);
-vec proposeBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
+vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq);
+vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
 vec logmvndensity(vec response, vec mean, mat Sigma);
+virtual double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);
 };
 
 
