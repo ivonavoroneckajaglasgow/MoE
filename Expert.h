@@ -34,6 +34,7 @@ class Expert: public Node{
     mat pi_calculator(mat X, vec gamma);
     void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);
     string createJSON();
+    string createJSON2 (string s);
 };
 
 #endif //MOE_EXPERT_H

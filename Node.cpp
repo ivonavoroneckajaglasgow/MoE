@@ -207,3 +207,11 @@ void Node::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigm
 mat Node::getZ(vector<Node*> z_final){
     return 0;
 }
+
+string Node::createJSON(){
+    return 0;
+}
+
+string Node::createJSON2(string s){
+    return 0;
+}

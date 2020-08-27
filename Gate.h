@@ -71,6 +71,8 @@ class Gate: public Node{
     vector<Node*> MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);  
     vector<Node*> MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);    
     string createJSON();
+    string createJSON2(string s);
+    string createJSON3();
 };
 
 #endif //MOE_GATE_H

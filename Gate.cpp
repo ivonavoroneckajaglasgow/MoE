@@ -679,7 +679,7 @@ vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, m
 string Gate::createJSON(){
 //Creating JSON output for expert//
 //create a template string
-    string GateJSON=("{type: Gate gamma: [GMA] children: CLD}");
+    string GateJSON=("{type: Gate gamma: [GMA] children: }");
 //change GMA to the values of gamma separated by a blank space
     vec myvec=this->gamma;  
 
@@ -698,6 +698,39 @@ string Gate::createJSON(){
 //replace GMA by the string containing gamma
     GateJSON.replace(GateJSON.find("GMA"),3,mystring);
 
+//add slots for children
+    int children=this->countChildren();
+    GateJSON.insert(GateJSON.size()-1,"[CLD ");
+    for(int i=0;i<children-2;i++){
+    GateJSON.insert(GateJSON.size()-1,"CLD ");
+    }
+    GateJSON.insert(GateJSON.size()-1,"CLD]");
+
     return GateJSON;
 
+}
+
+string Gate::createJSON2(string s){
+cout<<"I am gate "<< this->name <<" and I have "<<this->countChildren()<<" chidren. "<<endl;
+    for(int i=0;i<this->countChildren();i++){
+       cout<<"Considering child of "<<this->name<<" number "<<i <<" name: "<<this->Children[i]->name<<endl;
+       string ss=this->Children[i]->createJSON();
+       s.replace(s.find("CLD"),3,ss);
+      if(this->Children[i]->countChildren()!=0){
+         cout<<"I see it is a gate "<<endl;
+         cout<<"So I need to fill its CLD first"<<endl;
+         cout<<"Recursively call the same function "<<endl;
+         Gate* current=dynamic_cast<Gate*>(this->Children[i]);
+         return current->createJSON2(s);
+       }
+       cout<<"I see it is an expert"<<endl;
+       cout<<"So I want to get back to the 2nd child of G1 and do the same but it doesn't happen?"<<endl;
+    }
+    return s;   
+}
+
+
+string Gate::createJSON3(){
+    string s=this->createJSON();
+     return this->createJSON2(s);
 }

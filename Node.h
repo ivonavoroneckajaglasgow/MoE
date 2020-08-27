@@ -50,6 +50,8 @@ class Node{
     virtual mat pi_calculator(mat X, vec gamma);
     virtual void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);
     virtual mat getZ(vector<Node*> z_final);
+    virtual string createJSON();
+    virtual string createJSON2(string s);
 
 };
 

@@ -116,5 +116,8 @@ string Expert::createJSON(){
     ExpertJSON.replace(ExpertJSON.find("ADPAR"),5,mystring_2);
 
     return ExpertJSON;
+}
 
+string Expert::createJSON2(string s){
+    return 0;
 }

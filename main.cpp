@@ -176,15 +176,20 @@ for(int i=0;i<z_final.size();i++){
 }
 
 
-string E1JSON=E1->createJSON();
-cout<<E1JSON<<endl;
-string E4JSON=E4->createJSON();
-cout<<E4JSON<<endl;
-string G1JSON=G1->createJSON();
-cout<<G1JSON<<endl;
+//string E1JSON=E1->createJSON();
+//cout<<E1JSON<<endl;
+//string E4JSON=E4->createJSON();
+//cout<<E4JSON<<endl;
+//string G1JSON=G1->createJSON();
+//cout<<G1JSON<<endl;
+cout<<"STRING TEST"<<endl;
 
+string test=G1->createJSON3();
+cout<<"test: "<<test<<endl;
 
-
+// for(int i=0;i<test.size();i++){
+//   cout<<"Character "<<i<<": "<<test[i]<<endl;
+// }
 
 
 return 0; 
