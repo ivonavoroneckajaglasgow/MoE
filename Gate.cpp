@@ -725,6 +725,7 @@ cout<<"I am gate "<< this->name <<" and I have "<<this->countChildren()<<" chidr
        }
        cout<<"I see it is an expert"<<endl;
        cout<<"So I want to get back to the 2nd child of G1 and do the same but it doesn't happen?"<<endl;
+       cout<<"It just reaches a dead end as soon as it hits an expert in the chain"<<endl;
     }
     return s;   
 }
