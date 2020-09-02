@@ -99,6 +99,9 @@ vec NormalFamily::V(vec theta){
 }
 
 double NormalFamily::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+    if(n==0){
+        return 1/randg( distr_param(a,b));
+    }
     double alpha1=a+n/2;
     double alpha2=b+sum(pow(y-X*beta,2))/2;
     double sigma_new=1/randg( distr_param(alpha1,alpha2)); 

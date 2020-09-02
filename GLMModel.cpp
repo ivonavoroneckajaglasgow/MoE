@@ -89,6 +89,10 @@ vec GLMModel::findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, ma
     mat invSigma_beta=Sigma_beta.i();
     mat sqrt_invSigma_beta=sqrtmat_sympd(invSigma_beta);
     mat Q;
+if(X.n_rows==0){
+    *R=chol(invSigma_beta);
+    return mu_beta;
+}
 for (int i=0; i<100; i++){
     vec beta_old=beta;
     vec eta=this->etafun(X,beta);
@@ -127,8 +131,8 @@ vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq){
   vec betanew=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
   double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));
   double density_new=sum(this->logdensity(y,this->etafun(X,betanew),logsigma_sq));
-  double proposal_old=sum(this->logmvndensity(betaold,betahat,(R.t()*R).i()));
-  double proposal_new=sum(this->logmvndensity(betanew,betahat,(R.t()*R).i()));
+  double proposal_old=sum(this->logmvndensity(betaold,betahat,&R));
+  double proposal_new=sum(this->logmvndensity(betanew,betahat,&R));
   double acceptance= density_new-density_old+proposal_old-proposal_new;
   double u=randu();
   bool accept=u<exp(acceptance);
@@ -143,8 +147,8 @@ vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_b
   vec betanew=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
   double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));
   double density_new=sum(this->logdensity(y,this->etafun(X,betanew),logsigma_sq));
-  double proposal_old=sum(this->logmvndensity(betaold,betahat,(R.t()*R).i()));
-  double proposal_new=sum(this->logmvndensity(betanew,betahat,(R.t()*R).i()));
+  double proposal_old=sum(this->logmvndensity(betaold,betahat,&R));
+  double proposal_new=sum(this->logmvndensity(betanew,betahat,&R));
   double prior_old=sum(this->logmvndensity(betaold,mu_beta,Sigma_beta));
   double prior_new=sum(this->logmvndensity(betanew,mu_beta,Sigma_beta));
   double acceptance=density_new-density_old+proposal_old-proposal_new+prior_new-prior_old;
@@ -160,6 +164,10 @@ vec GLMModel::logmvndensity(vec response, vec mean, mat Sigma){
    return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
 }
 
+vec GLMModel::logmvndensity(vec response, vec mean, mat* R){
+int k=(*R).n_rows;
+return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
+}
 
 double GLMModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
     return 0;

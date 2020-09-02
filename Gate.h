@@ -50,6 +50,7 @@ class Gate: public Node{
     vec findGammaQR(mat X, mat z, mat Omega);
     vec updateGamma(vec gammaold, mat X, mat z, mat Omega);
     vec logmvndensity(vec response, vec mean, mat Sigma);
+    vec logmvndensity(vec response, vec mean, mat* R);
     mat getRowSumsMat(mat A);
     int getDescendantIndex(Node* node);
     int issueIDLR(int start);

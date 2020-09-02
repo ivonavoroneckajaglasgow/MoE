@@ -434,6 +434,10 @@ vec Gate::findGammaQR(mat X, mat z, mat Omega, mat* R){
     mat Omega_chol=chol(Omega);
     vec gamma(p*r);
     gamma.zeros();
+    if(n==0){
+        *R=Omega_chol;
+        return gamma;
+    }
     for(int i=0; i<100; i++){
         vec gamma_old=gamma;
         mat pi=this->pi_calculator(X,gamma);
@@ -466,16 +470,16 @@ vec Gate::updateGamma(vec gammaold, mat X, mat z, mat Omega){
    mat R;
    vec gammahat = this->findGammaQR(X, z, Omega,&R);
    vec v(gammaold.size(),fill::randn);
-   mat Sigma=(R.t()*R).i();
-   mat Sigma_gamma=Omega.i();
+   //mat Sigma=(R.t()*R).i();
+   mat Sigma_gamma=Omega.i(); 
    mat RHS(R.n_rows,1);
    RHS.zeros();
    RHS.rows(0,gammahat.size()-1)=v;
-   vec gammanew=gammahat+solve(sqrt(SigmaMultiple)*R,RHS);
+   vec gammanew=gammahat+sqrt(SigmaMultiple)*solve(R,RHS); //random mvn
    double loglik_old=this->loglik(z,this->pi_calculator(X,gammaold));
    double loglik_new=this->loglik(z,this->pi_calculator(X,gammanew));
-   double proposal_old=sum(this->logmvndensity(gammaold,gammahat,Sigma));
-   double proposal_new=sum(this->logmvndensity(gammanew,gammahat,Sigma));
+   double proposal_old=sum(this->logmvndensity(gammaold,gammahat,&R));
+   double proposal_new=sum(this->logmvndensity(gammanew,gammahat,&R));
    double prior_old=sum(this->logmvndensity(gammaold,mu_gamma, Sigma_gamma));
    double prior_new=sum(this->logmvndensity(gammanew,mu_gamma, Sigma_gamma));
    double acceptance=loglik_new-loglik_old+proposal_old-proposal_new+prior_new-prior_old;
@@ -491,6 +495,11 @@ vec Gate::logmvndensity(vec response, vec mean, mat Sigma){
    int k = Sigma.n_cols;
    //return 1/(pow(2*M_PI,k/2)*sqrt(det(Sigma)))*exp(-0.5*(response-mean).t()*Sigma.i()*(response-mean)); - not log scale
    return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
+}
+
+vec Gate::logmvndensity(vec response, vec mean, mat* R){
+int k=(*R).n_rows;
+return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
 }
 
 int Gate::getDescendantIndex(Node* node){
@@ -651,7 +660,9 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
  void Gate::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
         cout<<"Updating gamma for gate "<<name<<endl;
         mat z=this->getZ(z_final);
-       // z.print("z:");
+        if(z.n_rows==0) {
+            //DRAW FROM PRIOR
+        }
         mat Omega;
         mat myX=this->subsetX(X,this->getPointIndices(z_final));
         //cout<<"Before: "<<this->gamma<<endl;
@@ -721,7 +732,7 @@ cout<<"I am gate "<< this->name <<" and I have "<<this->countChildren()<<" chidr
          cout<<"So I need to fill its CLD first"<<endl;
          cout<<"Recursively call the same function "<<endl;
          Gate* current=dynamic_cast<Gate*>(this->Children[i]);
-         return current->createJSON2(s);
+         current->createJSON2(s);
        }
        cout<<"I see it is an expert"<<endl;
        cout<<"So I want to get back to the 2nd child of G1 and do the same but it doesn't happen?"<<endl;

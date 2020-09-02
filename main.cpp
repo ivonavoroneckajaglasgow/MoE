@@ -169,7 +169,7 @@ double sigma_new=NF->updateSigma(E1->logsigma_sq,y,X,E1->beta,a,b,y.size());
 cout<<"Sigma update test: "<<sigma_new<<endl;
 
 
-vector<Node*> z_MCMC=G1->MCMC(5,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+vector<Node*> z_MCMC=G1->MCMC(10,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
 
 for(int i=0;i<z_final.size();i++){
   cout<<"Before: "<<z_final[i]->name<<". After: "<<z_MCMC[i]->name<<endl;
@@ -182,15 +182,17 @@ for(int i=0;i<z_final.size();i++){
 //cout<<E4JSON<<endl;
 //string G1JSON=G1->createJSON();
 //cout<<G1JSON<<endl;
-cout<<"STRING TEST"<<endl;
+//cout<<"STRING TEST"<<endl;
 
-string test=G1->createJSON3();
-cout<<"test: "<<test<<endl;
+//string test=G1->createJSON3();
+//cout<<"test: "<<test<<endl;
 
 // for(int i=0;i<test.size();i++){
 //   cout<<"Character "<<i<<": "<<test[i]<<endl;
 // }
 
+//vec test1=G1->logmvndensity(E1->beta,mu_beta,Sigma_beta);
+//test1.print("test 1: ");
 
-return 0; 
+return 0;
 }

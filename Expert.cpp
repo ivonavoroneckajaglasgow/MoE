@@ -76,6 +76,7 @@ void Expert::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Si
     cout<<"Updating beta and sigma for Expert " <<this->name<<endl;
     //cout<<"Before: "<<this->beta<<endl;
     vec points=this->getPointIndices(z_final);
+    //points.print("points:");
     vec myY=this->subsetY(y,points);
     mat myX=this->subsetX(X,points);
     this->beta=this->expertmodel->updateBeta(this->beta,myY,myX,logsigma_sq,mu_beta,Sigma_beta);
