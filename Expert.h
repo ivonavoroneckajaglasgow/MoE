@@ -35,6 +35,7 @@ class Expert: public Node{
     void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);
     string createJSON();
     string createJSON2 (string s);
+    string jsonify(int indent);
 };
 
 #endif //MOE_EXPERT_H

@@ -175,6 +175,8 @@ for(int i=0;i<z_final.size();i++){
   cout<<"Before: "<<z_final[i]->name<<". After: "<<z_MCMC[i]->name<<endl;
 }
 
+cout << G1->jsonify(0) << endl;
+
 
 //string E1JSON=E1->createJSON();
 //cout<<E1JSON<<endl;

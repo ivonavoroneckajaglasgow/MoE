@@ -746,3 +746,23 @@ string Gate::createJSON3(){
     string s=this->createJSON();
      return this->createJSON2(s);
 }
+
+
+
+
+string Gate::jsonify(int indent) {
+  map<string, string> m;
+  string s;
+  m["__name__"] = "\""+this->name+"\"";
+  m["__type__"] = "\"gate\"";
+  m["_gamma_"] = "\n" + mat2arraystring(this->gamma, indent+6);
+  s = "\n" + string(indent+4, ' ') + "[";
+  string comma = "";
+  for (int i=0; i<this->countChildren(); i++) {
+      s = s + comma + "\n" + this->Children[i]->jsonify(indent+6);
+      comma=",";  
+  }
+  m["children"] = s + "\n" + string(indent+4, ' ') + "]";
+  return jsondict(m, indent);
+
+}

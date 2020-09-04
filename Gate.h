@@ -74,6 +74,7 @@ class Gate: public Node{
     string createJSON();
     string createJSON2(string s);
     string createJSON3();
+    string jsonify(int indent);
 };
 
 #endif //MOE_GATE_H

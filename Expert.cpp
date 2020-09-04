@@ -122,3 +122,18 @@ string Expert::createJSON(){
 string Expert::createJSON2(string s){
     return 0;
 }
+
+string Expert::jsonify(int indent) {
+  map<string, string> m;
+  map<string, string> p;
+  string s;
+  m["__name__"] = "\""+this->name+"\"";
+  m["__type__"] = "\"expert\"";
+  m["__family__"] = "\"normal\"";
+  m["_beta_"] = "\n" + vec2arraystring(this->beta, indent+6);
+  ostringstream os;
+  os << scientific << this->logsigma_sq;
+  p["_logsigma_sq_"] = os.str();
+  m["_par_"] = "\n" + jsondict(p, indent+6);
+  return jsondict(m, indent);
+}

@@ -52,7 +52,12 @@ class Node{
     virtual mat getZ(vector<Node*> z_final);
     virtual string createJSON();
     virtual string createJSON2(string s);
+    virtual string jsonify(int indent);
 
 };
+
+std::string jsondict(std::map<std::string, std::string> m, int indent);
+std::string vec2arraystring(arma::vec b, int indent);
+std::string mat2arraystring(arma::Mat<double> A, int indent);
 
 #endif //MOE_NODE_H

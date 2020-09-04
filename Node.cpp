@@ -3,7 +3,9 @@
 
 #include <vector>
 #include <cmath>
+
 #include "armadillo"
+#include <boost/algorithm/string/join.hpp>
 
 using namespace std;
 using namespace arma;
@@ -214,4 +216,71 @@ string Node::createJSON(){
 
 string Node::createJSON2(string s){
     return 0;
+}
+
+string Node::jsonify(int indent){
+    return string("?");
+}
+
+std::string jsondict(std::map<std::string, std::string> m, int indent) {
+    std::ostringstream os; 
+    std::map<std::string, std::string>::iterator it;
+    os << std::string(indent, ' ') << "{";    
+    std::string s = std::string("");
+    for (it = m.begin(); it!=m.end(); it++ ) {        
+        os  << s << std::endl << std::string(indent+2, ' ') << "\"" << it->first << "\": " << it->second;
+        s = std::string(",");
+    }
+    os << std::endl << std::string(indent, ' ') << "}";
+    return os.str();
+}
+
+std::string dv2csv(std::vector<double> dv) {
+  std::vector<std::string> sv;
+  std::transform(std::begin(dv),
+                 std::end(dv),
+                 std::back_inserter(sv),
+                 [](double d) {
+                   std::ostringstream dos;
+                   dos << std::scientific << d;
+                   return dos.str();
+                 });
+  return boost::algorithm::join(sv, ", ");
+}
+
+std::string vec2arraystring(arma::vec b, int indent)
+{
+  std::vector<double> dv;
+  std::ostringstream os; 
+  dv = arma::conv_to<std::vector<double>>::from(b);
+  os << std::string(indent, ' ') << "[ " << dv2csv(dv) << " ]";
+  return os.str();
+}
+
+std::string mat2arraystring(arma::Mat<double> A, int indent)
+{
+  std::vector<double> dv;
+  std::ostringstream os;
+  for (size_t i = 0; i < A.n_rows; ++i)
+  {
+    dv = arma::conv_to<std::vector<double>>::from(A.row(i));
+    if (i == 0)
+    {
+      os << std::string(indent, ' ') << "[ ";
+    }
+    else
+    {
+      os << std::string(indent + 2, ' ');
+    }
+    os << "[ " << dv2csv(dv) << " ]";
+    if (i == A.n_rows - 1)
+    {
+      os << " ]";
+    }
+    else
+    {
+      os << "," << std::endl;
+    }
+  }
+  return os.str();
 }
