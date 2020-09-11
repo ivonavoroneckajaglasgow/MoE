@@ -18,7 +18,7 @@ using namespace arma;
 
 class NormalFamily : public GLMModel {
 public:
-NormalFamily();
+NormalFamily(); //constructor
 vec linkfun(vec mu); //link function for a vector of values of mu
 vec linkinv(vec eta); //the inverse of the link function
 vec dlinkfun(vec mu); //the first derivative of the link function
@@ -32,10 +32,6 @@ double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log
 double dsigma (vec y, vec eta, double logsigma_sq); //derivative of the log-likelihood wrt to sigma^2
 double a(double phi); //a(phi) function in the exponential family expression for the family
 vec V(vec theta); //b''(theta) function in the exponential family expression for the family
-double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);
-double IG_log(double y, double a, double b);
-private:   
-double transformSigma(double logsigma_sq);//Transforms sigma to a log scale
 };
 
 #endif //MOE_NORMALFAMILY_H

@@ -18,6 +18,7 @@ using namespace std::chrono;
 #include "Gate.h"
 #include "NormalFamily.h"
 #include "Data.h"
+#include "NormalModel.h"
 
 
 int main(){
@@ -160,39 +161,17 @@ mat X_new(n,p,fill::randn);
 vec yhat=G1->predict(X_new);
 yhat.print("yhat:");
 
+vector<Node*> z_MCMC=G1->MCMC(10,y,X,1,mu_beta,Sigma_beta,1,2,z_final);
 
-double y2=5;
-double a=1;
-double b=2;
+ofstream f;
+    f.open("results.json");
+    f << "[" << G1->jsonify() << ",";
+    f << G1->jsonify() << ",";
+    f << G1->jsonify() << "]" << endl;
+    f.close();
 
-double sigma_new=NF->updateSigma(E1->logsigma_sq,y,X,E1->beta,a,b,y.size());
-cout<<"Sigma update test: "<<sigma_new<<endl;
-
-
-vector<Node*> z_MCMC=G1->MCMC(10,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
-
-for(int i=0;i<z_final.size();i++){
-  cout<<"Before: "<<z_final[i]->name<<". After: "<<z_MCMC[i]->name<<endl;
-}
-
-
-//string E1JSON=E1->createJSON();
-//cout<<E1JSON<<endl;
-//string E4JSON=E4->createJSON();
-//cout<<E4JSON<<endl;
-//string G1JSON=G1->createJSON();
-//cout<<G1JSON<<endl;
-//cout<<"STRING TEST"<<endl;
-
-//string test=G1->createJSON3();
-//cout<<"test: "<<test<<endl;
-
-// for(int i=0;i<test.size();i++){
-//   cout<<"Character "<<i<<": "<<test[i]<<endl;
-// }
-
-//vec test1=G1->logmvndensity(E1->beta,mu_beta,Sigma_beta);
-//test1.print("test 1: ");
+    vec alpha("0.1 0.2 0.2 0.1 0.2 0.2");
+    cout<<G1->updateZ_onepoint_sample(alpha)->name<<endl;
 
 return 0;
 }

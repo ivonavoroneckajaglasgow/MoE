@@ -47,9 +47,9 @@ double GLMModel::deta(vec y, vec eta, double logsigma_sq){
 return 0;
 }
 
-vec GLMModel::etafun(mat X, vec beta){
-return X*beta;
-}
+// vec GLMModel::etafun(mat X, vec beta){
+// return X*beta;
+// }
 
 double GLMModel::a(double phi){
     return 0;
@@ -128,7 +128,7 @@ vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq){
   mat R;
   vec betahat=this->findBeta(y,X,&R,logsigma_sq);//Uses IWLS to estimate beta
   vec v(betaold.size(),fill::randn);
-  vec betanew=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
+  vec betanew=betahat+sqrt(SigmaMultiple)*solve(R,v); //take in proposal scale as an argument at some point 
   double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));
   double density_new=sum(this->logdensity(y,this->etafun(X,betanew),logsigma_sq));
   double proposal_old=sum(this->logmvndensity(betaold,betahat,&R));
@@ -158,16 +158,18 @@ vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_b
   if(accept==0) return betaold; 
 } 
 
-vec GLMModel::logmvndensity(vec response, vec mean, mat Sigma){
-   int k = Sigma.n_cols;
-   //return 1/(pow(2*M_PI,k/2)*sqrt(det(Sigma)))*exp(-0.5*(response-mean).t()*Sigma.i()*(response-mean)); - not log scale
-   return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
-}
+// vec GLMModel::logmvndensity(vec response, vec mean, mat Sigma){
+//    int k = Sigma.n_cols;
+//    //return 1/(pow(2*M_PI,k/2)*sqrt(det(Sigma)))*exp(-0.5*(response-mean).t()*Sigma.i()*(response-mean)); - not log scale
+//    return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
+// }
 
-vec GLMModel::logmvndensity(vec response, vec mean, mat* R){
-int k=(*R).n_rows;
-return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
-}
+// vec GLMModel::logmvndensity(vec response, vec mean, mat* R){
+// int k=(*R).n_rows;
+// //return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
+// double result=-k/2*log(2*M_PI)+sum(log((*R).diag()))-0.5*sum(pow((*R)*(response-mean),2));
+// return vectorise(result);
+// }
 
 double GLMModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
     return 0;

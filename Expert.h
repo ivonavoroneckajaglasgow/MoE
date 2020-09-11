@@ -17,24 +17,23 @@ using namespace arma;
 
 class Expert: public Node{
     public:
-    vec* y;       //data observed
-    vec  eta;     // XB
-    mat* X;
-    vec beta;
-    double logsigma_sq;  // some variance parameter  
-    ExpertModel* expertmodel; // the model for this expert
-    Expert();//constructor
-    vec etafun(mat X, vec beta);
-    int countChildren();
-    vector<Node*> getDescendantsInternal(vector<Node*>* desc);
-    vector<Node*> getTerminalNodesInternal(vector<Node*>* terminal);
-    int issueIDLR(int start);
-    int rightMostNodeID();
-    int isInRange(Node* node);
-    mat pi_calculator(mat X, vec gamma);
-    void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);
-    string createJSON();
-    string createJSON2 (string s);
+    vec* y;            //pointer to data in the Data object
+    mat* X;            //pointer to data in the Data object
+    vec  eta;          //XB
+    vec beta;          //beta parameter
+    double logsigma_sq;//variance parameter  
+    ExpertModel* expertmodel; //the model for this expert
+    Expert();                   //constructor
+    vec etafun(mat X, vec beta);//eta calculator
+    int countChildren(); //counts the number of children, which is zero for experts
+    vector<Node*> getDescendantsInternal(vector<Node*>* desc); //returns itself as a descendant 
+    vector<Node*> getTerminalNodesInternal(vector<Node*>* terminal);//returns itself as a terminal node
+    int issueIDLR(int start); //issues ID left to right
+    int rightMostNodeID();  //returns its own ID and Gate decides which one is right most
+    int isInRange(Node* node);//returns yes or no to whether its ID is te same as node
+    mat pi_calculator(mat X, vec gamma);//returns a matrix of ones (used in multiplication when calculating path probabilities)
+    void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates beta and sigma
+    string jsonify(int indent); //produces a JSON string describing the current state
 };
 
 #endif //MOE_EXPERT_H

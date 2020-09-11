@@ -18,7 +18,7 @@ using namespace arma;
 
 class BinomialFamily : public GLMModel {
 public:
-BinomialFamily();
+BinomialFamily(); //constructor
 vec linkfun(vec mu); //link function for a vector of values of mu
 vec linkinv(vec eta); //the inverse of the link function
 vec dlinkfun(vec mu); //the first derivative of the link function
@@ -31,7 +31,7 @@ vec logdensity(vec y, vec eta, double logsigma_sq); // returns log density funct
 double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log likelihood wrt to eta
 double a(double phi); //a(phi) function in the exponential family expression for the family
 vec V(vec theta); //b''(theta) function in the exponential family expression for the family
-double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);
+double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);//dummy does nothing
 };
 
 #endif //MOE_BINOMIALFAMILY_H

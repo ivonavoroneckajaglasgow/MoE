@@ -15,16 +15,29 @@
 using namespace std;
 using namespace arma;
 
+/**
+ * @brief Construct a new Gate:: Gate object
+ * 
+ */
 Gate::Gate(){
     cout<<"Gate has been created."<<endl;
 }
 
+/**
+ * @brief Add a child to the gate and make gate the parent of child
+ * 
+ * @param aChild pointer to the node to be added as a child 
+ */
 void Gate::addChild(Node* aChild){
     this -> Children.push_back(aChild);
     aChild -> Parent = this;
-    cout<<"Child has been added to the parent."<<endl;
+    cout<<"Child "<<aChild->name<< " has been added to the parent "<<name<<"."<<endl;
 }
 
+/**
+ * @brief Prints out the names of all children
+ * 
+ */
 void Gate::printChildren(){
     if(Children.size()>1) {
         cout << "Gate " << name << " has " << Children.size() << " children called ";
@@ -46,6 +59,10 @@ void Gate::printChildren(){
     }
 }
 
+/**
+ * @brief Prints out the names of all descendants
+ * 
+ */
 void Gate::printDescendants(){
 
     for(int i=0;i<Children.size();i++){
@@ -56,6 +73,10 @@ void Gate::printDescendants(){
     }
 }
 
+/**
+ * @brief Prints out the names of all terminal nodes (experts)
+ * 
+ */
 void Gate::printTerminalNodes(){
     
     for (int i = 0; i < Children.size(); i++) {
@@ -66,17 +87,22 @@ void Gate::printTerminalNodes(){
         }
     }
 }
+
+/**
+ * @brief Returns all children 
+ * 
+ * @return vector<Node*> vector of pointers to the children
+ */
 vector<Node*> Gate::getChildren() {
     return Children;
 }
 
 /**
- * @brief An internal function which helps retrieve all descendents of the gate.
- * An internal function that is then called at the Node level to retrieve all descendants of the gate.
- * @param desc vector to be filled in with the descendants of the gate.
- * @return vector<Node*> vector of pointers to the descendants of the gate.
+ * @brief An internal function which outputs all descendents 
+ * This function is called at the Node level 
+ * @param desc vector to be filled in with the descendants 
+ * @return vector<Node*> vector of pointers to the descendants 
  */
-
 vector<Node*> Gate::getDescendantsInternal(vector<Node*>* desc) {
 
     for(int i=0; i<this->Children.size();i++){
@@ -89,12 +115,11 @@ vector<Node*> Gate::getDescendantsInternal(vector<Node*>* desc) {
 }
 
 /**
- * @brief An internal function which helps retrieve all terminal nodes descending from the gate.
- * An internal function that is then called at the node level to retrieve all terminal nodes of the gate.
- * @param terminal vector to be filled in with the terminal nodes descending from the gate.
- * @return vector<Node*> vector of pointers to the terminal nodes descending from the gate.
+ * @brief An internal function which outputs all terminal nodes 
+ * This function is called at the Node level 
+ * @param terminal vector to be filled in with the terminal nodes 
+ * @return vector<Node*> vector of pointers to the terminal nodes 
  */
-
 vector<Node*> Gate::getTerminalNodesInternal(vector<Node*>* terminal){
     for(int i=0; i<this->Children.size();i++){
         if(this->Children[i]->countChildren()==0){
@@ -106,33 +131,32 @@ vector<Node*> Gate::getTerminalNodesInternal(vector<Node*>* terminal){
         }
     }
     return *terminal;
-};
-
-int Gate::countChildren(){
-    int n;
-    n=Children.size();
-    return n;
-};
+}
 
 /**
- * @brief Counts the number of descendants of the gate.
+ * @brief Returns the total number of children
  * 
- * @return int integer number of descendants of the gate.
+ * @return int integer number of children
+ */
+int Gate::countChildren(){
+    return static_cast<int>(Children.size());
+}
+
+/**
+ * @brief returns the total number of descendants 
+ * 
+ * @return int integer number of descendants 
  */
 int Gate::countDescendants(){
     vector<Node*> desc;
     desc=this->getDescendants();
-    return desc.size();
-};
-
-int Gate::refId(){
-    return Children[0]->id;
+    return static_cast<int>(desc.size());
 }
 
 /**
- * @brief A top layer function for assigning ID.
+ * @brief A top layer function for assigning ID
  * 
- * Sets the gate id to start at 2 (the root gate is automatically determined in issueID_helper2()) and 
+ * Sets the gate id to start at 2 (the root gate is automatically determined in issueID_helper2() and 
  * the expert id to start at 1. Calls the helper functions to perform the task.
  * 
  */
@@ -143,12 +167,13 @@ void Gate::issueID(){
 
     this->issueID_helper2(&gateid,&expertid);
 }
+
 /**
- * @brief First internal function which helps to assign the id's to the nodes of tree vertically.
- * This function checks each child of the Node. If a child doesn't have any children, it assumes that it is an expert and 
- * assigns expert id to it. If a child has some children, a gate id is assigned. 
- * @param gate_id pointer to an integer which tracks gate id's.
- * @param expert_id pointer to an integer which tracks expert id's.
+ * @brief First internal function which helps to assign the IDs to the nodes of tree vertically
+ * This function checks each child of every node. If a child doesn't have any children, it assumes that it is an expert and 
+ * assigns expert id to it. If a child has some children, a gate id is assigned 
+ * @param gate_id pointer to an integer which tracks gate IDs
+ * @param expert_id pointer to an integer which tracks expert IDs
  */
 void Gate::issueID_helper1(int* gate_id, int* expert_id){
 
@@ -166,12 +191,12 @@ void Gate::issueID_helper1(int* gate_id, int* expert_id){
 }
 
 /**
- * @brief Second internal function which helps to assign the id's to the nodes of tree vertically.
+ * @brief Second internal function which helps to assign the IDs to the nodes of tree vertically
  * This function identifies a root gate by checking the presence of the parent node. If there is no parent 
- * node, an id of 1 is assigned. Next, issueID_helper1() is called to assign the id's to the children of the 
- * gate. The process is repeated for every node in the tree by calling this function recursively.
- * @param gate_id pointer to an integer which tracks gate id's.
- * @param expert_id pointer to an integer which tracks expert id's.
+ * node, an id of 1 is assigned. Next, issueID_helper1() is called to assign the IDs to the children of the 
+ * gate. The process is repeated for every node in the tree by calling this function recursively
+ * @param gate_id pointer to an integer which tracks gate IDs
+ * @param expert_id pointer to an integer which tracks expert IDs
  */
 void Gate::issueID_helper2(int* gate_id, int* expert_id){
 
@@ -194,21 +219,43 @@ void Gate::issueID_helper2(int* gate_id, int* expert_id){
     }
 }
 
+/**
+ * @brief Log-likelihood function for the model 
+ * z~Multinom(pi_1,...,pi_r)
+ * @param z matrix of allocations
+ * @param pi matrix of mixing proportions
+ * @return double log-likelihood value
+ */
 double Gate::loglik(mat z, mat pi){
-    return sum(vectorise(z%log(pi)))+sum((1-sum(z,1))%log(1-sum(pi,1)));
+    return static_cast<double>(sum(vectorise(z%log(pi)))+sum((1-sum(z,1))%log(1-sum(pi,1))));
 }
 
+/**
+ * @brief Log-likelihood function for the model 
+ * z~Multinom(pi_1,...,pi_r) 
+ * @param X design matrix
+ * @param gamma vector of gating parameters
+ * @param z matrix of allocations
+ * @return double log-likelihood value
+ */
 double Gate::loglik(mat X, vec gamma, mat z){
-    int p=X.n_cols;
-    int r=z.n_cols;
+    int p=static_cast<int>(X.n_cols);
+    int r=static_cast<int>(z.n_cols);
     mat gamma2=gamma;
     gamma2.reshape(p,r);
     return sum(sum(z%(X*gamma2),1)-log(1+sum(exp(X*gamma2),1)));
 }
 
+/**
+ * @brief mixing proportions calculator
+ * 
+ * @param X design matrix
+ * @param gamma vector of gating parameters
+ * @return mat matrix of mixing proportions (rows - observations, columns - splits)
+ */
 mat Gate::pi_calculator(mat X, vec gamma){
-    int p=X.n_cols;
-    int r=gamma.size()/p;
+    int p=static_cast<int>(X.n_cols);
+    int r=static_cast<int>(gamma.size()/p);
     mat gamma2=gamma;
     gamma2.reshape(p,r);
     mat helper=exp(X*gamma2);
@@ -222,9 +269,14 @@ mat Gate::pi_calculator(mat X, vec gamma){
     mat error=arma::max(zeromat,this->getRowSumsMat(pi)+E-1);
     mat LHS = pi-(pi+E)/this->getRowSumsMat(pi+E)%error;
     return arma::max(LHS,E);
-    //return arma::min(1-E,arma::max(final,E));
 }
 
+/**
+ * @brief returns rowsums of a matrix A
+ * 
+ * @param A matrix 
+ * @return mat matrix that contains copies of row sums in every column 
+ */
 mat Gate::getRowSumsMat(mat A){
     mat rowsums(A.n_rows,A.n_cols);
     for(int i=0; i<A.n_cols; i++){
@@ -233,9 +285,16 @@ mat Gate::getRowSumsMat(mat A){
     return rowsums;
 }
 
+/**
+ * @brief mixing proportions calculator (loops over each observation)
+ * 
+ * @param X design matrix
+ * @param gamma vector of gating parameters
+ * @return mat matrix of mixing proportions (rows - observations, columns - splits)
+ */
  mat Gate::pi_calculator2(mat X, vec gamma) {
-    int p = X.n_cols;
-    int rp= gamma.size();
+    int p = static_cast<int>(X.n_cols);
+    int rp= static_cast<int>(gamma.size());
     int r = rp/p;
     double current;
     mat result(X.n_rows,r);
@@ -258,10 +317,17 @@ mat Gate::getRowSumsMat(mat A){
     return result;
 }       
 
+/**
+ * @brief mixing proportions calculator (subtracting max)
+ * 
+ * @param X design matrix
+ * @param gamma vector of gating parameters
+ * @return mat matrix of mixing proportions (rows - observations, columns - splits)
+ */
 mat Gate::pi_calculator3(mat X, vec gamma) {
-    int p = X.n_cols;
-    int rp= gamma.size();
-    int r = rp/p;
+    int p = static_cast<int>(X.n_cols);
+    int rp= static_cast<int>(gamma.size());
+    int r = static_cast<int>(rp/p);
     mat result(X.n_rows,r);
     double current;
     // try reshaping gamma here
@@ -290,13 +356,28 @@ mat Gate::pi_calculator3(mat X, vec gamma) {
     return result;
 }       
 
+/**
+ * @brief Score function used in IWLS
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param pi matrix of mixing proportions
+ * @return vec vector of scores
+ */
 vec Gate::score(mat X, mat z, mat pi){
     return vectorise(X.t()*(z-pi));
 }
 
+/**
+ * @brief Hessian matrix calculator used in IWLS
+ * 
+ * @param X design matrix
+ * @param pi matrix of mixing proportions
+ * @return mat matrix containing Hessian
+ */
 mat Gate::hessian(mat X, mat pi){
- int r=pi.n_cols;
- int p=X.n_cols;
+ int r=static_cast<int>(pi.n_cols);
+ int p=static_cast<int>(X.n_cols);
 
  mat H(r*p,r*p);
 
@@ -316,6 +397,15 @@ mat Gate::hessian(mat X, mat pi){
 return H;
 }
 
+/**
+ * @brief Finds the MLE of gating parameters gamma using the Cholesky decomposition
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix of gamma
+ * @param L pointer to the L matrix in the Cholesky decomposition
+ * @return vec MLE of gamma
+ */
 vec Gate::findGammaMLEChol(mat X, mat z, mat Omega, mat* L){
     vec gamma(X.n_cols*z.n_cols);
     gamma.zeros();
@@ -332,11 +422,28 @@ vec Gate::findGammaMLEChol(mat X, mat z, mat Omega, mat* L){
     return gamma;
 }
 
+/**
+ * @brief Finds the MLE of gating parameters gamma using the Cholesky decomposition
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix of gamma
+ * @return vec MLE of gamma
+ */
 vec Gate::findGammaMLEChol(mat X, mat z, mat Omega){
     mat L;
     return this->findGammaMLEChol(X,z,Omega,&L);
 }
 
+/**
+ * @brief Finds the MLE of gating parameters gamma using the QR decomposition
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix of gamma
+ * @param R pointer to the R matrix in the QR decomposition
+ * @return vec MLE of gamma
+ */
 vec Gate::findGammaMLEQR(mat X, mat z, mat Omega, mat* R){
     vec gamma(X.n_cols*z.n_cols);
     gamma.zeros();
@@ -353,16 +460,33 @@ vec Gate::findGammaMLEQR(mat X, mat z, mat Omega, mat* R){
     return gamma;
 }
 
+/**
+ * @brief Finds the MLE of gating parameters gamma using the QR decomposition
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix of gamma
+ * @return vec MLE of gamma
+ */
 vec Gate::findGammaMLEQR(mat X, mat z, mat Omega){
     mat R;
     return this->findGammaMLEQR(X,z,Omega,&R);
 }
 
-
+/**
+ * @brief Finds the MLE of gating parameters gamma 
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix of gamma
+ * @return vec MLE of gamma
+ */
 vec Gate::findGammaMLE(mat X, mat z, mat Omega){
-    vec gamma(X.n_cols*z.n_cols);
+    int p=static_cast<int>(X.n_cols);
+    int r=static_cast<int>(z.n_cols);
+    vec gamma(p*r);
     gamma.zeros();
-    vec diagonals(X.n_cols*z.n_cols);
+    vec diagonals(p*r);
     diagonals.fill(0.001);
     Omega=diagmat(diagonals);
     for(int i=0; i<100; i++){
@@ -374,6 +498,12 @@ vec Gate::findGammaMLE(mat X, mat z, mat Omega){
     return gamma;
 }
 
+/**
+ * @brief Funtion that takes in a vector of mixing proportions for one point and returns the Cholesky decomposion of matrx A used in the IWLS estimation of gamma
+ * 
+ * @param pi vector of mixing proportions for one point
+ * @return mat the Cholesky decomposion of matrx A used in the IWLS estimation of gamma
+ */
 mat Gate::makeAchol(vec pi){
   mat helper(pi.size(),pi.size());
   for(int i=0; i<pi.size();i++){
@@ -384,20 +514,17 @@ mat Gate::makeAchol(vec pi){
   return chol(diagmat(pi)-helper);
 }
 
-mat Gate::makeAchol2(vec pi){
-  mat B(pi.size(),pi.size());
-  B.fill(-1);
-  vec b= (1-pi)/pi;
-  B.diag()=b;
-  mat D=diagmat(pi);
-  mat L=chol(B);
-  return L*D;
-}
-
+/**
+ * @brief Creates new X matrix used in the IWLS estimation of gamma
+ * 
+ * @param X design matrix
+ * @param pi matrix of mixing proportions
+ * @return mat new X matrix used in the IWLS estimation of gamma
+ */
 mat Gate::getXout(mat X, mat pi){
-    int r=pi.n_cols;
-    int n=X.n_rows;
-    int p=X.n_cols;
+    int r=static_cast<int>(pi.n_cols);
+    int n=static_cast<int>(X.n_rows);
+    int p=static_cast<int>(X.n_cols);
     mat Xout(n*r,p*r);
 
     for(int j=0; j<n; j++){
@@ -414,9 +541,16 @@ mat Gate::getXout(mat X, mat pi){
     return Xout;
 }
 
+/**
+ * @brief Creates the new response used in the IWLS estimation of gamma
+ * 
+ * @param z matrix of allocations
+ * @param pi matrix of mixing proportions
+ * @return vec new response
+ */
 vec Gate::getZeta(mat z, mat pi){
-    int r=pi.n_cols;
-    int n=pi.n_rows;
+    int r=static_cast<int>(pi.n_cols);
+    int n=static_cast<int>(pi.n_rows);
     vec zeta(n*r);
     for(int i=0; i<n; i++){
         mat C=this->makeAchol(vectorise(pi.row(i)));
@@ -427,10 +561,22 @@ vec Gate::getZeta(mat z, mat pi){
 return zeta;
 }
 
+/**
+ * @brief Finds the estimate of gamma using IWLS and the QR decomposition
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix for gamma
+ * @param R pointer to matrix R in the QR decomposition
+ * @return vec estimate of gamma
+ */
 vec Gate::findGammaQR(mat X, mat z, mat Omega, mat* R){
-    int r=z.n_cols;
-    int n=X.n_rows;
-    int p=X.n_cols;
+    int r=static_cast<int>(z.n_cols);
+    int n=static_cast<int>(X.n_rows);
+    int p=static_cast<int>(X.n_cols);
+    vec diagonals(p*r);
+    diagonals.fill(0.001);
+    Omega=diagmat(diagonals);
     mat Omega_chol=chol(Omega);
     vec gamma(p*r);
     gamma.zeros();
@@ -455,22 +601,37 @@ vec Gate::findGammaQR(mat X, mat z, mat Omega, mat* R){
     return gamma;
 }
 
+/**
+ * @brief Finds the estimate of gamma using IWLS and the QR decomposition
+ * 
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix for gamma
+ * @return vec estimate of gamma
+ */
 vec Gate::findGammaQR(mat X, mat z, mat Omega){
     mat R;
     return this->findGammaQR(X,z,Omega,&R);
 }
 
+/**
+ * @brief Function proposes a new value of gamma and checks its acceptance. If accepted returns the new value of gamma, if rejected the old value
+ * 
+ * @param gammaold current gamma
+ * @param X design matrix
+ * @param z matrix of allocations
+ * @param Omega prior variance-covariance matrix of gamma
+ * @return vec new gamma
+ */
 vec Gate::updateGamma(vec gammaold, mat X, mat z, mat Omega){
    vec diagonals(gammaold.size());
    diagonals.fill(0.001);
    Omega=diagmat(diagonals);
-   //Omega.print("Omega");
    vec mu_gamma(gammaold.size());
    mu_gamma.zeros();
    mat R;
    vec gammahat = this->findGammaQR(X, z, Omega,&R);
    vec v(gammaold.size(),fill::randn);
-   //mat Sigma=(R.t()*R).i();
    mat Sigma_gamma=Omega.i(); 
    mat RHS(R.n_rows,1);
    RHS.zeros();
@@ -485,36 +646,50 @@ vec Gate::updateGamma(vec gammaold, mat X, mat z, mat Omega){
    double acceptance=loglik_new-loglik_old+proposal_old-proposal_new+prior_new-prior_old;
    double u=randu();
    bool accept=u<exp(acceptance);
-   //cout<<"Accept/Reject:"<<accept<<endl;
-  if(accept==1) return gammanew;
-  if(accept==0) return gammaold; 
+  if(accept==1){
+      return gammanew;
+  }else{
+  return gammaold; 
+  }
 }
 
-
+/**
+ * @brief Mutivariate normal density on a log scale
+ * 
+ * @param response response vector
+ * @param mean mean vector
+ * @param Sigma variance covariance matrix
+ * @return vec mutivariate normal density on a log scale
+ * 
+ */
 vec Gate::logmvndensity(vec response, vec mean, mat Sigma){
-   int k = Sigma.n_cols;
+   int k = static_cast<int>(Sigma.n_cols);
    //return 1/(pow(2*M_PI,k/2)*sqrt(det(Sigma)))*exp(-0.5*(response-mean).t()*Sigma.i()*(response-mean)); - not log scale
    return -k/2*log(2*M_PI)-0.5*log(det(Sigma))-0.5*(response-mean).t()*Sigma.i()*(response-mean);
 }
 
+/**
+ * @brief Mutivariate normal density on a log scale
+ * 
+ * @param response response vector
+ * @param mean mean vector
+ * @param R pointer to the R matrix from QR decomposition
+ * @return vec mutivariate normal density on a log scale
+ * 
+ */
 vec Gate::logmvndensity(vec response, vec mean, mat* R){
-int k=(*R).n_rows;
-return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
+int k=static_cast<int>((*R).n_rows);
+//return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
+double result=-k/2*log(2*M_PI)+sum(log((*R).diag()))-0.5*sum(pow((*R)*(response-mean),2));
+return vectorise(result);
 }
 
-int Gate::getDescendantIndex(Node* node){
-    //cout<<node->name<<endl;
-    for (int i=0;i<this->countChildren();i++){
-        if(node==this->Children[i])
-            return i;
-    }
-    Gate* Parent=node->getParent();
-    if(Parent==NULL) return -1;
-    cout<<Parent->name<<endl;
-    //return -99;
-   return this->getDescendantIndex(Parent);
-}
-
+/**
+ * @brief Issues IDs to nodes left to right
+ * 
+ * @param start starting index (always zero and wrapped in the net function)
+ * @return int finishing index
+ */
 int Gate::issueIDLR(int start){
     this->idLR=start++;
     for(int i=0;i<countChildren();i++){
@@ -523,21 +698,42 @@ int Gate::issueIDLR(int start){
     return start;
 }
 
+/**
+ * @brief Issues IDs to nodes left to right
+ * 
+ * @return int recursive function
+ */
 int Gate::issueIDLR(){
     int start=0;
     return this->issueIDLR(start);
 }
 
-  
+/**
+ * @brief Finds the ID of the righ most node
+ * 
+ * @return int the ID of the right most node
+ */
  int Gate::rightMostNodeID(){
      return this->Children[countChildren()-1]->rightMostNodeID();
  }
 
+/**
+ * @brief Checks if node is in the range of descendants
+ * 
+ * @param node node to check
+ * @return int yes or no 
+ */
 int Gate::isInRange(Node* node){
     vec range=this->getDescendantRange(); 
     return range[0] <= node->idLR && node->idLR <= range[1];
 }
 
+/**
+ * @brief returns a vector of length of number of splits, entry of 1 indicates which split node is in
+ * 
+ * @param node node to check
+ * @return rowvec vector where 1 indicates which split node is in
+ */
 rowvec Gate::getZ_perpoint(Node* node){
     rowvec z(this->countChildren());   
     int    test=this->isInRange(node); //check if node is in the list of descendants for this gate
@@ -551,6 +747,12 @@ rowvec Gate::getZ_perpoint(Node* node){
 return z;
 }
 
+/**
+ * @brief returns allocations matrix z
+ * 
+ * @param z_final vector of length n of pointers to experts to which each point has been allocated
+ * @return mat allocations matrix z
+ */
 mat Gate::getZ(vector<Node*> z_final){
 mat z(1,this->countChildren());
 z.fill(-1);
@@ -563,20 +765,42 @@ z.shed_col(0); //get rid of the reference column
 return z;
 }
 
+/**
+ * @brief updates allocations z
+ * 
+ * @param y response vector
+ * @param X design matrix
+ * @param z_final vector of length n of pointers to experts to which each point has been allocated
+ * @return vector<Node*> updated allocations vector of pointers
+ */
 vector<Node*> Gate::updateZ(vec y, mat X,vector<Node*> z_final){
-    //if root node then just do all
+    vector<Node*> result=z_final;
+    //IF ROOT UPDATE ALL TO BE ADDED AND FIXED
+    // if(this->Parent==NULL){
+    //     for(int i=0;i<X.n_rows;i++){
+    //     vec alpha=this->getSampleProbsForZ(y,X.row(i));
+    //     result[i]=this->updateZ_onepoint_sample(alpha);
+    // }
+    // }else{
     vec points=this->getPointIndices(z_final);
-    //points.print("Points:");
-    vector<Node*> result=z_final;    
     for(int i=0;i<points.size();i++){
         vec index(1);
         index.fill(points[i]);
-        vec alpha=this->getSampleProbsForZ(this->subsetY(y,index),X.row(points[i]));
-        result[points[i]]=this->updateZ_onepoint_sample(alpha);
+        int current=static_cast<int>(points[i]);
+        vec alpha=this->getSampleProbsForZ(this->subsetY(y,index),X.row(current));
+        result[current]=this->updateZ_onepoint_sample(alpha);
     }
+    //} 
     return result;
 }
 
+/**
+ * @brief Produces the vector of probabilities with which one point should be assigned to terminal nodes (experts)
+ * 
+ * @param y response (one point)
+ * @param X relevant row of the design matrix (one point)
+ * @return vec vector of probabilities
+ */
 vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
      vector<Node*> terminals=this->getTerminalNodes();
      vec alpha(terminals.size());
@@ -591,7 +815,17 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
      return alpha;
  }
 
+/**
+ * @brief Given a vector of probabilities, assigns one point to one of the terminal nodes 
+ * 
+ * @param alpha vector of probabilities
+ * @return Node* pointer to the node which point is assigned to
+ */
  Node* Gate::updateZ_onepoint_sample(vec alpha){
+     if(sum(alpha)!=1){
+     double sums=sum(alpha);
+     alpha=alpha/sums;   
+     }
      vector<Node*> terminals=this->getTerminalNodes();
      double rnum = randu();
         for(int i=0; i<alpha.size(); i++){
@@ -600,8 +834,17 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
                 rnum -= alpha[i];
             }
         }
+        cout<<"we should never be here update Z"<<endl;
+        alpha.print("alphas:");
+        cout<<"rnum "<<rnum<<endl;
+    return terminals[alpha.size()-1];
  }
 
+/**
+ * @brief Returns a vector of children's left to right IDs 
+ * 
+ * @return vec vector of children's left to right IDs 
+ */
  vec Gate::getChildrenIndicesLR(){
      vec result(this->countChildren());
      for(int i=0; i<this->countChildren(); i++)
@@ -609,12 +852,26 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
      return result;
  }
 
+/**
+ * @brief returns an integer indicating which child is node
+ * used to check whether node is in the reference split or not
+ * @param node node to check
+ * @return int integer indicating which child is node
+ */
  int Gate::whichChild(Node* node){
      vec children=this->getChildrenIndicesLR();
      uvec index=find(children==node->idLR);
-     return as_scalar(index);
+     return static_cast<int>(as_scalar(index));
  }
 
+/**
+ * @brief Internal function that produces path probabilities for one point
+ * 
+ * @param node node where the path ends
+ * @param X relevant row of the design matrix X (one point)
+ * @param result double to store result in
+ * @return double path probability value
+ */
  double Gate::getPathProb_internal(Node* node, mat X, double result){ //just one i at a time
      //cout<<"Inside Internal"<<endl;
      if(node->idLR!=this->idLR){
@@ -622,15 +879,25 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
          int   which=parent->whichChild(node);
          vec pi_helper=vectorise(parent->pi_calculator(X,parent->gamma));
          double pi;
-         if(which==0) pi=as_scalar(1-sum(pi_helper));
-         if(which>0)  pi=as_scalar(pi_helper[which-1]);
+         if(which==0){
+              pi=as_scalar(1-sum(pi_helper));
+         }else{
+             pi=as_scalar(pi_helper[which-1]);
+         }
          result=result*pi;
-         this->getPathProb_internal(parent,X,result);
-     }else{
+         return this->getPathProb_internal(parent,X,result); //put return here 
+     }else{ 
      return result;
      }
  }
 
+/**
+ * @brief Function that produces path probabilities for one point
+ * 
+ * @param node node where the path ends
+ * @param X relevant row of the design matrix X (one point)
+ * @return double path probability value
+ */
  double Gate::getPathProb(Node* node, mat X){ //X is for one i
      //cout<<"Inside External"<<endl;
      double result=1;
@@ -638,6 +905,14 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
     return this->getPathProb_internal(node,X,result);
  }
 
+/**
+ * @brief Internal function that produces path probabilities for all points
+ * 
+ * @param node node where the path ends
+ * @param X  design matrix X 
+ * 
+ * @return vec vector containing path probabilities for all points
+ */
 vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and columns are experts
      vec result(X.n_rows);     
      for(int i=0;i<X.n_rows;i++){
@@ -646,6 +921,12 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
      return result;
  }
 
+/**
+ * @brief Prediction function for some new data X
+ * 
+ * @param X new data X
+ * @return vec vector of predicted values y hat
+ */
  vec Gate::predict(mat X){
      vector<Node*> terminals=this->getTerminalNodes();
      mat helper(X.n_rows,terminals.size());
@@ -657,12 +938,21 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
      return sum(helper,1);
  }
 
+/**
+ * @brief MCMC step which updates gating parameters gamma
+ * this function is virtual in Node and will update beta and sigma instead of gamma if called for an expert
+ * @param y response vector
+ * @param X design matrix
+ * @param logsigma_sq expert variance value on a log scale (if normal expert)
+ * @param mu_beta prior mean for beta
+ * @param Sigma_beta prior variance-covariance matrix for beta
+ * @param a prior shape parameter for Inverse Gamma
+ * @param b prior scale parameter for Inverse Gamma 
+ * @param z_final vector of length n of pointers to experts to which each point has been allocated
+ */
  void Gate::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
         cout<<"Updating gamma for gate "<<name<<endl;
         mat z=this->getZ(z_final);
-        if(z.n_rows==0) {
-            //DRAW FROM PRIOR
-        }
         mat Omega;
         mat myX=this->subsetX(X,this->getPointIndices(z_final));
         //cout<<"Before: "<<this->gamma<<endl;
@@ -673,76 +963,114 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
         //cout<<"After: "<<this->gamma<<endl;   
  }
 
+/**
+ * @brief MCMC step which updates gating parameters gamma and allocations z once 
+ * 
+ * @param y response vector
+ * @param X design matrix
+ * @param logsigma_sq expert variance value on a log scale (if normal expert)
+ * @param mu_beta prior mean for beta
+ * @param Sigma_beta prior variance-covariance matrix for beta
+ * @param a prior shape parameter for Inverse Gamma
+ * @param b prior scale parameter for Inverse Gamma 
+ * @param z_final vector of length n of pointers to experts to which each point has been allocated
+ * @return vector<Node*> updated vector of pointers to experts to which each point has been allocated
+ */
 vector<Node*> Gate::MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
     this->MCMC_internal(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+    cout<<"Updating allocations"<<endl;
     z_final=this->updateZ(y,X,z_final);
     return z_final;
 }
 
+/**
+ * @brief MCMC that updates gating parameters gamma, expert parameters gamma and beta, allocations N times
+ * 
+ * @param N number of times to run the MCMC chain
+ * @param y response vector
+ * @param X design matrix
+ * @param logsigma_sq expert variance value on a log scale (if normal expert)
+ * @param mu_beta prior mean for beta
+ * @param Sigma_beta prior variance-covariance matrix for beta
+ * @param a prior shape parameter for Inverse Gamma
+ * @param b prior scale parameter for Inverse Gamma 
+ * @param z_final vector of length n of pointers to experts to which each point has been allocated
+ * @return vector<Node*> updated vector of pointers to experts to which each point has been allocated
+ */
 vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
     vector<Node*> z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+    ofstream f;
+    f.open("results.json");
+    f << "[";
     for(int i=0;i<N;i++){
         z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
+        f << this->jsonify() << ",";
     }
+    //f << "[" << this->jsonify() << ",";
+    //f << this->jsonify() << ",";
+    f << "]" << endl;
+    f.close();
     return z_new;
 }
 
-string Gate::createJSON(){
-//Creating JSON output for expert//
-//create a template string
-    string GateJSON=("{type: Gate gamma: [GMA] children: }");
-//change GMA to the values of gamma separated by a blank space
-    vec myvec=this->gamma;  
+/**
+ * @brief Function that tanslates current state of the tree to a string in json format
+ * 
+ * @param indent spacing variable (always 0 see wrapper below) 
+ * @return string describing current state of the tree
+ */
+string Gate::jsonify(int indent) {
+  map<string, string> m;
+  string s;
+  m["__name__"] = "\""+this->name+"\"";
+  m["__type__"] = "\"gate\"";
+  m["_gamma_"] = "\n" + mat2arraystring(this->gamma, indent+6);
+  s = "\n" + string(indent+4, ' ') + "[";
+  string comma = "";
+  for (int i=0; i<this->countChildren(); i++) {
+      s = s + comma + "\n" + this->Children[i]->jsonify(indent+6);
+      comma=",";  
+  }
+  m["children"] = s + "\n" + string(indent+4, ' ') + "]";
+  return jsondict(m, indent);
 
-    ostringstream ss;
+} 
 
-// .st() to transpose column vector into row vector
-    myvec.st().raw_print(ss);  
+/**
+ * @brief Function that tanslates current state of the tree to a string in json format
+ * 
+ * @return string describing current state of the tree
+ */
+string Gate::jsonify() {
+  return this->jsonify(0);
+} 
 
-// get string version of vector with an end-of-line character at end
-    string s1 = ss.str();
-
-// remove the end-of-line character at end
-    string mystring = s1.substr(0, (s1.size() > 0) ? (s1.size()-1) : 0);
-
-
-//replace GMA by the string containing gamma
-    GateJSON.replace(GateJSON.find("GMA"),3,mystring);
-
-//add slots for children
-    int children=this->countChildren();
-    GateJSON.insert(GateJSON.size()-1,"[CLD ");
-    for(int i=0;i<children-2;i++){
-    GateJSON.insert(GateJSON.size()-1,"CLD ");
-    }
-    GateJSON.insert(GateJSON.size()-1,"CLD]");
-
-    return GateJSON;
-
+/**
+ * @brief Updates the allocations z with beta and sigma integrated out (only if expert models are normal models)
+ *  
+ * @param y response vector
+ * @param X design matrix
+ * @param z_final vector of length n of pointers to experts to which each point has been allocated
+ * @param mu_beta prior mean for beta
+ * @param Sigma_beta prior variance-covariance matrix for beta
+ * @param a prior shape parameter for Inverse Gamma
+ * @param b prior scale parameter for Inverse Gamma 
+ * @return vector<Node*> updated vector of pointers to experts to which each point has been allocated
+ */
+vector<Node*> Gate::updateZparamsIntegratedOut(vec y, mat X, vector<Node*> z_final,vec mu_beta, mat Sigma_beta, double a, double b){
+vector<Node*> terminals=this->getTerminalNodes();
+vec alpha(terminals.size());
+for(int j=0;j<y.size();j++){
+    for(int i=0;i<terminals.size();i++){
+        Expert* current=dynamic_cast<Expert*>(terminals[i]);
+        vector<Node*> z_helper=z_final;
+        z_helper[j]=current;
+        vec points=current->getPointIndices(z_helper);
+        double marginalY=current->expertmodel->logMarginalPosteriorY(this->subsetY(y,points), this->subsetX(X,points), mu_beta, Sigma_beta, a, b);
+        double pathProb=log(this->getPathProb(current,X.row(j)));
+        alpha[i]=marginalY+pathProb;
 }
-
-string Gate::createJSON2(string s){
-cout<<"I am gate "<< this->name <<" and I have "<<this->countChildren()<<" chidren. "<<endl;
-    for(int i=0;i<this->countChildren();i++){
-       cout<<"Considering child of "<<this->name<<" number "<<i <<" name: "<<this->Children[i]->name<<endl;
-       string ss=this->Children[i]->createJSON();
-       s.replace(s.find("CLD"),3,ss);
-      if(this->Children[i]->countChildren()!=0){
-         cout<<"I see it is a gate "<<endl;
-         cout<<"So I need to fill its CLD first"<<endl;
-         cout<<"Recursively call the same function "<<endl;
-         Gate* current=dynamic_cast<Gate*>(this->Children[i]);
-         current->createJSON2(s);
-       }
-       cout<<"I see it is an expert"<<endl;
-       cout<<"So I want to get back to the 2nd child of G1 and do the same but it doesn't happen?"<<endl;
-       cout<<"It just reaches a dead end as soon as it hits an expert in the chain"<<endl;
-    }
-    return s;   
+    z_final[j]=this->updateZ_onepoint_sample(alpha); //alpha is standardised inside there
 }
-
-
-string Gate::createJSON3(){
-    string s=this->createJSON();
-     return this->createJSON2(s);
+return z_final;
 }

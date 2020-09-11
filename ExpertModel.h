@@ -22,16 +22,21 @@ class ExpertModel{
     virtual vec logdensity(vec y, vec eta, double logsigma_sq); // returns the log density function
     virtual double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of the log likelihood wrt eta
     //virtual vec findBeta(vec y, mat X, vec phi);
-    virtual vec etafun(mat X, vec beta);
+    vec etafun(mat X, vec beta);
     virtual vec initialiseBeta(vec y, mat X, double logsigma_sq);
     virtual vec findBeta(vec y, mat X, mat* R, double logsigma_sq);
     virtual vec findBeta(vec y, mat X, double logsigma_sq);
     virtual vec findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_beta);
     virtual vec findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
+    virtual double findLogSigmaSq(vec y, mat X);
     virtual vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq);
     virtual vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
-    virtual vec logmvndensity(vec response, vec mean, mat Sigma);
-    virtual double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);
+    vec logmvndensity(vec response, vec mean, mat Sigma);
+    vec logmvndensity(vec response, vec mean, mat* R);
+    virtual double logMarginalPosteriorY(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b);
+    double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);//updates sigma
+    double IG_log(double y, double a, double b);//inverse gamma density on a log scale   
+    double transformSigma(double logsigma_sq);//Transforms sigma to a log scale
 };
 
 #endif //MOE_EXPERTMODEL_H
