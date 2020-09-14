@@ -11,6 +11,10 @@
 using namespace std;
 using namespace arma;
 
+/**
+ * @brief Construct a new Data:: Data object
+ * 
+ */
 Data::Data(){
     cout<<"Data object has been created."<<endl;
 }

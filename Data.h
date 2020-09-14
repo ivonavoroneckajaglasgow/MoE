@@ -11,9 +11,9 @@ using namespace arma;
 
 class Data {
     public:
-    mat X;
-    vec y;
-    Data();
+    mat X; //design matrix
+    vec y; //response vector
+    Data();//constructor
 };
 
 #endif //MOE_DATA_H

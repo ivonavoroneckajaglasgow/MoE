@@ -20,9 +20,19 @@ using namespace std::chrono;
 #include "Data.h"
 #include "NormalModel.h"
 
+vector<Node*> assignPoints(Gate* root, int n){
+    vector<Node*> all_experts=root->getTerminalNodes();
+    vector<Node*> z_final(n);
+   
+    for(int i=0;i<n;i++){
+        int sub=rand() % all_experts.size();
+        z_final[i]=all_experts[sub];
+        cout<<"Point "<<i<<" assigned to "<<z_final[i]->name<<endl;
+    }
+    return z_final;
+}
 
 int main(){
-cout<<"Structure in C++:"<<endl;
 
 Gate* G1= new Gate();
 G1->name="G1";
@@ -46,18 +56,21 @@ E5->name="E5";
 Expert* E6= new Expert();
 E6->name="E6";
 
+//First Tree
 G1->addChild(G2);
-G1->addChild(G3);
 G1->addChild(E1);
 G2->addChild(E2);
 G2->addChild(E3);
+
+G1->issueIDLR();
+
+//Second Tree
 G3->addChild(E4);
 G3->addChild(G4);
 G4->addChild(E5);
 G4->addChild(E6);
-cout<<"EXAMPLE STARTS HERE:"<<endl;
-cout<<"First I am going to issue left to right ID down the whole tree."<<endl;
-G1->issueIDLR();
+
+G3->issueIDLR();
 
 int n=10;
 int p=2;
@@ -66,48 +79,38 @@ mat X(n,p,fill::randn);
 vec y(n, fill::randn);
 
 cout<<"Next, create some data with "<< n<<" points and "<<p<<" explanatory variables."<<endl;
-
-vector<Node*> all_experts=G1->getTerminalNodes();
-vector<Node*> z_final(n);
-
 cout<<"Now randomly assign the "<<n <<" points to the experts in the tree."<<endl;
 
-for(int i=0;i<n;i++){
-   int sub=rand() % all_experts.size();
-   z_final[i]=all_experts[sub];
-   cout<<"Point "<<i<<" assigned to "<<z_final[i]->name<<endl;
-}
+vector<Node*> z_tree1=assignPoints(G1,n);
+vector<Node*> z_tree2=assignPoints(G3,n);
 
 cout<<"Now, I will estimate gammas for the gates based on the point allocation:"<<endl;
 
-mat z_G1=G1->getZ(z_final);
-mat z_G2=G2->getZ(z_final);
-mat z_G3=G3->getZ(z_final);
-mat z_G4=G4->getZ(z_final);
+mat z_G1=G1->getZ(z_tree1);
+mat z_G2=G2->getZ(z_tree1);
+mat z_G3=G3->getZ(z_tree2);
+mat z_G4=G4->getZ(z_tree2);
 
 mat Omega;
 
-G1->gamma=G1->findGammaMLE(G1->subsetX(X,G1->getPointIndices(z_final)),z_G1,Omega);
-cout<<"G1 gamma: "<<G1->gamma<<endl;
-G2->gamma=G1->findGammaMLE(G2->subsetX(X,G2->getPointIndices(z_final)),z_G2,Omega);
-cout<<"G2 gamma: "<<G2->gamma<<endl;
-G3->gamma=G3->findGammaMLE(G3->subsetX(X,G3->getPointIndices(z_final)),z_G3,Omega);
-cout<<"G3 gamma: "<<G3->gamma<<endl;
-G4->gamma=G4->findGammaMLE(G4->subsetX(X,G4->getPointIndices(z_final)),z_G4,Omega);
-cout<<"G4 gamma: "<<G4->gamma<<endl;
+cout<<"Now estimate gammas"<<endl;
+G1->gamma=G1->findGammaMLE(G1->subsetX(X,G1->getPointIndices(z_tree1)),z_G1,Omega);
+G2->gamma=G1->findGammaMLE(G2->subsetX(X,G2->getPointIndices(z_tree1)),z_G2,Omega);
+G3->gamma=G3->findGammaMLE(G3->subsetX(X,G3->getPointIndices(z_tree2)),z_G3,Omega);
+G4->gamma=G4->findGammaMLE(G4->subsetX(X,G4->getPointIndices(z_tree2)),z_G4,Omega);
 
-
-cout<<"Next, estimate betas for experts based on the point allocations."<<endl;
-cout<<"Set Expert Model to be Normal Family for all experts."<<endl;
-cout<<"For simplicity, keep logsigmasq="<<1<<" for all normal experts."<<endl;
+//Set tree 1 to be Normal Family
+//Set tree 2 to be Normal Model
 
 NormalFamily* NF=new NormalFamily();
 E1->expertmodel=NF;
 E2->expertmodel=NF;
 E3->expertmodel=NF;
-E4->expertmodel=NF;
-E5->expertmodel=NF;
-E6->expertmodel=NF;
+
+NormalModel* NM=new NormalModel();
+E4->expertmodel=NM;
+E5->expertmodel=NM;
+E6->expertmodel=NM;
 
 double logsigma_sq=1;
 vec mu_beta(X.n_cols);
@@ -116,18 +119,17 @@ vec diags(X.n_cols);
 diags.fill(0.0001);
 mat Sigma_beta=diagmat(diags);
 
-E1->beta=E1->expertmodel->findBeta(E1->subsetY(y,E1->getPointIndices(z_final)),E1->subsetX(X,E1->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
-cout<<"Beta for E1: "<<E1->beta<<endl;
-E2->beta=E2->expertmodel->findBeta(E2->subsetY(y,E2->getPointIndices(z_final)),E2->subsetX(X,E2->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
-cout<<"Beta for E2: "<<E2->beta<<endl;
-E3->beta=E3->expertmodel->findBeta(E3->subsetY(y,E3->getPointIndices(z_final)),E3->subsetX(X,E3->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
-cout<<"Beta for E3: "<<E3->beta<<endl;
-E4->beta=E4->expertmodel->findBeta(E4->subsetY(y,E4->getPointIndices(z_final)),E4->subsetX(X,E4->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
-cout<<"Beta for E4: "<<E4->beta<<endl;
-E5->beta=E5->expertmodel->findBeta(E5->subsetY(y,E5->getPointIndices(z_final)),E5->subsetX(X,E5->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
-cout<<"Beta for E5: "<<E5->beta<<endl;
-E6->beta=E6->expertmodel->findBeta(E6->subsetY(y,E6->getPointIndices(z_final)),E6->subsetX(X,E6->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
-cout<<"Beta for E6: "<<E6->beta<<endl;
+cout<<"Next, estimate betas for Normal Family experts based on the point allocations."<<endl;
+E1->beta=E1->expertmodel->findBeta(E1->subsetY(y,E1->getPointIndices(z_tree1)),E1->subsetX(X,E1->getPointIndices(z_tree1)),logsigma_sq,mu_beta,Sigma_beta);
+E2->beta=E2->expertmodel->findBeta(E2->subsetY(y,E2->getPointIndices(z_tree1)),E2->subsetX(X,E2->getPointIndices(z_tree1)),logsigma_sq,mu_beta,Sigma_beta);
+E3->beta=E3->expertmodel->findBeta(E3->subsetY(y,E3->getPointIndices(z_tree1)),E3->subsetX(X,E3->getPointIndices(z_tree1)),logsigma_sq,mu_beta,Sigma_beta);
+
+cout<<"Now estimate betas for Normal Model using ML."<<endl;
+E4->beta=E4->expertmodel->findBeta(E4->subsetY(y,E4->getPointIndices(z_tree2)),E4->subsetX(X,E4->getPointIndices(z_tree2)),logsigma_sq);
+E5->beta=E5->expertmodel->findBeta(E5->subsetY(y,E5->getPointIndices(z_tree2)),E5->subsetX(X,E5->getPointIndices(z_tree2)),logsigma_sq);
+E6->beta=E6->expertmodel->findBeta(E6->subsetY(y,E6->getPointIndices(z_tree2)),E6->subsetX(X,E6->getPointIndices(z_tree2)),logsigma_sq);
+
+cout<<"For simplicity, keep all logsigmasq="<<1<<" for all experts."<<endl;
 
 E1->logsigma_sq=1;
 E2->logsigma_sq=1;
@@ -136,42 +138,24 @@ E4->logsigma_sq=1;
 E5->logsigma_sq=1;
 E6->logsigma_sq=1;
 
-cout<<"Now we can update chosen betas and gammas."<<endl;
+double a=1;
+double b=2;
 
-E1->beta=E1->expertmodel->updateBeta(E1->beta,E1->subsetY(y,E1->getPointIndices(z_final)),E1->subsetX(X,E1->getPointIndices(z_final)),logsigma_sq,mu_beta,Sigma_beta);
-cout<<"New E1 beta:"<<E1->beta<<endl;
-G1->gamma=G1->updateGamma(G1->gamma,X,z_G1,Omega);
-cout<<"New G1 gamma:"<<G1->gamma<<endl;
+int N=10;
 
-cout<<"Finally, update z_final:"<<endl;
-cout<<"Choosing to update from G1 downwards,but could do any other gate"<<endl;
-
-vector<Node*> z_new=G1->updateZ(y,X,z_final);
-
-cout<<"Look at old allocations vs new:"<<endl;
-
-for(int i=0;i<z_final.size();i++){
-       cout<<"Point "<<i<<" before was in "<<z_final[i]->name<<" and now is in "<<z_new[i]->name<<endl;
+cout<<"Try MCMC for tree 1."<<endl;
+vector<Node*> z_tree1_updated=G1->MCMC(N,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_tree1);
+for(int i=0;i<z_tree1.size();i++){
+    cout<<"Point "<<i<<" initially was in "<<z_tree1[i]->name<<" and now is in "<<z_tree1_updated[i]->name<<endl;
 }
 
-cout<<"Now one can use getZ() to get new matrix z for any gate based on z_new"<<endl;
+cout<<"Try MCMC for tree 2."<<endl;
+vector<Node*> z_tree2_updated=G3->MCMC(N,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_tree1);
+for(int i=0;i<z_tree2.size();i++){
+    cout<<"Point "<<i<<" initially was in "<<z_tree2[i]->name<<" and now is in "<<z_tree2_updated[i]->name<<endl;
+}
 
 
-mat X_new(n,p,fill::randn);
-vec yhat=G1->predict(X_new);
-yhat.print("yhat:");
-
-vector<Node*> z_MCMC=G1->MCMC(10,y,X,1,mu_beta,Sigma_beta,1,2,z_final);
-
-ofstream f;
-    f.open("results.json");
-    f << "[" << G1->jsonify() << ",";
-    f << G1->jsonify() << ",";
-    f << G1->jsonify() << "]" << endl;
-    f.close();
-
-    vec alpha("0.1 0.2 0.2 0.1 0.2 0.2");
-    cout<<G1->updateZ_onepoint_sample(alpha)->name<<endl;
 
 return 0;
 }
