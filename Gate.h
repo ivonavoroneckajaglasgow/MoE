@@ -71,6 +71,8 @@ class Gate: public Node{
     string jsonify(int indent); //produces a JSON string describing the current state
     string jsonify();           //wrapper for the above function
     vector<Node*> updateZparamsIntegratedOut(vec y, mat X, vector<Node*> z_final,vec mu_beta, mat Sigma_beta, double a, double b);//updates allocations z with parameters beta and sigma integrated out (Normal Model only)
+    vector<int> describeTreeInternal(vector<int>* description);//helps describe the tree as a vector of integers
     };
+    
 
 #endif //MOE_GATE_H

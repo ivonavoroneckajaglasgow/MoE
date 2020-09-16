@@ -408,3 +408,80 @@ string mat2arraystring(Mat<double> A, int indent)
   }
   return os.str();
 } 
+
+/**
+ * @brief Function which constructs a numeric vector describing a tree
+ * This function returns a vector containing the number of children of each node in the tree
+ * To do so, the describeTreeInternal() is called on expert and gate level
+ * @param description_test vector to be filled with integers describing a tree
+ * @return vector<int> pointer to a vector of integers with the number of children of the gate
+ */
+vector<int> Node::describeTree(){
+    vector <int> description_test;
+    description_test=this->describeTreeInternal(&description_test);
+    return description_test;
+}
+
+/**
+ * @brief Function which helps construct a numeric vector describing a tree 
+ * Handled at Expert and Node levels
+ * @param description vector to be filled with integers describing a tree
+ * @return vector<int> pointer to a vector of integers with the number of children of the gate
+ */
+vector<int> Node::describeTreeInternal(vector<int>* description){
+   vector<int> a;
+   return a;
+}
+
+/**
+ * @brief Turns a numerical vector describing a tree into a tree
+ * Turns a numerical vector of integers (as produced by Gate->describeTree()) into a tree object
+ * @param description vector of integers containing the number of children of each node
+ * @return Node* pointer to the root node of the newly created tree
+ */
+Node* Node::translateTree(vector<int> description) {
+    //if(accumulate(description.begin(), description.end(), 0)!=description.size()-1)
+      //  cout<<"Warning: the description vector is not complete. All missing entries will be replaced by 1, i.e. an Expert will be added."<<endl;
+    int ecount=1;
+    int gcount=1;
+    if (description.size()==0)
+        return 0;
+    if (description[0]==0){
+        Expert* e= new Expert();
+        e->name="E" + std::to_string(ecount++);
+        return e;
+    }
+    Gate* root = new Gate();
+    root->name="G" + std::to_string(gcount++);
+    this->populateGate(root, description, 0, &gcount, &ecount);
+    return root;
+}
+
+/**
+ * @brief Internal function, used in the translateTree() function
+ * Populates the supplied gate with children. Decides on whether to add a Gate or an Expert as a child based
+ * on the supplied description vector
+ * @param parent the gate to be populated
+ * @param description vector of integers containing the number of children of each node
+ * @param start integer that denotes the position of the description vector
+ * @param gcount pointer to a variable, which counts/tracks the number of gates in the tree
+ * @param ecount pointer to a variable, which counts/tracks the number of experts in the tree
+ * @return int returns the integer denoting last position in the description vector
+ */
+int Node::populateGate(Gate* parent, vector<int> description, int start, int* gcount, int* ecount) {
+     int pos =  start;
+    for (int i=0; i<description[start]; i++) {
+        pos++;
+        if (pos >= description.size() || description[pos] == 0) {
+            Expert* e= new Expert();
+            e->name="E" + std::to_string((*ecount)++);
+            parent->addChild(e);
+        } else {
+            Gate* g = new Gate();
+            g->name="G" + std::to_string((*gcount)++);
+            parent->addChild(g);
+            pos = populateGate(g, description, pos, gcount, ecount);
+        }
+    }
+     return pos;
+}

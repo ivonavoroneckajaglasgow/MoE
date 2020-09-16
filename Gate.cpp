@@ -1074,3 +1074,22 @@ for(int j=0;j<y.size();j++){
 }
 return z_final;
 }
+
+/**
+ * @brief An internal function which helps to construct a numeric vector describing a tree
+ * This function is called at the node level and returns a vector containing the number of children 
+ * of the gate. Then, the same is performed for each of the children of the gate. If the child is an expert,
+ * the describeTreeInternal function will be called from the expert level
+ * @param description vector to be filled with integers describing a tree
+ * @return vector<int> pointer to a vector of integers with the number of children of the gate
+ */
+vector<int> Gate::describeTreeInternal(vector<int>* description){
+
+        description->push_back(static_cast<int>(Children.size()));
+
+        for(int i=0;i<Children.size();i++){
+            Children[i]->describeTreeInternal(description);
+        }
+
+        return *description;
+};

@@ -32,6 +32,10 @@ vector<Node*> assignPoints(Gate* root, int n){
     return z_final;
 }
 
+vec stdToArmaVec(vector<int> a){
+    return conv_to<vec>::from(a);
+}
+
 int main(){
 
 Gate* G1= new Gate();
@@ -154,6 +158,14 @@ vector<Node*> z_tree2_updated=G3->MCMC(N,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,
 for(int i=0;i<z_tree2.size();i++){
     cout<<"Point "<<i<<" initially was in "<<z_tree2[i]->name<<" and now is in "<<z_tree2_updated[i]->name<<endl;
 }
+
+cout<<"Get a vector that describes Tree 1"<<endl;
+vector<int> desc1=G1->describeTree();
+vec desc1_arma=stdToArmaVec(desc1); //if want arma
+desc1_arma.print("Result:");
+
+cout<<"Recreate the same tree using the created vector"<<endl;
+Node* G1_copy=G1->translateTree(desc1); //can use any node to call translate tree
 
 
 

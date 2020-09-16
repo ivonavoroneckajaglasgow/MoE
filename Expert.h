@@ -34,6 +34,7 @@ class Expert: public Node{
     mat pi_calculator(mat X, vec gamma);//returns a matrix of ones (used in multiplication when calculating path probabilities)
     void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates beta and sigma
     string jsonify(int indent); //produces a JSON string describing the current state
+    vector<int> describeTreeInternal(vector<int>* description);//helps describe the tree as a vector of integers
 };
 
 #endif //MOE_EXPERT_H

@@ -151,3 +151,16 @@ void Expert::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Si
   return jsondict(m, indent);
 } 
 
+/**
+ * @brief An internal function which helps to construct a numeric vector describing a tree. Returns zero for 
+ * an expert
+ * This function is called at the node level and returns a vector containing the number of children 
+ * of the gate. Then, the same is performed for each of the children of the gate. If the child is a gate,
+ * the describeTreeInternal function will be called from the gate level
+ * @param description vector to be filled with integers describing a tree
+ * @return vector<int> pointer to a vector with an entry of zero
+ */
+vector<int> Expert::describeTreeInternal(vector<int>* description){
+    description->push_back(0);
+    return *description;
+}

@@ -47,6 +47,10 @@ class Node{
     virtual void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates parameters of a node 
     virtual mat getZ(vector<Node*> z_final);//returns a matrix of allocations z
     virtual string jsonify(int indent);//writes the current state of the tree as a json format string
+    vector<int> describeTree(); //describes the tree as a vector of integers
+    virtual vector<int> describeTreeInternal(vector<int>* description); //helper for the above
+    int populateGate(Gate* parent, vector<int> description, int start, int* gcount, int* ecount); //populates the supplied gate with children
+    Node* translateTree(vector<int> description); //translates a vector of integers into a tree
 };
 
 string jsondict(map<string, string> m, int indent);
