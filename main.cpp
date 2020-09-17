@@ -167,6 +167,9 @@ desc1_arma.print("Result:");
 cout<<"Recreate the same tree using the created vector"<<endl;
 Node* G1_copy=G1->translateTree(desc1); //can use any node to call translate tree
 
+cout<<"Create a new tree of depth 2 and binary splits"<<endl;
+Node* CreatedTree=G1->createTree(2,2);
+
 
 
 return 0;

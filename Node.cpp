@@ -485,3 +485,41 @@ int Node::populateGate(Gate* parent, vector<int> description, int start, int* gc
     }
      return pos;
 }
+
+/**
+ * @brief A wrapper for createTreeInternal
+ * Initialises gcount and ecount automatically
+ * @param depth sets the depth of the tree to be created
+ * @param nchildren sets the number of children to add at each split of the tree
+ * @return Node* pointer to the root node of the newly created tree
+ */
+
+Node* Node::createTree(int depth, int nchildren){
+    int gcount=0;
+    int ecount=0;
+    Node* root;
+    root=this->createTreeInternal(depth,nchildren,&gcount,&ecount);
+    return root;
+}
+/**
+ * @brief Creates a tree object given a set of instructions
+ * Creates a node, which can be either an expert (if depth is zero) or a gate
+ * @param depth sets the depth of the tree to be created
+ * @param nchildren sets the number of children to add at each split of the tree
+ * @param gcount pointer to a variable, which counts/tracks the number of gates in the tree
+ * @param ecount pointer to a variable, which counts/tracks the number of experts in the tree
+ * @return Node* pointer to the root node of the newly created tree
+ */
+Node* Node::createTreeInternal(int depth, int nchildren, int* gcount, int* ecount)
+{
+    if (depth==0){
+        Expert* E=new Expert();
+        E->name="E" + std::to_string((*ecount)++);
+        return E;
+    }
+    Gate* root = new Gate();
+    root->name="G" + std::to_string((*gcount)++);
+    for (int i=0; i<nchildren; i++)
+        root->addChild(createTreeInternal(depth-1, nchildren, gcount, ecount));
+    return root;
+} 
