@@ -19,6 +19,36 @@ Expert::Expert(){
 }
 
 /**
+ * @brief Construct a new Expert:: Expert object
+ * Copy constructor
+ * @param expert 
+ */
+Expert::Expert(const Expert &expert){
+ cout<<"Expert copy has been created."<<endl;
+}
+
+void Expert::deleteParent(){
+    this->Parent=NULL;
+}
+
+/**
+ * @brief Creates a new expert that is a copy of this one
+ * 
+ * @return Expert* pointer to the new expert
+ */
+Expert* Expert::copyThis(){
+    cout<<"Copying expert "<<name<<endl;
+    Expert* Copy=new Expert();
+    Copy->name=this->name;
+    Copy->beta=this->beta;
+    Copy->logsigma_sq=this->logsigma_sq;
+    Copy->expertmodel=this->expertmodel;
+    Copy->y=this->y;
+    Copy->X=this->X;
+    return Copy;
+}
+
+/**
  * @brief Calculates Xbeta
  * 
  * @param X design matrix

@@ -53,7 +53,6 @@ class Node{
     Node* translateTree(vector<int> description); //translates a vector of integers into a tree
     static Node* createTreeInternal(int depth, int nchildren, int* gcount, int* ecount); //wrapper for the function below
     Node* createTree(int depth, int nchildren); //creates a tree object given a set of instructions
-    
 };
 
 string jsondict(map<string, string> m, int indent);

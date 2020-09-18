@@ -170,6 +170,67 @@ Node* G1_copy=G1->translateTree(desc1); //can use any node to call translate tre
 cout<<"Create a new tree of depth 2 and binary splits"<<endl;
 Node* CreatedTree=G1->createTree(2,2);
 
+cout<<"Create tree to practise swapping gates on"<<endl;
+Gate* G_1=new Gate();
+Gate* G_2=new Gate();
+Gate* G_3=new Gate();
+Expert* E_1=new Expert();
+Expert* E_2=new Expert();
+Expert* E_3=new Expert();
+Expert* E_4=new Expert();
+G_1->name="G_1";
+G_2->name="G_2";
+G_3->name="G_3";
+E_1->name="E_1";
+E_2->name="E_2";
+E_3->name="E_3";
+E_4->name="E_4";
+
+G_1->addChild(E_1);
+G_1->addChild(G_2);
+G_2->addChild(E_2);
+G_2->addChild(G_3);
+G_3->addChild(E_3);
+G_3->addChild(E_4);
+
+G_1->issueID();
+G_1->issueIDLR();
+
+//Test copy constructor and delete children/parent:
+Gate* G_1copy=G_1->copyThis();
+Expert* E_1copy=E_1->copyThis();
+
+
+vector<int> description=G_1->describeTree();
+vec description_arma=stdToArmaVec(description);
+description_arma.print("Describing vector for original G_1:"); //this will stay the same, just with a swap
+
+vector<Node*> all_nodes=G_1->getDescendants();
+for(int i=0;i<all_nodes.size();i++)
+cout<<all_nodes[i]->name<<" "<<all_nodes[i]->idLR<<endl;
+vec neworder("0 3 4 1 2 5");
+vector<Node*> adj_nodes(neworder.size());
+for(int i=0; i<neworder.size();i++){
+adj_nodes[i]=all_nodes[neworder[i]];
+cout<<adj_nodes[i]->name<<endl;
+}
+
+double loglik=G1->TotalLogLikelihood(y,X);
+cout<<"Loglik of the whole tree "<<loglik<<endl;
+
+//Maybe I can stick nodes in the right order into a vector and then create a tree from it?
+
+//We want a function that takes in the root node and returns:
+//G_1->addChild(E_1);
+//G_1->addChild(G_3);
+//G_3->addChild(E_3);
+//G_3->addChild(G_2);
+//G_2->addChild(E_2);
+//G_2->addChild(E_4);
+
+
+
+
 
 
 return 0;

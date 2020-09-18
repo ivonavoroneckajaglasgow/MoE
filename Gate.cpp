@@ -24,6 +24,29 @@ Gate::Gate(){
 }
 
 /**
+ * @brief Construct a new Gate:: Gate object
+ * Copy constructor
+ * @param gate 
+ */
+Gate::Gate(const Gate &gate){
+    cout<<"A copy of Gate has been created."<<endl;
+}
+
+/**
+ * @brief Creates a new gate that is a copy of this one
+ * 
+ * @return Gate::Gate* pointer to the new gate 
+ */
+ Gate* Gate::copyThis(){
+     cout<<"Making a copy of "<< name<<endl;
+     Gate* Copy=new Gate();
+     Copy->name=this->name;
+     Copy->gamma=this->gamma;
+     Copy->Omega=this->Omega;
+     return Copy;
+ }
+ 
+/**
  * @brief Add a child to the gate and make gate the parent of child
  * 
  * @param aChild pointer to the node to be added as a child 
@@ -32,6 +55,18 @@ void Gate::addChild(Node* aChild){
     this -> Children.push_back(aChild);
     aChild -> Parent = this;
     cout<<"Child "<<aChild->name<< " has been added to the parent "<<name<<"."<<endl;
+}
+
+/**
+ * @brief Deletes children and itself as a parent
+ * 
+ */
+void Gate::deleteChildren(){
+    for(int i=0;i<this->countChildren();i++){
+        this->Children[i]->Parent=NULL;
+    }
+    vector<Node*> empty;
+    this->Children=empty;
 }
 
 /**
@@ -1093,3 +1128,30 @@ vector<int> Gate::describeTreeInternal(vector<int>* description){
 
         return *description;
 };
+
+/**
+ * @brief Calculates the brute force log likelihood for the whole tree
+ * 
+ * @param y response vector
+ * @param X design matrix
+ * @return double log likelihood value
+ */
+double Gate::TotalLogLikelihood(vec y, mat X){
+    vector<Node*> terminals=this->getTerminalNodes();
+    int n=static_cast<int>(X.n_rows);
+    vec result(n);
+    vec result_perpoint(terminals.size());
+    for(int j=0;j<n;j++){
+        result_perpoint.zeros();
+    for(int i=0;i<terminals.size();i++){
+        Expert* current=dynamic_cast<Expert*>(terminals[i]);
+        vec index(1);
+        index.fill(j);
+        mat myX=X.row(j);
+        vec myY=this->subsetY(y,index);
+        result_perpoint[i]=this->getPathProb(current,myX)*as_scalar(current->expertmodel->density(myY,myX*(current->beta),current->logsigma_sq));
+    }
+        result[j]=log(sum(result_perpoint));
+    }
+ return sum(result);  
+}

@@ -15,9 +15,12 @@ using namespace arma;
 class Gate: public Node{
     public:
     Gate();    //constructor
+    Gate(const Gate &gate); //copy constructor
     vec gamma; //parameter associated with this gate length rp
     mat Omega; //prior variance for gamma
+    Gate* copyThis();            //creates a new gate that is a copy of this one
     void addChild(Node* aChild); //function that adds a child to the gate and gate as a parent to the child
+    void deleteChildren();       //deletes all children and itself as a parent
     void printChildren();        //prints children names 
     void printDescendants();     //prints descendant names
     void printTerminalNodes();   //prints termial nodes (experts) names
@@ -72,6 +75,7 @@ class Gate: public Node{
     string jsonify();           //wrapper for the above function
     vector<Node*> updateZparamsIntegratedOut(vec y, mat X, vector<Node*> z_final,vec mu_beta, mat Sigma_beta, double a, double b);//updates allocations z with parameters beta and sigma integrated out (Normal Model only)
     vector<int> describeTreeInternal(vector<int>* description);//helps describe the tree as a vector of integers
+    double TotalLogLikelihood(vec y, mat X); //calculates the brute force log likelihood for the whole tree
     };
     
 
