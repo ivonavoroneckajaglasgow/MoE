@@ -19,6 +19,7 @@ class Node{
     int idLR;    //left to right ID 
     vector<Node*>  Children;//vector of pointers to children
     Gate* Parent;           //pointer to parent
+    virtual Node* copyThis();         //creates a deep copy of the object
     void printParent();               //prints the name of the parent
     virtual void printDescendants();  //prints names of descendants 
     virtual void printTerminalNodes();//prints names of terminal nodes

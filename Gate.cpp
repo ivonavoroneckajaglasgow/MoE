@@ -47,6 +47,34 @@ Gate::Gate(const Gate &gate){
  }
  
 /**
+ * @brief Creates a copy of the gate and all its descedants and stores that in Copy
+ * 
+ * @param Copy pointer to the copy of the gate with its descendants
+ */
+void Gate::copyStructure(Gate* Copy){ 
+    for(int i=0; i<this->countChildren();i++){
+         if(this->Children[i]->countChildren()==0){
+             Copy->addChild(this->Children[i]->copyThis());
+         }else{
+             Copy->addChild(this->Children[i]->copyThis());
+             cout<<"I see that "<<Copy->Children[i]->name<<" is a gate, so I continue"<<endl;
+             dynamic_cast<Gate*>(this->Children[i])->copyStructure(dynamic_cast<Gate*>(Copy->Children[i]));
+         }
+     }
+ }
+
+/**
+ * @brief Wrapper for copyStructure(Gate* gate)
+ * 
+ * @return Gate* pointer to the copied gate with all its descendants
+ */
+ Gate* Gate::copyStructure(){
+     Gate* Copy=this->copyThis();
+     this->copyStructure(Copy);
+     return Copy;
+ }
+
+/**
  * @brief Add a child to the gate and make gate the parent of child
  * 
  * @param aChild pointer to the node to be added as a child 
@@ -1154,4 +1182,34 @@ double Gate::TotalLogLikelihood(vec y, mat X){
         result[j]=log(sum(result_perpoint));
     }
  return sum(result);  
+}
+
+/**
+ * @brief Swaps the replace'th child of gate by this gate and tidies up the tree
+ * 
+ * @param gate the gate to move level up
+ * @param replace which child of gate to be replaced
+ * @return Gate* pointer to the new gate with its rearanged descendants 
+ */
+Gate* Gate::swap(Gate* gate, int replace){
+    int which=this->whichChild(gate);
+    cout<<gate->name<<" is the "<<which<<"-th child of "<<name<<endl;
+    Gate* Copy=this->copyStructure();
+    Gate* NewRoot= dynamic_cast<Gate*>(Copy->Children[which]);
+    Copy->issueIDLR();
+    cout<<"My new root is "<<NewRoot->name<<endl;
+    NewRoot->printChildren();
+    cout<<"Replace the "<<replace<<"-th child "<<NewRoot->Children[replace]->name<< " of the new root with "<<Copy->name<<endl;
+    Node* Omitted=NewRoot->Children[replace];
+    NewRoot->Children[replace]=Copy;
+    NewRoot->printChildren();
+    dynamic_cast<Gate*>(NewRoot->Children[replace])->printChildren();
+    cout<<"Remove "<<NewRoot->name<<" as a child of "<<Copy->name<<" and replace it by the omitted "<< Omitted->name<<endl;
+    int which2=as_scalar(dynamic_cast<Gate*>(NewRoot->Children[replace])->whichChild(Copy->Children[which]));
+    dynamic_cast<Gate*>(NewRoot->Children[replace])->Children[which2]=Omitted;
+    dynamic_cast<Gate*>(NewRoot->Children[replace])->printChildren();
+    cout<<"Descendants of new root "<<NewRoot->name<<endl;
+    NewRoot->printDescendants();
+    NewRoot->issueIDLR();
+    return NewRoot;
 }

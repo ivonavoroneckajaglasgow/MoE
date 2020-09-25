@@ -38,6 +38,15 @@ void Node::printTerminalNodes(){
 }
 
 /**
+ * @brief Creates a deep copy of the object
+ * Handled at Gate and Expert levels
+ * @return Node* pointer to the object copy
+ */
+Node* Node::copyThis(){
+    return 0;
+}
+
+/**
  * @brief Returns a pointer to parent node
  * 
  * @return Gate* pointer to parent node

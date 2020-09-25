@@ -19,6 +19,8 @@ class Gate: public Node{
     vec gamma; //parameter associated with this gate length rp
     mat Omega; //prior variance for gamma
     Gate* copyThis();            //creates a new gate that is a copy of this one
+    void copyStructure(Gate* Copy);//creates a copy of the gate and all its descedants and stores that in Copy
+    Gate* copyStructure();       //wrapper for the above
     void addChild(Node* aChild); //function that adds a child to the gate and gate as a parent to the child
     void deleteChildren();       //deletes all children and itself as a parent
     void printChildren();        //prints children names 
@@ -76,6 +78,7 @@ class Gate: public Node{
     vector<Node*> updateZparamsIntegratedOut(vec y, mat X, vector<Node*> z_final,vec mu_beta, mat Sigma_beta, double a, double b);//updates allocations z with parameters beta and sigma integrated out (Normal Model only)
     vector<int> describeTreeInternal(vector<int>* description);//helps describe the tree as a vector of integers
     double TotalLogLikelihood(vec y, mat X); //calculates the brute force log likelihood for the whole tree
+    Gate* swap(Gate* gate, int replace); //swaps the replace'th child of gate by this
     };
     
 

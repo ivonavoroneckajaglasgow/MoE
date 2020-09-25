@@ -218,7 +218,22 @@ cout<<adj_nodes[i]->name<<endl;
 double loglik=G1->TotalLogLikelihood(y,X);
 cout<<"Loglik of the whole tree "<<loglik<<endl;
 
-//Maybe I can stick nodes in the right order into a vector and then create a tree from it?
+vec somebeta2("1 1");
+E_1->beta=somebeta2;
+
+
+Gate* Copy=G_1->copyStructure();
+
+vec somebeta("5 5");
+cout<<"Beta of the expert child of copy"<<dynamic_cast<Expert*>(Copy->Children[0])->beta<<endl;
+cout<<"Set it to be something else."<<endl;
+dynamic_cast<Expert*>(Copy->Children[0])->beta=somebeta;
+cout<<"Current beta of the expert child of copy"<<dynamic_cast<Expert*>(Copy->Children[0])->beta<<endl;
+cout<<"Check if that affects E1"<<endl;
+cout<<E_1->beta<<endl;
+
+Gate* Swap=G_2->swap(G_3,1);
+
 
 //We want a function that takes in the root node and returns:
 //G_1->addChild(E_1);
