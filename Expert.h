@@ -24,6 +24,7 @@ class Expert: public Node{
     double logsigma_sq;//variance parameter  
     ExpertModel* expertmodel; //the model for this expert
     Expert();                     //constructor
+    ~Expert();                    //destructor
     Expert(const Expert &expert); //copy constructor
     Expert* copyThis(); //creates a new expert that is a copy of this one
     void deleteParent(); //deletes parent

@@ -99,7 +99,7 @@ mat Omega;
 
 cout<<"Now estimate gammas"<<endl;
 G1->gamma=G1->findGammaMLE(G1->subsetX(X,G1->getPointIndices(z_tree1)),z_G1,Omega);
-G2->gamma=G1->findGammaMLE(G2->subsetX(X,G2->getPointIndices(z_tree1)),z_G2,Omega);
+G2->gamma=G2->findGammaMLE(G2->subsetX(X,G2->getPointIndices(z_tree1)),z_G2,Omega);
 G3->gamma=G3->findGammaMLE(G3->subsetX(X,G3->getPointIndices(z_tree2)),z_G3,Omega);
 G4->gamma=G4->findGammaMLE(G4->subsetX(X,G4->getPointIndices(z_tree2)),z_G4,Omega);
 
@@ -193,58 +193,57 @@ G_2->addChild(G_3);
 G_3->addChild(E_3);
 G_3->addChild(E_4);
 
+G_1->Parent=NULL;
 G_1->issueID();
 G_1->issueIDLR();
 
-//Test copy constructor and delete children/parent:
-Gate* G_1copy=G_1->copyThis();
-Expert* E_1copy=E_1->copyThis();
+E_1->expertmodel=NF;
+E_2->expertmodel=NF;
+E_3->expertmodel=NF;
+E_4->expertmodel=NF;
 
+vector<Node*> z_assign=assignPoints(G_1,10);
 
-vector<int> description=G_1->describeTree();
-vec description_arma=stdToArmaVec(description);
-description_arma.print("Describing vector for original G_1:"); //this will stay the same, just with a swap
+E_1->beta=E_1->expertmodel->findBeta(E_1->subsetY(y,E_1->getPointIndices(z_assign)),E_1->subsetX(X,E_1->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+E_2->beta=E_2->expertmodel->findBeta(E_2->subsetY(y,E_2->getPointIndices(z_assign)),E_2->subsetX(X,E_2->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+E_3->beta=E_3->expertmodel->findBeta(E_3->subsetY(y,E_3->getPointIndices(z_assign)),E_3->subsetX(X,E_3->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+E_4->beta=E_4->expertmodel->findBeta(E_4->subsetY(y,E_4->getPointIndices(z_assign)),E_4->subsetX(X,E_4->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+E_1->logsigma_sq=1;
+E_2->logsigma_sq=1;
+E_3->logsigma_sq=1;
+E_4->logsigma_sq=1;
 
-vector<Node*> all_nodes=G_1->getDescendants();
-for(int i=0;i<all_nodes.size();i++)
-cout<<all_nodes[i]->name<<" "<<all_nodes[i]->idLR<<endl;
-vec neworder("0 3 4 1 2 5");
-vector<Node*> adj_nodes(neworder.size());
-for(int i=0; i<neworder.size();i++){
-adj_nodes[i]=all_nodes[neworder[i]];
-cout<<adj_nodes[i]->name<<endl;
+mat z_G_1=G_1->getZ(z_assign);
+mat z_G_2=G_2->getZ(z_assign);
+mat z_G_3=G_3->getZ(z_assign);
+
+G_1->gamma=G_1->findGammaMLE(G_1->subsetX(X,G_1->getPointIndices(z_assign)),z_G_1,Omega);
+G_2->gamma=G_2->findGammaMLE(G_2->subsetX(X,G_2->getPointIndices(z_assign)),z_G_2,Omega);
+G_3->gamma=G_3->findGammaMLE(G_3->subsetX(X,G_3->getPointIndices(z_assign)),z_G_3,Omega);
+
+vector<Node*> z_assign_new=G_1->MCMC(100,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_assign);
+for(int i=0;i<z_assign.size();i++){
+    cout<<"Point "<<i<<" initially was in "<<z_tree1[i]->name<<" and now is in "<<z_assign_new[i]->name<<endl;
 }
 
-double loglik=G1->TotalLogLikelihood(y,X);
-cout<<"Loglik of the whole tree "<<loglik<<endl;
-
-vec somebeta2("1 1");
-E_1->beta=somebeta2;
-
-
-Gate* Copy=G_1->copyStructure();
-
-vec somebeta("5 5");
-cout<<"Beta of the expert child of copy"<<dynamic_cast<Expert*>(Copy->Children[0])->beta<<endl;
-cout<<"Set it to be something else."<<endl;
-dynamic_cast<Expert*>(Copy->Children[0])->beta=somebeta;
-cout<<"Current beta of the expert child of copy"<<dynamic_cast<Expert*>(Copy->Children[0])->beta<<endl;
-cout<<"Check if that affects E1"<<endl;
-cout<<E_1->beta<<endl;
-
-Gate* Swap=G_2->swap(G_3,1);
+//G_1->updateSwap(G_2,G_3,1,y,X,z_assign);
+//G_1->printDescendants();
+//cout<<"The parent of "<<G_1->Children[1]->Children[0]->name<<endl;
+//cout<<"is "<<G_1->Children[1]->Children[0]->Parent->name<<endl;
 
 
-//We want a function that takes in the root node and returns:
-//G_1->addChild(E_1);
-//G_1->addChild(G_3);
-//G_3->addChild(E_3);
-//G_3->addChild(G_2);
-//G_2->addChild(E_2);
-//G_2->addChild(E_4);
-
-
-
+G_1->updateSwap(G_1,G_2,1,y,X,z_assign);
+cout<<"descendants:"<<endl;
+G_1->printDescendants();
+//vec aa=stdToArmaVec(Trial->describeTree());
+//aa.print("dscription:");
+cout<<"descendants:"<<endl;
+G_2->printDescendants();
+delete G_2;
+cout<<"descendants after deleting:"<<endl;
+G_2->printDescendants();
+cout<<"name after deleting:"<<endl;
+cout<<G_2->name<<endl;
 
 
 

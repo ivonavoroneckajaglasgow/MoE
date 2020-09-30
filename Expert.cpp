@@ -15,7 +15,15 @@ using namespace arma;
  * 
  */
 Expert::Expert(){
-    cout<<"Expert has been created."<<endl;
+    //cout<<"Expert has been created."<<endl;
+}
+
+/**
+ * @brief Destroy the Expert:: Expert object
+ * 
+ */
+Expert::~Expert(){
+    //cout<<"Expert has been deleted."<<endl;
 }
 
 /**
@@ -37,7 +45,7 @@ void Expert::deleteParent(){
  * @return Expert* pointer to the new expert
  */
 Expert* Expert::copyThis(){
-    cout<<"Copying expert "<<name<<endl;
+    //cout<<"Copying expert "<<name<<endl;
     Expert* Copy=new Expert();
     Copy->name=this->name;
     Copy->beta=this->beta;

@@ -20,8 +20,17 @@ using namespace arma;
  * 
  */
 Gate::Gate(){
-    cout<<"Gate has been created."<<endl;
+    //cout<<"Gate has been created."<<endl;
 }
+
+/**
+ * @brief Destroy the Gate:: Gate object
+ * 
+ */
+Gate::~Gate(){
+    cout<<"Gate has been deleted."<<endl;
+}
+
 
 /**
  * @brief Construct a new Gate:: Gate object
@@ -38,7 +47,7 @@ Gate::Gate(const Gate &gate){
  * @return Gate::Gate* pointer to the new gate 
  */
  Gate* Gate::copyThis(){
-     cout<<"Making a copy of "<< name<<endl;
+     //cout<<"Making a copy of "<< name<<endl;
      Gate* Copy=new Gate();
      Copy->name=this->name;
      Copy->gamma=this->gamma;
@@ -57,7 +66,7 @@ void Gate::copyStructure(Gate* Copy){
              Copy->addChild(this->Children[i]->copyThis());
          }else{
              Copy->addChild(this->Children[i]->copyThis());
-             cout<<"I see that "<<Copy->Children[i]->name<<" is a gate, so I continue"<<endl;
+             //cout<<"I see that "<<Copy->Children[i]->name<<" is a gate, so I continue"<<endl;
              dynamic_cast<Gate*>(this->Children[i])->copyStructure(dynamic_cast<Gate*>(Copy->Children[i]));
          }
      }
@@ -74,6 +83,13 @@ void Gate::copyStructure(Gate* Copy){
      return Copy;
  }
 
+void Gate::replaceGate(Gate* replacement){
+     this->name=replacement->name;
+     this->gamma=replacement->gamma;
+     this->Omega=replacement->Omega;
+     this->Children=replacement->Children;
+}
+
 /**
  * @brief Add a child to the gate and make gate the parent of child
  * 
@@ -82,7 +98,7 @@ void Gate::copyStructure(Gate* Copy){
 void Gate::addChild(Node* aChild){
     this -> Children.push_back(aChild);
     aChild -> Parent = this;
-    cout<<"Child "<<aChild->name<< " has been added to the parent "<<name<<"."<<endl;
+    //cout<<"Child "<<aChild->name<< " has been added to the parent "<<name<<"."<<endl;
 }
 
 /**
@@ -919,12 +935,16 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
  * @brief returns an integer indicating which child is node
  * used to check whether node is in the reference split or not
  * @param node node to check
- * @return int integer indicating which child is node
+ * @return int integer indicating which child is node, if not a child returns -1
  */
  int Gate::whichChild(Node* node){
      vec children=this->getChildrenIndicesLR();
      uvec index=find(children==node->idLR);
+     if(index.n_rows==0){
+        return -1;
+     }else{
      return static_cast<int>(as_scalar(index));
+     }
  }
 
 /**
@@ -937,16 +957,23 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
  */
  double Gate::getPathProb_internal(Node* node, mat X, double result){ //just one i at a time
      //cout<<"Inside Internal"<<endl;
+     //cout<<"This idLR: "<<this->idLR<<endl;
+     //cout<<"Node idLR: "<<node->idLR<<endl;
      if(node->idLR!=this->idLR){
+         //cout<<"The idLR are not the same"<<endl;
          Gate* parent=node->getParent();
+         //cout<<"Consider "<<node->name<<endl;
          int   which=parent->whichChild(node);
+         //cout<<node->name<<" is the "<<which<<"th child of "<<parent->name<<endl;
          vec pi_helper=vectorise(parent->pi_calculator(X,parent->gamma));
+         //pi_helper.print("pi helper:");
          double pi;
          if(which==0){
               pi=as_scalar(1-sum(pi_helper));
          }else{
              pi=as_scalar(pi_helper[which-1]);
          }
+         //cout<<"my pi is "<<pi<<endl;
          result=result*pi;
          return this->getPathProb_internal(parent,X,result); //put return here 
      }else{ 
@@ -1164,23 +1191,39 @@ vector<int> Gate::describeTreeInternal(vector<int>* description){
  * @param X design matrix
  * @return double log likelihood value
  */
-double Gate::TotalLogLikelihood(vec y, mat X){
+double Gate::totalLogLikelihood(vec y, mat X){
+    //cout<<"Starting calculation"<<endl;
     vector<Node*> terminals=this->getTerminalNodes();
+    //for(int i=0;i<terminals.size();i++) cout<<terminals[i]->name<<endl;
     int n=static_cast<int>(X.n_rows);
+    //cout<<"n "<<n<<endl;
     vec result(n);
     vec result_perpoint(terminals.size());
     for(int j=0;j<n;j++){
+        //cout<<"j="<<j<<endl;
         result_perpoint.zeros();
     for(int i=0;i<terminals.size();i++){
+        //cout<<"i="<<i<<endl;
         Expert* current=dynamic_cast<Expert*>(terminals[i]);
+        //cout<<"Current name "<<current->name<<endl;
+        //cout<<"beta "<<current->beta<<endl;
+        //cout<<"sigma"<<current->logsigma_sq<<endl;
+        //cout<<"idLR"<<current->idLR<<endl;
         vec index(1);
         index.fill(j);
-        mat myX=X.row(j);
+        //mat myX=X.row(j);
+        mat myX=this->subsetX(X,index);
         vec myY=this->subsetY(y,index);
+        //myX.print("X:");
+        //myY.print("y:");
         result_perpoint[i]=this->getPathProb(current,myX)*as_scalar(current->expertmodel->density(myY,myX*(current->beta),current->logsigma_sq));
+        //cout<<"result per point "<<result_perpoint[i]<<endl;
     }
         result[j]=log(sum(result_perpoint));
+        //result.print("result:");
     }
+    //result.print("result");
+    //cout<<"Sum "<<sum(result)<<endl;
  return sum(result);  
 }
 
@@ -1192,24 +1235,76 @@ double Gate::TotalLogLikelihood(vec y, mat X){
  * @return Gate* pointer to the new gate with its rearanged descendants 
  */
 Gate* Gate::swap(Gate* gate, int replace){
-    int which=this->whichChild(gate);
-    cout<<gate->name<<" is the "<<which<<"-th child of "<<name<<endl;
-    Gate* Copy=this->copyStructure();
-    Gate* NewRoot= dynamic_cast<Gate*>(Copy->Children[which]);
-    Copy->issueIDLR();
-    cout<<"My new root is "<<NewRoot->name<<endl;
-    NewRoot->printChildren();
-    cout<<"Replace the "<<replace<<"-th child "<<NewRoot->Children[replace]->name<< " of the new root with "<<Copy->name<<endl;
-    Node* Omitted=NewRoot->Children[replace];
-    NewRoot->Children[replace]=Copy;
-    NewRoot->printChildren();
-    dynamic_cast<Gate*>(NewRoot->Children[replace])->printChildren();
-    cout<<"Remove "<<NewRoot->name<<" as a child of "<<Copy->name<<" and replace it by the omitted "<< Omitted->name<<endl;
-    int which2=as_scalar(dynamic_cast<Gate*>(NewRoot->Children[replace])->whichChild(Copy->Children[which]));
-    dynamic_cast<Gate*>(NewRoot->Children[replace])->Children[which2]=Omitted;
-    dynamic_cast<Gate*>(NewRoot->Children[replace])->printChildren();
-    cout<<"Descendants of new root "<<NewRoot->name<<endl;
-    NewRoot->printDescendants();
-    NewRoot->issueIDLR();
+    int which=this->whichChild(gate); //which child of mine is gate
+    //cout<<gate->name<<" is the "<<which<<"-th child of mine and I am "<<name<<endl;
+    Gate* Copy=this->copyStructure(); //copy everything from me downwards
+    Copy->issueIDLR();  //issue idLR to the copied structure
+    Gate* NewRoot=dynamic_cast<Gate*>(Copy->Children[which]); //set the new root to be a copy of gate
+    //cout<<"My new root is now "<<NewRoot->name<<endl;
+    NewRoot->Parent=NULL;//delete me as a parent
+    Node* Omitted=NewRoot->Children[replace]; //save the child that is getting replaced by the copy of me 
+    //cout<<"I will now replace "<<Omitted->name<<" by the copy of myself"<<endl;
+    NewRoot->swapChild(replace,Copy); //swap the replace'th child of gate by the copy of me
+    //cout<<"Now "<<NewRoot->Children[replace]->name<<" is the child of "<<NewRoot->name<<endl;
+    //NewRoot->printChildren();
+    dynamic_cast<Gate*>(NewRoot->Children[replace])->swapChild(Copy->Children[which],Omitted); //fill in the space where gate used to be by the omitted child
+    //dynamic_cast<Gate*>(NewRoot->Children[replace])->printChildren();
+    NewRoot->issueIDLR(); //issue idLR to the newly formed segment
     return NewRoot;
+}
+
+Gate* Gate::updateSwap_Internal(Gate* gate, int replace, vec y, mat X){
+    Gate* Swap=this->swap(gate,replace);
+    double loglik_old=this->totalLogLikelihood(y,X);
+    //cout<<"Loglik old "<<loglik_old<<endl;
+    double loglik_new=Swap->totalLogLikelihood(y,X);
+    //cout<<"Loglik new "<<loglik_new<<endl;
+    double acceptance=loglik_new-loglik_old;
+    double u=randu();
+    bool accept=u<exp(acceptance);
+    if(accept==1){
+      cout<<"Swap has been accepted."<<endl;
+      return Swap;
+    }else{
+      cout<<"Swap has been rejected."<<endl;
+      return this; 
+    }
+}
+
+ void Gate::updateSwap(Gate* gate1, Gate* gate2, int replace, vec y, mat X, vector<Node*> z_final){
+    vec points=gate1->getPointIndices(z_final);
+    mat myX=this->subsetX(X,points);
+    vec myY=this->subsetY(y,points);
+    Gate* Swap=gate1->updateSwap_Internal(gate2,replace,myY,myX);
+    if(gate1->Parent==NULL){
+       this->replaceGate(Swap);
+    }else{
+       this->swapDescendant(gate1,Swap); 
+    }
+ }
+
+ void  Gate::swapChild(Node* currentchild, Node* newchild){
+      int which=this->whichChild(currentchild);
+      this->Children[which]=newchild;
+      this->Children[which]->Parent=this;
+ }
+
+ void  Gate::swapChild(int which, Node* newchild){
+      this->Children[which]=newchild;
+      this->Children[which]->Parent=this;
+ }
+
+void   Gate::swapDescendant(Node* currentdescendant, Node* newdescedant){
+    int which=this->whichChild(currentdescendant);
+    if(which==-1){
+        cout<<this->name<<" is not my parent"<<endl;
+        for(int i=1;i<this->countChildren();i++){
+            if( this->Children[i]->countChildren()!=0){
+                dynamic_cast<Gate*>(this->Children[i])->swapDescendant(currentdescendant,newdescedant);
+            }
+        }
+    }else{
+        cout<<"I found my parent "<<this->name<<endl;
+        this->swapChild(currentdescendant,newdescedant);
+    }
 }
