@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
-#include "armadillo"
+#include <armadillo>
 
 #include "ExpertModel.h"
 
@@ -208,7 +208,8 @@ vec ExpertModel::logmvndensity(vec response, vec mean, mat Sigma){
 vec ExpertModel::logmvndensity(vec response, vec mean, mat* R){
 int k=static_cast<int>((*R).n_rows);
 //return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
-double result=-k/2*log(2*M_PI)+sum(log((*R).diag()))-0.5*sum(pow((*R)*(response-mean),2));
+mat result;
+result=-k/2*log(2*M_PI)+sum(log((*R).diag()))-0.5*sum(pow((*R)*(response-mean),2));
 return vectorise(result);
 }
 
