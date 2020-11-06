@@ -1254,6 +1254,47 @@ Gate* Gate::swap(Gate* gate, int replace){
     return NewRoot;
 }
 
+/*
+BEFORE
+
+          G1
+       --------
+       |      |
+      E1      G2
+          --------
+          |      |
+         E2      G3
+              --------
+              |      |
+              E3     E4
+
+AFTER
+
+          G1
+       --------
+       |      |
+      E1      G3
+          --------
+          |      |
+         E3      G2
+              --------
+              |      |
+              E2     E4
+
+
+Create a copy of G2 downwards, just so that you can roll back
+(copy is only used if you reject the swap, then G2->parent->child = G2_backup and delete G2and children)
+(if swap is accepted dekete backup)
+
+You want to swap G2 and G3
+G2 -> parent -> child[idx] = G3
+G3 -> parent -> child[idx] = G2
+swap G3 -> parent and G2 -> parent
+
+
+
+*/
+
 Gate* Gate::updateSwap_Internal(Gate* gate, int replace, vec y, mat X){
     Gate* Swap=this->swap(gate,replace);
     double loglik_old=this->totalLogLikelihood(y,X);
