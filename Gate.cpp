@@ -1266,9 +1266,12 @@ BEFORE
          E2      G3
               --------
               |      |
-              E3     E4
+              E3     G4
+                  --------
+                  |      |
+                  E4     E5
 
-AFTER
+AFTER (G2-G3)
 
           G1
        --------
@@ -1279,7 +1282,28 @@ AFTER
          E3      G2
               --------
               |      |
-              E2     E4
+              E2     G4
+                  --------
+                  |      |
+                  E4     E5
+
+
+AFTER (G2-G4)
+
+          G1
+       --------
+       |      |
+      E1      G4
+          --------
+          |      |
+         E4      G3
+              --------
+              |      |
+              E3     G2
+                  --------
+                  |      |
+                  E2     E5
+
 
 
 Create a copy of G2 downwards, just so that you can roll back
