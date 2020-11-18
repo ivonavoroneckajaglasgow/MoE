@@ -809,6 +809,28 @@ int Gate::isInRange(Node* node){
 }
 
 /**
+ * @brief Returns which child of gate leads to node
+ * 
+ * @param node node of interest
+ * @return int child index
+ */
+int Gate::whichSide(Node* node){
+    int check;
+    for(int i=0; i<this->countChildren();i++){
+        if(this->Children[i]->countChildren()!=0){
+            check=this->Children[i]->isInRange(node);
+            if(check==1){
+                return i;
+            }
+        }
+        if(this->Children[i]->idLR==node->idLR){
+            cout<<"Node is my child"<<endl;
+            return this->whichChild(node);
+        }
+    }
+}
+
+/**
  * @brief returns a vector of length of number of splits, entry of 1 indicates which split node is in
  * 
  * @param node node to check
@@ -945,6 +967,20 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
         return -1;
      }else{
      return static_cast<int>(as_scalar(index));
+     }
+ }
+
+ int Gate::whichChildAdvanced(Node* node, int* ParentIDLR){
+     int index=this->whichChild(node);
+     if(index==-1){
+         for(int i=0; i<this->countChildren(); i++){
+             if(this->Children[i]->countChildren()!=0){
+                return dynamic_cast<Gate*>(this->Children[i])->whichChildAdvanced(node, ParentIDLR);
+             }
+         }
+     }else{
+        *ParentIDLR=this->idLR; 
+        return index; //which side of G is node
      }
  }
 
@@ -1254,71 +1290,6 @@ Gate* Gate::swap(Gate* gate, int replace){
     return NewRoot;
 }
 
-/*
-BEFORE
-
-          G1
-       --------
-       |      |
-      E1      G2
-          --------
-          |      |
-         E2      G3
-              --------
-              |      |
-              E3     G4
-                  --------
-                  |      |
-                  E4     E5
-
-AFTER (G2-G3)
-
-          G1
-       --------
-       |      |
-      E1      G3
-          --------
-          |      |
-         E3      G2
-              --------
-              |      |
-              E2     G4
-                  --------
-                  |      |
-                  E4     E5
-
-
-AFTER (G2-G4)
-
-          G1
-       --------
-       |      |
-      E1      G4
-          --------
-          |      |
-         E4      G3
-              --------
-              |      |
-              E3     G2
-                  --------
-                  |      |
-                  E2     E5
-
-
-
-Create a copy of G2 downwards, just so that you can roll back
-(copy is only used if you reject the swap, then G2->parent->child = G2_backup and delete G2and children)
-(if swap is accepted dekete backup)
-
-You want to swap G2 and G3
-G2 -> parent -> child[idx] = G3
-G3 -> parent -> child[idx] = G2
-swap G3 -> parent and G2 -> parent
-
-
-
-*/
-
 Gate* Gate::updateSwap_Internal(Gate* gate, int replace, vec y, mat X){
     Gate* Swap=this->swap(gate,replace);
     double loglik_old=this->totalLogLikelihood(y,X);
@@ -1373,4 +1344,63 @@ void   Gate::swapDescendant(Node* currentdescendant, Node* newdescedant){
         cout<<"I found my parent "<<this->name<<endl;
         this->swapChild(currentdescendant,newdescedant);
     }
+}
+
+void  Gate::swapMethod(Gate* gate, int which){
+    int k;
+    int m;
+    int check=this->whichChild(gate);
+    if(check==-1){
+        int i=this->whichSide(gate->Parent); 
+        //cout<<"i denotes which child of "<<this->name<<" leads to "<<gate->Parent->name<<endl;
+        //cout<<"i: "<<i<<endl;
+        k=this->Parent->whichChild(this);
+        //cout<<"k denotes which child of "<<this->Parent->name<<" is "<<this->name<<endl;
+        //cout<<"k: "<<k<<endl;
+        m=gate->Parent->whichChild(gate);
+        //cout<<"m denotes which child of "<<gate->Parent->name<<" is "<<gate->name<<endl;
+        //cout<<"m: "<<m<<endl;
+        //cout<<"Set the k-th child of "<< this->Parent->name<<" to be "<< gate->name<<endl;
+        this->Parent->Children[k]=gate;
+        //cout<<"Set the m-th child of "<< gate->Parent->name<<" to be "<< this->name<<endl;
+        gate->Parent->Children[m]=this;
+        //cout<<"Set the parent of "<< gate->name<<" to be "<<this->Parent->name<<endl;
+        Gate* temp=gate->Parent; //save before altering
+        gate->Parent=this->Parent;
+        //cout<<"Set the parent of "<< this->name<<" to be "<<temp->name<<endl;
+        this->Parent=temp;
+        //cout<<"Set the i-th child of "<<this->name<<" to be "<<gate->Children[which]->name<<endl;
+        Gate* temp2=dynamic_cast<Gate*>(this->Children[i]);
+        this->Children[i]=gate->Children[which];
+        //cout<<"Set the "<<which<<"-th child of "<<gate->name<<" to be "<<temp2->name<<endl;
+        gate->Children[which]=temp2;
+        //cout<<"Set the parent of "<<gate->Children[which]->name<<" to be "<<gate->name<<endl;
+        gate->Children[which]->Parent=gate;
+        //cout<<"Set the parent of "<<this->Children[i]->name<<" to be "<<this->name<<endl;
+        this->Children[i]->Parent=this;
+    }else{
+        //cout<<"Dealing with a child and a parent"<<endl;
+        k=this->Parent->whichChild(this);
+        //cout<<"k denotes which child of "<<this->Parent->name<<" is "<<this->name<<endl;
+        //cout<<"k: "<<k<<endl;
+        m=gate->Parent->whichChild(gate);
+        //cout<<"m denotes which child of "<<gate->Parent->name<<" is "<<gate->name<<endl;
+        //cout<<"m: "<<m<<endl;
+        //cout<<"Set the k-th child of "<< this->Parent->name<<" to be "<< gate->name<<endl;
+        this->Parent->Children[k]=gate;
+        //cout<<"Set the "<<which<<"-th child of "<< gate->name<<" to be "<< this->name<<endl;
+        //cout<<"Substitute (and save a copy of) "<<gate->Children[which]->name<<" for "<<this->name<<endl;
+        Node* helper=gate->Children[which];
+        gate->Children[which]=this;
+        //cout<<"Set the parent of "<<gate->Children[which]->name<<" to be "<< gate->name<<endl;
+        Gate* helper0=gate->Children[which]->Parent;
+        gate->Children[which]->Parent=gate;
+        //cout<<"Set the parent of "<<gate->name<<" to be "<< helper0->name<<endl;
+        gate->Parent=helper0;
+        //cout<<"Set the "<<m<<"-th child of "<< this->name <<" to be the omitted "<<helper->name<<endl;
+        this->Children[m]=helper;
+        //cout<<"Set the parent of "<<this->Children[m]->name<<" to be "<<this->name<<endl;
+        this->Children[m]->Parent=this;
+        }
+    
 }

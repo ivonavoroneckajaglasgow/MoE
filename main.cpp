@@ -174,24 +174,36 @@ cout<<"Create tree to practise swapping gates on"<<endl;
 Gate* G_1=new Gate();
 Gate* G_2=new Gate();
 Gate* G_3=new Gate();
+Gate* G_4=new Gate();
+Gate* G_5=new Gate();
 Expert* E_1=new Expert();
 Expert* E_2=new Expert();
 Expert* E_3=new Expert();
 Expert* E_4=new Expert();
+Expert* E_5=new Expert();
+Expert* E_6=new Expert();
 G_1->name="G_1";
 G_2->name="G_2";
 G_3->name="G_3";
+G_4->name="G_4";
+G_5->name="G_5";
 E_1->name="E_1";
 E_2->name="E_2";
 E_3->name="E_3";
 E_4->name="E_4";
+E_5->name="E_5";
+E_6->name="E_6";
 
 G_1->addChild(E_1);
 G_1->addChild(G_2);
 G_2->addChild(E_2);
 G_2->addChild(G_3);
 G_3->addChild(E_3);
-G_3->addChild(E_4);
+G_3->addChild(G_4);
+G_4->addChild(G_5);
+G_4->addChild(E_4);
+G_5->addChild(E_5);
+G_5->addChild(E_6);
 
 G_1->Parent=NULL;
 G_1->issueID();
@@ -201,6 +213,8 @@ E_1->expertmodel=NF;
 E_2->expertmodel=NF;
 E_3->expertmodel=NF;
 E_4->expertmodel=NF;
+E_5->expertmodel=NF;
+E_6->expertmodel=NF;
 
 vector<Node*> z_assign=assignPoints(G_1,10);
 
@@ -208,44 +222,53 @@ E_1->beta=E_1->expertmodel->findBeta(E_1->subsetY(y,E_1->getPointIndices(z_assig
 E_2->beta=E_2->expertmodel->findBeta(E_2->subsetY(y,E_2->getPointIndices(z_assign)),E_2->subsetX(X,E_2->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
 E_3->beta=E_3->expertmodel->findBeta(E_3->subsetY(y,E_3->getPointIndices(z_assign)),E_3->subsetX(X,E_3->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
 E_4->beta=E_4->expertmodel->findBeta(E_4->subsetY(y,E_4->getPointIndices(z_assign)),E_4->subsetX(X,E_4->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+E_5->beta=E_5->expertmodel->findBeta(E_5->subsetY(y,E_5->getPointIndices(z_assign)),E_5->subsetX(X,E_5->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+E_6->beta=E_6->expertmodel->findBeta(E_6->subsetY(y,E_6->getPointIndices(z_assign)),E_6->subsetX(X,E_6->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+
 E_1->logsigma_sq=1;
 E_2->logsigma_sq=1;
 E_3->logsigma_sq=1;
 E_4->logsigma_sq=1;
+E_5->logsigma_sq=1;
+E_6->logsigma_sq=1;
 
 mat z_G_1=G_1->getZ(z_assign);
 mat z_G_2=G_2->getZ(z_assign);
 mat z_G_3=G_3->getZ(z_assign);
+mat z_G_4=G_4->getZ(z_assign);
+mat z_G_5=G_5->getZ(z_assign);
 
 G_1->gamma=G_1->findGammaMLE(G_1->subsetX(X,G_1->getPointIndices(z_assign)),z_G_1,Omega);
 G_2->gamma=G_2->findGammaMLE(G_2->subsetX(X,G_2->getPointIndices(z_assign)),z_G_2,Omega);
 G_3->gamma=G_3->findGammaMLE(G_3->subsetX(X,G_3->getPointIndices(z_assign)),z_G_3,Omega);
+G_4->gamma=G_4->findGammaMLE(G_4->subsetX(X,G_4->getPointIndices(z_assign)),z_G_4,Omega);
+G_5->gamma=G_5->findGammaMLE(G_5->subsetX(X,G_5->getPointIndices(z_assign)),z_G_5,Omega);
 
 vector<Node*> z_assign_new=G_1->MCMC(100,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_assign);
 for(int i=0;i<z_assign.size();i++){
-    cout<<"Point "<<i<<" initially was in "<<z_tree1[i]->name<<" and now is in "<<z_assign_new[i]->name<<endl;
+     cout<<"Point "<<i<<" initially was in "<<z_assign[i]->name<<" and now is in "<<z_assign_new[i]->name<<endl;
 }
 
-//G_1->updateSwap(G_2,G_3,1,y,X,z_assign);
-//G_1->printDescendants();
-//cout<<"The parent of "<<G_1->Children[1]->Children[0]->name<<endl;
-//cout<<"is "<<G_1->Children[1]->Children[0]->Parent->name<<endl;
+G_2->swapMethod(G_5,0);
 
-
-G_1->updateSwap(G_1,G_2,1,y,X,z_assign);
-cout<<"descendants:"<<endl;
 G_1->printDescendants();
-//vec aa=stdToArmaVec(Trial->describeTree());
-//aa.print("dscription:");
-cout<<"descendants:"<<endl;
-G_2->printDescendants();
-delete G_2;
-cout<<"descendants after deleting:"<<endl;
-G_2->printDescendants();
-cout<<"name after deleting:"<<endl;
-cout<<G_2->name<<endl;
+G_1->printChildren();
+G_2->printChildren();
+G_3->printChildren();
+G_4->printChildren();
+G_5->printChildren();
 
+cout<<"Parent of E1 "<<E_1->Parent->name<<endl;
+cout<<"Parent of E2 "<<E_2->Parent->name<<endl;
+cout<<"Parent of E3 "<<E_3->Parent->name<<endl;
+cout<<"Parent of E4 "<<E_4->Parent->name<<endl;
+cout<<"Parent of E5 "<<E_5->Parent->name<<endl;
+cout<<"Parent of E6 "<<E_6->Parent->name<<endl;
 
+cout<<"Parent of G2 "<<G_2->Parent->name<<endl;
+cout<<"Parent of G3 "<<G_3->Parent->name<<endl;
+cout<<"Parent of G4 "<<G_4->Parent->name<<endl;
+cout<<"Parent of G5 "<<G_5->Parent->name<<endl;
 
 return 0;
 }

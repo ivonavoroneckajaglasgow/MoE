@@ -61,6 +61,7 @@ class Gate: public Node{
     int issueIDLR();           //wrapper for the above function
     int rightMostNodeID();     //returns the right most node ID
     int isInRange(Node* node); //checks if node is in the range of descendant IDs
+    int whichSide(Node* node); //checks which child eventually leads to the node
     rowvec getZ_perpoint(Node* node); //returns a vector of length of number of splits, entry of 1 indicates which split node is in
     mat getZ(vector<Node*> z_final); //returns allocations matrix z
     vector<Node*> updateZ(vec y, mat X, vector<Node*> z_final); //returns a vector of updated allocations as pointers to experts 
@@ -71,6 +72,7 @@ class Gate: public Node{
     vec getPathProb_mat(Node* node, mat X); //returns path probabilities (rows are observations and columns are experts)
     vec getChildrenIndicesLR(); //returns LR indices of children
     int whichChild(Node* node); //returns which child node is (to help identify the reference split)
+    int whichChildAdvanced(Node* node, int* ParentIDLR);
     vec predict(mat X);//returns y hat
     void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final); //updates gamma for a gate 
     vector<Node*> MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates parameters followed by allocations once 
@@ -86,6 +88,7 @@ class Gate: public Node{
     void  swapChild(Node* currentchild, Node* newchild);
     void  swapChild(int which, Node* newchild);
     void  swapDescendant(Node* currentdescendant, Node* newdescedant);
+    void  swapMethod(Gate* gate, int which);
     };
     
 
