@@ -90,6 +90,21 @@ void Gate::replaceGate(Gate* replacement){
      this->Children=replacement->Children;
 }
 
+void Gate::replaceChild(int which, Node* newChild){
+    cout<<"Replace the "<<which<<"-th child of "<<this->name<<endl;
+    cout<<"Replace "<< this->Children[which]->name <<" by "<<newChild->name<<endl;
+    cout<<"Set "<<this->name<<" to be the parent of "<<newChild->name<<endl;
+    this->Children[which]=newChild;
+    newChild->Parent=this;
+}
+
+void Gate::exchangeWith(int which, Node* other){
+    Gate* myParent=this->Parent;
+    Gate* otherParent=other->Parent;
+    myParent->replaceChild(which,other);
+    otherParent->replaceChild(which,this);
+}
+
 /**
  * @brief Add a child to the gate and make gate the parent of child
  * 
@@ -1347,11 +1362,15 @@ void   Gate::swapDescendant(Node* currentdescendant, Node* newdescedant){
 }
 
 void  Gate::swapMethod(Gate* gate, int which){
-    int k;
-    int m;
-    int check=this->whichChild(gate);
+    if(this->Parent==NULL){
+        this->swapRoot(gate,which);
+    }else{
+        int k;
+        int m;
+        int i;
+        int check=this->whichChild(gate);
     if(check==-1){
-        int i=this->whichSide(gate->Parent); 
+        i=this->whichSide(gate->Parent); 
         //cout<<"i denotes which child of "<<this->name<<" leads to "<<gate->Parent->name<<endl;
         //cout<<"i: "<<i<<endl;
         k=this->Parent->whichChild(this);
@@ -1402,5 +1421,51 @@ void  Gate::swapMethod(Gate* gate, int which){
         //cout<<"Set the parent of "<<this->Children[m]->name<<" to be "<<this->name<<endl;
         this->Children[m]->Parent=this;
         }
-    
+    }
+}
+
+void Gate::swapRoot(Gate* gate, int which){
+        //cout<<"Swapping root node"<<endl;
+        int check=this->whichChild(gate);
+        int m;
+        int i;
+        if(which==-1){
+            i=this->whichSide(gate->Parent); 
+            //cout<<"i denotes which child of "<<this->name<<" leads to "<<gate->Parent->name<<endl;
+            //cout<<"i: "<<i<<endl;
+            m=gate->Parent->whichChild(gate);
+            //cout<<"m denotes which child of "<<gate->Parent->name<<" is "<<gate->name<<endl;
+            //cout<<"m: "<<m<<endl;
+            //cout<<"Set the m-th child of "<< gate->Parent->name<<" to be "<< this->name<<endl;
+            gate->Parent->Children[m]=this;
+            //cout<<"Set the parent of "<<this->name<<" to be "<<gate->Parent->name<<endl;
+            this->Parent=gate->Parent;
+            //cout<<"Set the "<<which<<"-th child of "<<gate->name<<" to be "<<this->Parent->name<<endl;
+            Node* omitted=gate->Children[which];
+            gate->Children[which]=this->Parent;
+            //cout<<"Set the "<<i<<"-th child of "<<this->name<<" to be "<<omitted->name<<endl;
+            this->Children[i]=omitted;
+            //cout<<"Set the parent of "<<gate->Children[which]->name<<" to be "<<gate->name<<endl;
+            gate->Children[which]->Parent=gate;
+            //cout<<"Set the parent of "<<this->Children[i]->name<<" to be "<<this->name<<endl;
+            this->Children[i]->Parent=this;
+            //cout<<"Set the parent of "<<gate->name<<" to be NULL"<<endl;
+            gate->Parent=NULL;
+        }else{
+            //cout<<"Swapping root node and its child gate"<<endl;
+            m=check;
+            //cout<<"m denotes which child of "<<gate->Parent->name<<" is "<<gate->name<<endl;
+            //cout<<"m: "<<m<<endl;
+            //cout<<"Set the "<<which<< "-th child of "<< gate->name<<" to be "<< this->name<<endl;
+            Node* helper=gate->Children[which];
+            gate->Children[which]=this;
+            //cout<<"Set the parent of "<<this->name<<" to be "<<gate->name<<endl;
+            this->Parent=gate;
+            //cout<<"Set the "<<m<<"-th chid of "<<this->name<<" to be "<<helper->name<<endl;
+            this->Children[m]=helper;
+            //cout<<"Set the parent of "<<this->Children[m]->name<<" to be "<<this->name<<endl;
+            this->Children[m]->Parent=this;
+            //cout<<"Set the parent of "<<gate->name<<" to be NULL"<<endl;
+            gate->Parent=NULL;
+        }
 }

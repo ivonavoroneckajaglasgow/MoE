@@ -216,6 +216,7 @@ vec Node::getDescendantRange(){
     return result;
 }
 
+
 /**
  * @brief Counts the number of points that have been assigned to the node based on final allocations
  * 

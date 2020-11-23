@@ -249,26 +249,28 @@ for(int i=0;i<z_assign.size();i++){
      cout<<"Point "<<i<<" initially was in "<<z_assign[i]->name<<" and now is in "<<z_assign_new[i]->name<<endl;
 }
 
-G_2->swapMethod(G_5,0);
+G_1->swapMethod(G_2,1);
 
-G_1->printDescendants();
-G_1->printChildren();
-G_2->printChildren();
-G_3->printChildren();
-G_4->printChildren();
-G_5->printChildren();
+ //G_1->printDescendants();
+ G_1->printChildren();
+ G_2->printChildren();
+ G_3->printChildren();
+ G_4->printChildren();
+ G_5->printChildren();
+ cout<<"Parent of E1 "<<E_1->Parent->name<<endl;
+ cout<<"Parent of E2 "<<E_2->Parent->name<<endl;
+ cout<<"Parent of E3 "<<E_3->Parent->name<<endl;
+ cout<<"Parent of E4 "<<E_4->Parent->name<<endl;
+ cout<<"Parent of E5 "<<E_5->Parent->name<<endl;
+ cout<<"Parent of E6 "<<E_6->Parent->name<<endl;
+ cout<<"Parent of G1 "<<G_1->Parent->name<<endl;
+ //cout<<"Parent of G2 "<<G_2->Parent->name<<endl;
+ cout<<"Parent of G3 "<<G_3->Parent->name<<endl;
+ cout<<"Parent of G4 "<<G_4->Parent->name<<endl;
+ cout<<"Parent of G5 "<<G_5->Parent->name<<endl;
 
-cout<<"Parent of E1 "<<E_1->Parent->name<<endl;
-cout<<"Parent of E2 "<<E_2->Parent->name<<endl;
-cout<<"Parent of E3 "<<E_3->Parent->name<<endl;
-cout<<"Parent of E4 "<<E_4->Parent->name<<endl;
-cout<<"Parent of E5 "<<E_5->Parent->name<<endl;
-cout<<"Parent of E6 "<<E_6->Parent->name<<endl;
 
-cout<<"Parent of G2 "<<G_2->Parent->name<<endl;
-cout<<"Parent of G3 "<<G_3->Parent->name<<endl;
-cout<<"Parent of G4 "<<G_4->Parent->name<<endl;
-cout<<"Parent of G5 "<<G_5->Parent->name<<endl;
+
 
 return 0;
 }

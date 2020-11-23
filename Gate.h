@@ -23,6 +23,8 @@ class Gate: public Node{
     void copyStructure(Gate* Copy);//creates a copy of the gate and all its descedants and stores that in Copy
     Gate* copyStructure();       //wrapper for the above
     void replaceGate(Gate* replacement);
+    void replaceChild(int which, Node* newChild); //replaces the which'th child by newChild and sets this gate as a parent to newChild
+    void exchangeWith(int which, Node* other);
     void addChild(Node* aChild); //function that adds a child to the gate and gate as a parent to the child
     void deleteChildren();       //deletes all children and itself as a parent
     void printChildren();        //prints children names 
@@ -89,6 +91,7 @@ class Gate: public Node{
     void  swapChild(int which, Node* newchild);
     void  swapDescendant(Node* currentdescendant, Node* newdescedant);
     void  swapMethod(Gate* gate, int which);
+    void  swapRoot(Gate* gate, int which);
     };
     
 
