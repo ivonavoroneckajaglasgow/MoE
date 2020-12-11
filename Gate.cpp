@@ -1080,6 +1080,9 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
      vec est=X*(dynamic_cast<Expert*>(terminals[i])->beta);
      helper.col(i)=pathprobs%est;
      }
+     //helper.print("helper:");
+     //vec final=sum(helper,1);
+     //final.print("summed up:");
      return sum(helper,1);
  }
 
@@ -1169,7 +1172,9 @@ vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, m
         z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
         f << this->jsonify() << ",";
         mat helper=this->predict(Xnew);
-        helper.resize(helper.n_cols,helper.n_rows);
+        helper.reshape(helper.n_cols,helper.n_rows);
+        //cout<<helper<<endl;
+        //cout<<this->predict(Xnew)<<endl;
         (*Predictions).row(i)=helper;
     }
     //f << "[" << this->jsonify() << ",";

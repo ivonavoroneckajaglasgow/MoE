@@ -284,6 +284,7 @@ int N_MCMC_sin=100;
 mat X_new;
 X_new.load("x_new.csv", csv_ascii);
 mat P(N_MCMC_sin,X_new.n_rows);
+//P.zeros();
 
 vector<Node*> z_assign_new_sin=G_1->MCMC(N_MCMC_sin,y_sin,X_sin,logsigma_sq,mu_beta,Sigma_beta,a,b,z_assign_sin,&P,X_new);
 
@@ -292,6 +293,17 @@ for(int i=0;i<z_assign_new_sin.size();i++){
 }
 
 P.save("P.csv",csv_ascii);
+
+for(int i=0;i<desc.size();i++){
+    cout<<desc[i]->name<<":"<<endl;
+    if(desc[i]->countChildren()==0){
+        cout<<dynamic_cast<Expert*>(desc[i])->beta<<endl;
+    }else{
+        cout<<dynamic_cast<Gate*>(desc[i])->gamma<<endl;
+    }
+}
+
+//P.print("P:");
 
 return 0;
 }
