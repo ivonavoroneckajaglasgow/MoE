@@ -39,6 +39,10 @@ void Expert::deleteParent(){
     this->Parent=NULL;
 }
 
+void Expert::printChildren(){
+    cout<<"Expert "<<name<<" has 0 children"<<endl;
+}
+
 /**
  * @brief Creates a new expert that is a copy of this one
  * 
@@ -53,6 +57,7 @@ Expert* Expert::copyThis(){
     Copy->expertmodel=this->expertmodel;
     Copy->y=this->y;
     Copy->X=this->X;
+    Copy->idLR=this->idLR;
     return Copy;
 }
 

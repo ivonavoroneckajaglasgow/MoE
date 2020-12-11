@@ -10,6 +10,7 @@ using namespace std;
 using namespace arma;
 
 #include "ExpertModel.h"
+#include "Gate.h"
 
 //This is a superclass of all Family objects 
 //Most functions are virtual and overwritten at subclass levels

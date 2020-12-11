@@ -20,6 +20,7 @@ using namespace std::chrono;
 #include "Data.h"
 #include "NormalModel.h"
 
+
 vector<Node*> assignPoints(Gate* root, int n){
     vector<Node*> all_experts=root->getTerminalNodes();
     vector<Node*> z_final(n);
@@ -34,6 +35,11 @@ vector<Node*> assignPoints(Gate* root, int n){
 
 vec stdToArmaVec(vector<int> a){
     return conv_to<vec>::from(a);
+}
+
+void setUpData(mat A, vec* y, mat* X){
+    *y=A.col(0);
+    *X=A.submat(span(0,A.n_rows-1),span(1,A.n_cols-1));
 }
 
 int main(){
@@ -171,6 +177,7 @@ cout<<"Create a new tree of depth 2 and binary splits"<<endl;
 Node* CreatedTree=G1->createTree(2,2);
 
 cout<<"Create tree to practise swapping gates on"<<endl;
+Gate* RP= new Gate(); 
 Gate* G_1=new Gate();
 Gate* G_2=new Gate();
 Gate* G_3=new Gate();
@@ -182,6 +189,7 @@ Expert* E_3=new Expert();
 Expert* E_4=new Expert();
 Expert* E_5=new Expert();
 Expert* E_6=new Expert();
+RP->name="RP";
 G_1->name="G_1";
 G_2->name="G_2";
 G_3->name="G_3";
@@ -194,6 +202,7 @@ E_4->name="E_4";
 E_5->name="E_5";
 E_6->name="E_6";
 
+RP->makeThisRootParent(G_1);
 G_1->addChild(E_1);
 G_1->addChild(G_2);
 G_2->addChild(E_2);
@@ -205,7 +214,6 @@ G_4->addChild(E_4);
 G_5->addChild(E_5);
 G_5->addChild(E_6);
 
-G_1->Parent=NULL;
 G_1->issueID();
 G_1->issueIDLR();
 
@@ -218,56 +226,32 @@ E_6->expertmodel=NF;
 
 vector<Node*> z_assign=assignPoints(G_1,10);
 
-E_1->beta=E_1->expertmodel->findBeta(E_1->subsetY(y,E_1->getPointIndices(z_assign)),E_1->subsetX(X,E_1->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
-E_2->beta=E_2->expertmodel->findBeta(E_2->subsetY(y,E_2->getPointIndices(z_assign)),E_2->subsetX(X,E_2->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
-E_3->beta=E_3->expertmodel->findBeta(E_3->subsetY(y,E_3->getPointIndices(z_assign)),E_3->subsetX(X,E_3->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
-E_4->beta=E_4->expertmodel->findBeta(E_4->subsetY(y,E_4->getPointIndices(z_assign)),E_4->subsetX(X,E_4->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
-E_5->beta=E_5->expertmodel->findBeta(E_5->subsetY(y,E_5->getPointIndices(z_assign)),E_5->subsetX(X,E_5->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
-E_6->beta=E_6->expertmodel->findBeta(E_6->subsetY(y,E_6->getPointIndices(z_assign)),E_6->subsetX(X,E_6->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+G_1->estimateAllBetas(z_assign,y,X,logsigma_sq,mu_beta,Sigma_beta);
+G_1->setAllSigmas(1);
+G_1->estimateAllGamas(z_assign,X,Omega);
 
-E_1->logsigma_sq=1;
-E_2->logsigma_sq=1;
-E_3->logsigma_sq=1;
-E_4->logsigma_sq=1;
-E_5->logsigma_sq=1;
-E_6->logsigma_sq=1;
+vector<Node*> z_assign_new=G_1->MCMC(10,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_assign);
 
-mat z_G_1=G_1->getZ(z_assign);
-mat z_G_2=G_2->getZ(z_assign);
-mat z_G_3=G_3->getZ(z_assign);
-mat z_G_4=G_4->getZ(z_assign);
-mat z_G_5=G_5->getZ(z_assign);
-
-G_1->gamma=G_1->findGammaMLE(G_1->subsetX(X,G_1->getPointIndices(z_assign)),z_G_1,Omega);
-G_2->gamma=G_2->findGammaMLE(G_2->subsetX(X,G_2->getPointIndices(z_assign)),z_G_2,Omega);
-G_3->gamma=G_3->findGammaMLE(G_3->subsetX(X,G_3->getPointIndices(z_assign)),z_G_3,Omega);
-G_4->gamma=G_4->findGammaMLE(G_4->subsetX(X,G_4->getPointIndices(z_assign)),z_G_4,Omega);
-G_5->gamma=G_5->findGammaMLE(G_5->subsetX(X,G_5->getPointIndices(z_assign)),z_G_5,Omega);
-
-vector<Node*> z_assign_new=G_1->MCMC(100,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_assign);
 for(int i=0;i<z_assign.size();i++){
      cout<<"Point "<<i<<" initially was in "<<z_assign[i]->name<<" and now is in "<<z_assign_new[i]->name<<endl;
 }
 
-G_1->swapMethod(G_2,1);
+G_1->swap(G_2,0,y,X);
 
- //G_1->printDescendants();
- G_1->printChildren();
- G_2->printChildren();
- G_3->printChildren();
- G_4->printChildren();
- G_5->printChildren();
- cout<<"Parent of E1 "<<E_1->Parent->name<<endl;
- cout<<"Parent of E2 "<<E_2->Parent->name<<endl;
- cout<<"Parent of E3 "<<E_3->Parent->name<<endl;
- cout<<"Parent of E4 "<<E_4->Parent->name<<endl;
- cout<<"Parent of E5 "<<E_5->Parent->name<<endl;
- cout<<"Parent of E6 "<<E_6->Parent->name<<endl;
- cout<<"Parent of G1 "<<G_1->Parent->name<<endl;
- //cout<<"Parent of G2 "<<G_2->Parent->name<<endl;
- cout<<"Parent of G3 "<<G_3->Parent->name<<endl;
- cout<<"Parent of G4 "<<G_4->Parent->name<<endl;
- cout<<"Parent of G5 "<<G_5->Parent->name<<endl;
+RP->findNode("G_1")->printChildren();
+
+mat A;
+A.load("data.csv", csv_ascii);
+vec y2;
+mat X2;
+setUpData(A,&y2,&X2);
+
+y3.print("response vector:");
+X3.print("design matrix:");
+
+
+//z_G_2.save("trial.csv",csv_ascii);
+
 
 
 

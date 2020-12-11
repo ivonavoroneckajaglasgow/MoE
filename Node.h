@@ -21,6 +21,7 @@ class Node{
     Gate* Parent;           //pointer to parent
     virtual Node* copyThis();         //creates a deep copy of the object
     void printParent();               //prints the name of the parent
+    virtual void printChildren();
     virtual void printDescendants();  //prints names of descendants 
     virtual void printTerminalNodes();//prints names of terminal nodes
     virtual Gate* getParent();//returns pointer to the parent node
@@ -54,6 +55,8 @@ class Node{
     Node* translateTree(vector<int> description); //translates a vector of integers into a tree
     static Node* createTreeInternal(int depth, int nchildren, int* gcount, int* ecount); //wrapper for the function below
     Node* createTree(int depth, int nchildren); //creates a tree object given a set of instructions
+    Gate* mostSeniorGate();
+    Node* findNode(string Name);
 };
 
 string jsondict(map<string, string> m, int indent);

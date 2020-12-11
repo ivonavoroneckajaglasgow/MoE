@@ -24,7 +24,7 @@ class Gate: public Node{
     Gate* copyStructure();       //wrapper for the above
     void replaceGate(Gate* replacement);
     void replaceChild(int which, Node* newChild); //replaces the which'th child by newChild and sets this gate as a parent to newChild
-    void exchangeWith(int which, Node* other);
+    //void exchangeWith(int which, Node* other);
     void addChild(Node* aChild); //function that adds a child to the gate and gate as a parent to the child
     void deleteChildren();       //deletes all children and itself as a parent
     void printChildren();        //prints children names 
@@ -84,14 +84,13 @@ class Gate: public Node{
     vector<Node*> updateZparamsIntegratedOut(vec y, mat X, vector<Node*> z_final,vec mu_beta, mat Sigma_beta, double a, double b);//updates allocations z with parameters beta and sigma integrated out (Normal Model only)
     vector<int> describeTreeInternal(vector<int>* description);//helps describe the tree as a vector of integers
     double totalLogLikelihood(vec y, mat X); //calculates the brute force log likelihood for the whole tree
-    Gate* swap(Gate* gate, int replace); //swaps the replace'th child of gate by this
-    Gate* updateSwap_Internal(Gate* gate, int replace, vec y, mat X);
-    void updateSwap(Gate* gate1, Gate* gate2, int replace, vec y, mat X, vector<Node*> z_final);
-    void  swapChild(Node* currentchild, Node* newchild);
-    void  swapChild(int which, Node* newchild);
-    void  swapDescendant(Node* currentdescendant, Node* newdescedant);
     void  swapMethod(Gate* gate, int which);
     void  swapRoot(Gate* gate, int which);
+    void  swap(Gate* gate, int which, vec y, mat X);
+    void  makeThisRootParent(Node* root);
+    void  estimateAllBetas(vector<Node*> z_assign,vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
+    void  setAllSigmas(double value);
+    void  estimateAllGamas(vector<Node*> z_assign, mat X, mat Omega);
     };
     
 

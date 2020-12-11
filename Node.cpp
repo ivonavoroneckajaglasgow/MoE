@@ -22,6 +22,14 @@ void Node::printParent() {
 }
 
 /**
+ * @brief Handled on Gate and Expert levels
+ * 
+ */
+void Node::printChildren(){
+
+}
+
+/**
  * @brief Prints names of descendants
  * Handled at Gate and Expert levels
  */
@@ -534,5 +542,22 @@ Node* Node::createTreeInternal(int depth, int nchildren, int* gcount, int* ecoun
     return root;
 } 
 
+Node* Node::findNode(string Name){
+    if(this->name==Name) return this;
+    Gate* Root=this->mostSeniorGate();
+    if(Root->name==Name) return Root;
+    vector<Node*> desc=Root->getDescendants();
+    for(int i=0;i<desc.size();i++){
+        if(desc[i]->name==Name) return desc[i];
+    }
+}
 
 
+Gate* Node::mostSeniorGate(){
+    if(this->Parent==NULL) return dynamic_cast<Gate*>(this->Children[0]);
+    if(this->Parent->Parent==NULL){
+        return dynamic_cast<Gate*>(this);
+    }else{
+        return this->Parent->mostSeniorGate();
+    }
+}

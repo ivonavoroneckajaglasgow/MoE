@@ -336,3 +336,5 @@ vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_b
 double GLMModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
     return 0;
 }
+
+

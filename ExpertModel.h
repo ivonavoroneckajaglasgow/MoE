@@ -6,6 +6,8 @@
 #include <cmath>
 #include "armadillo"
 
+#include "Node.h"
+
 using namespace std;
 using namespace arma;
 

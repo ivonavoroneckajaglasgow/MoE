@@ -52,6 +52,7 @@ Gate::Gate(const Gate &gate){
      Copy->name=this->name;
      Copy->gamma=this->gamma;
      Copy->Omega=this->Omega;
+     Copy->idLR=this->idLR;
      return Copy;
  }
  
@@ -98,12 +99,12 @@ void Gate::replaceChild(int which, Node* newChild){
     newChild->Parent=this;
 }
 
-void Gate::exchangeWith(int which, Node* other){
-    Gate* myParent=this->Parent;
-    Gate* otherParent=other->Parent;
-    myParent->replaceChild(which,other);
-    otherParent->replaceChild(which,this);
-}
+// void Gate::exchangeWith(int which, Node* other){
+//     Gate* myParent=this->Parent;
+//     Gate* otherParent=other->Parent;
+//     myParent->replaceChild(which,other);
+//     otherParent->replaceChild(which,this);
+// }
 
 /**
  * @brief Add a child to the gate and make gate the parent of child
@@ -273,11 +274,11 @@ void Gate::issueID_helper1(int* gate_id, int* expert_id){
 
     for(int i=0;i<this->Children.size();i++){
         if(this->Children[i]->countChildren()==0){
-            cout<<"I know "<< this->Children[i]->name <<" is an expert so I assign the ID "<<*expert_id<<endl;
+            //cout<<"I know "<< this->Children[i]->name <<" is an expert so I assign the ID "<<*expert_id<<endl;
             this->Children[i]->id=*expert_id;
             (*expert_id)++;
         }else{
-            cout<<"I know "<< this->Children[i]->name <<" is a gate so I assign ID "<<*gate_id<<endl;
+            //cout<<"I know "<< this->Children[i]->name <<" is a gate so I assign ID "<<*gate_id<<endl;
             this->Children[i]->id=*gate_id;
             (*gate_id)++;
         }
@@ -294,9 +295,9 @@ void Gate::issueID_helper1(int* gate_id, int* expert_id){
  */
 void Gate::issueID_helper2(int* gate_id, int* expert_id){
 
-    if(this->Parent==NULL){
+    if(this->Parent->Parent==NULL){
         this->id=1;
-        cout<<"I know "<<this->name<<" is a root gate, so I assign ID "<<this->id<<endl;
+        //cout<<"I know "<<this->name<<" is a root gate, so I assign ID "<<this->id<<endl;
     }
 
     if(this->id==1) {
@@ -1145,6 +1146,7 @@ vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, m
     f.open("results.json");
     f << "[";
     for(int i=0;i<N;i++){
+        cout<<"Run number "<<i<<endl;
         z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
         f << this->jsonify() << ",";
     }
@@ -1279,90 +1281,8 @@ double Gate::totalLogLikelihood(vec y, mat X){
  return sum(result);  
 }
 
-/**
- * @brief Swaps the replace'th child of gate by this gate and tidies up the tree
- * 
- * @param gate the gate to move level up
- * @param replace which child of gate to be replaced
- * @return Gate* pointer to the new gate with its rearanged descendants 
- */
-Gate* Gate::swap(Gate* gate, int replace){
-    int which=this->whichChild(gate); //which child of mine is gate
-    //cout<<gate->name<<" is the "<<which<<"-th child of mine and I am "<<name<<endl;
-    Gate* Copy=this->copyStructure(); //copy everything from me downwards
-    Copy->issueIDLR();  //issue idLR to the copied structure
-    Gate* NewRoot=dynamic_cast<Gate*>(Copy->Children[which]); //set the new root to be a copy of gate
-    //cout<<"My new root is now "<<NewRoot->name<<endl;
-    NewRoot->Parent=NULL;//delete me as a parent
-    Node* Omitted=NewRoot->Children[replace]; //save the child that is getting replaced by the copy of me 
-    //cout<<"I will now replace "<<Omitted->name<<" by the copy of myself"<<endl;
-    NewRoot->swapChild(replace,Copy); //swap the replace'th child of gate by the copy of me
-    //cout<<"Now "<<NewRoot->Children[replace]->name<<" is the child of "<<NewRoot->name<<endl;
-    //NewRoot->printChildren();
-    dynamic_cast<Gate*>(NewRoot->Children[replace])->swapChild(Copy->Children[which],Omitted); //fill in the space where gate used to be by the omitted child
-    //dynamic_cast<Gate*>(NewRoot->Children[replace])->printChildren();
-    NewRoot->issueIDLR(); //issue idLR to the newly formed segment
-    return NewRoot;
-}
-
-Gate* Gate::updateSwap_Internal(Gate* gate, int replace, vec y, mat X){
-    Gate* Swap=this->swap(gate,replace);
-    double loglik_old=this->totalLogLikelihood(y,X);
-    //cout<<"Loglik old "<<loglik_old<<endl;
-    double loglik_new=Swap->totalLogLikelihood(y,X);
-    //cout<<"Loglik new "<<loglik_new<<endl;
-    double acceptance=loglik_new-loglik_old;
-    double u=randu();
-    bool accept=u<exp(acceptance);
-    if(accept==1){
-      cout<<"Swap has been accepted."<<endl;
-      return Swap;
-    }else{
-      cout<<"Swap has been rejected."<<endl;
-      return this; 
-    }
-}
-
- void Gate::updateSwap(Gate* gate1, Gate* gate2, int replace, vec y, mat X, vector<Node*> z_final){
-    vec points=gate1->getPointIndices(z_final);
-    mat myX=this->subsetX(X,points);
-    vec myY=this->subsetY(y,points);
-    Gate* Swap=gate1->updateSwap_Internal(gate2,replace,myY,myX);
-    if(gate1->Parent==NULL){
-       this->replaceGate(Swap);
-    }else{
-       this->swapDescendant(gate1,Swap); 
-    }
- }
-
- void  Gate::swapChild(Node* currentchild, Node* newchild){
-      int which=this->whichChild(currentchild);
-      this->Children[which]=newchild;
-      this->Children[which]->Parent=this;
- }
-
- void  Gate::swapChild(int which, Node* newchild){
-      this->Children[which]=newchild;
-      this->Children[which]->Parent=this;
- }
-
-void   Gate::swapDescendant(Node* currentdescendant, Node* newdescedant){
-    int which=this->whichChild(currentdescendant);
-    if(which==-1){
-        cout<<this->name<<" is not my parent"<<endl;
-        for(int i=1;i<this->countChildren();i++){
-            if( this->Children[i]->countChildren()!=0){
-                dynamic_cast<Gate*>(this->Children[i])->swapDescendant(currentdescendant,newdescedant);
-            }
-        }
-    }else{
-        cout<<"I found my parent "<<this->name<<endl;
-        this->swapChild(currentdescendant,newdescedant);
-    }
-}
-
 void  Gate::swapMethod(Gate* gate, int which){
-    if(this->Parent==NULL){
+    if(this->Parent->Parent==NULL){
         this->swapRoot(gate,which);
     }else{
         int k;
@@ -1429,7 +1349,8 @@ void Gate::swapRoot(Gate* gate, int which){
         int check=this->whichChild(gate);
         int m;
         int i;
-        if(which==-1){
+        Gate* RootParent=this->Parent;
+        if(check==-1){
             i=this->whichSide(gate->Parent); 
             //cout<<"i denotes which child of "<<this->name<<" leads to "<<gate->Parent->name<<endl;
             //cout<<"i: "<<i<<endl;
@@ -1450,7 +1371,8 @@ void Gate::swapRoot(Gate* gate, int which){
             //cout<<"Set the parent of "<<this->Children[i]->name<<" to be "<<this->name<<endl;
             this->Children[i]->Parent=this;
             //cout<<"Set the parent of "<<gate->name<<" to be NULL"<<endl;
-            gate->Parent=NULL;
+            gate->Parent=RootParent;
+            gate->Parent->Children[0]=gate;
         }else{
             //cout<<"Swapping root node and its child gate"<<endl;
             m=check;
@@ -1466,6 +1388,74 @@ void Gate::swapRoot(Gate* gate, int which){
             //cout<<"Set the parent of "<<this->Children[m]->name<<" to be "<<this->name<<endl;
             this->Children[m]->Parent=this;
             //cout<<"Set the parent of "<<gate->name<<" to be NULL"<<endl;
-            gate->Parent=NULL;
+            gate->Parent=RootParent;
+            gate->Parent->Children[0]=gate;
         }
+}
+
+void Gate::swap(Gate* gate, int which, vec y, mat X){
+    cout<<"Copy from "<<this->name<<" downwards"<<endl;
+    Gate* backup=this->copyStructure();
+    cout<<"Save the pointer to parent "<<this->Parent->name<<endl;
+    Gate* backupParent=this->Parent;
+    int   i=this->Parent->whichChild(this);
+    //cout<<this->name<<" is the "<<i<<"-th child of "<<this->Parent->name<<endl;
+    cout<<"Swaping "<<this->name<<" with "<<gate->name<<endl;
+    //cout<<"Most senior gate in this tree is "<<this->mostSeniorGate()->name<<endl;
+    double loglik_old=this->mostSeniorGate()->totalLogLikelihood(y,X);
+    this->swapMethod(gate,which);
+    double loglik_new=this->mostSeniorGate()->totalLogLikelihood(y,X);
+    //Might want to add some code which only calculates likelihood for the relevant segment. 
+    cout<<"Loglik old "<<loglik_old<<endl;
+    cout<<"Loglik new "<<loglik_new<<endl;
+    double acceptance=loglik_new-loglik_old;
+    double u=randu();
+    bool accept=u<exp(acceptance);
+    if(accept==1){
+       this->mostSeniorGate()->issueID();
+       this->mostSeniorGate()->issueIDLR();
+       cout<<"Swap has been accepted"<<endl;
+    }else{
+       cout<<"Swap has been rejected"<<endl;
+       cout<<"Want to reinstate the original structure"<<endl;
+       cout<<"Set the "<<i<<"-th child of "<<backupParent->name<<" to be "<<backup->name<<" from the backup hard copy"<<endl;
+       backupParent->Children[i]=backup;
+       cout<<"Set the parent of "<<backupParent->Children[i]->name<<" to be "<<backupParent->name<<endl;
+       backupParent->Children[i]->Parent=backupParent;
+    }
+}
+
+void  Gate::makeThisRootParent(Node* root){
+    this->Parent=NULL;
+    this->addChild(root);
+    root->Parent=this;
+}
+
+void  Gate::estimateAllBetas(vector<Node*> z_assign,vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+    vector<Node*> terminals=this->getTerminalNodes();
+    for(int i=0;i<terminals.size();i++){
+        Expert* current=dynamic_cast<Expert*>(terminals[i]);
+        current->beta=current->expertmodel->findBeta(current->subsetY(y,current->getPointIndices(z_assign)),current->subsetX(X,current->getPointIndices(z_assign)),logsigma_sq,mu_beta,Sigma_beta);
+    }
+}
+   
+void  Gate::setAllSigmas(double value){
+    vector<Node*> terminals=this->getTerminalNodes();
+    for(int i=0;i<terminals.size();i++){
+        Expert* current=dynamic_cast<Expert*>(terminals[i]);
+        current->logsigma_sq=value;
+    }
+}
+
+void  Gate::estimateAllGamas(vector<Node*> z_assign, mat X, mat Omega){
+    mat myz=this->getZ(z_assign);
+    this->gamma=this->findGammaMLE(this->subsetX(X,this->getPointIndices(z_assign)),myz,Omega);
+    vector<Node*> desc=this->getDescendants();
+    for(int i=0;i<desc.size();i++){
+        if(desc[i]->countChildren()!=0){
+            Gate* current=dynamic_cast<Gate*>(desc[i]);
+            mat z=current->getZ(z_assign); 
+            current->gamma=current->findGammaMLE(current->subsetX(X,current->getPointIndices(z_assign)),z,Omega);
+        }
+    }
 }

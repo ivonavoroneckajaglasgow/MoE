@@ -28,6 +28,7 @@ class Expert: public Node{
     Expert(const Expert &expert); //copy constructor
     Expert* copyThis(); //creates a new expert that is a copy of this one
     void deleteParent(); //deletes parent
+    void printChildren();
     vec etafun(mat X, vec beta);//eta calculator
     int countChildren(); //counts the number of children, which is zero for experts
     vector<Node*> getDescendantsInternal(vector<Node*>* desc); //returns itself as a descendant 

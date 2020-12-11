@@ -292,3 +292,4 @@ double ExpertModel::IG_log(double y, double a, double b){
 double ExpertModel::transformSigma(double logsigma_sq){
     return exp(logsigma_sq);
 }
+
