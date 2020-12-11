@@ -1075,6 +1075,8 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
      mat helper(X.n_rows,terminals.size());
      for(int i=0;i<terminals.size();i++){
      vec pathprobs=this->getPathProb_mat(terminals[i],X);
+     //cout<<dynamic_cast<Expert*>(terminals[i])->beta<<endl;
+     //cout<<pathprobs<<endl;
      vec est=X*(dynamic_cast<Expert*>(terminals[i])->beta);
      helper.col(i)=pathprobs%est;
      }
@@ -1149,6 +1151,26 @@ vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, m
         cout<<"Run number "<<i<<endl;
         z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
         f << this->jsonify() << ",";
+    }
+    //f << "[" << this->jsonify() << ",";
+    //f << this->jsonify() << ",";
+    f << "]" << endl;
+    f.close();
+    return z_new;
+}
+
+vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final, mat* Predictions, mat Xnew){
+    vector<Node*> z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
+    ofstream f;
+    f.open("results.json");
+    f << "[";
+    for(int i=0;i<N;i++){
+        cout<<"Run number "<<i<<endl;
+        z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
+        f << this->jsonify() << ",";
+        mat helper=this->predict(Xnew);
+        helper.resize(helper.n_cols,helper.n_rows);
+        (*Predictions).row(i)=helper;
     }
     //f << "[" << this->jsonify() << ",";
     //f << this->jsonify() << ",";

@@ -79,6 +79,7 @@ class Gate: public Node{
     void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final); //updates gamma for a gate 
     vector<Node*> MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates parameters followed by allocations once 
     vector<Node*> MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates parameters followed by allocations N times 
+    vector<Node*> MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final, mat* Predictions, mat Xnew);//updates parameters followed by allocations N times 
     string jsonify(int indent); //produces a JSON string describing the current state
     string jsonify();           //wrapper for the above function
     vector<Node*> updateZparamsIntegratedOut(vec y, mat X, vector<Node*> z_final,vec mu_beta, mat Sigma_beta, double a, double b);//updates allocations z with parameters beta and sigma integrated out (Normal Model only)

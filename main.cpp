@@ -236,7 +236,7 @@ for(int i=0;i<z_assign.size();i++){
      cout<<"Point "<<i<<" initially was in "<<z_assign[i]->name<<" and now is in "<<z_assign_new[i]->name<<endl;
 }
 
-G_1->swap(G_2,0,y,X);
+//G_1->swap(G_2,0,y,X);
 
 RP->findNode("G_1")->printChildren();
 
@@ -246,15 +246,52 @@ vec y2;
 mat X2;
 setUpData(A,&y2,&X2);
 
-y3.print("response vector:");
-X3.print("design matrix:");
+y2.print("response vector:");
+X2.print("design matrix:");
 
+int N_MCMC=10;
+int n_obs=X2.n_rows;
+mat Predictions(N_MCMC,n_obs);
 
-//z_G_2.save("trial.csv",csv_ascii);
+vector<Node*> z_assign_new2=G_1->MCMC(N_MCMC,y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_assign,&Predictions,X2);
+//Predictions.print("Predictions");
+Predictions.save("predictions.csv",csv_ascii);
 
+//Analysis of sin data
 
+mat M;
+M.load("data_sin.csv", csv_ascii);
+vec y_sin;
+mat X_sin;
+setUpData(M,&y_sin,&X_sin);
 
+vector<Node*> z_assign_sin=assignPoints(G_1,y_sin.size());
+G_1->estimateAllBetas(z_assign,y_sin,X_sin,logsigma_sq,mu_beta,Sigma_beta);
+G_1->setAllSigmas(1);
+G_1->estimateAllGamas(z_assign,X,Omega);
 
+vector<Node*> desc=G_1->getDescendants();
+for(int i=0;i<desc.size();i++){
+    cout<<desc[i]->name<<":"<<endl;
+    if(desc[i]->countChildren()==0){
+        cout<<dynamic_cast<Expert*>(desc[i])->beta<<endl;
+    }else{
+        cout<<dynamic_cast<Gate*>(desc[i])->gamma<<endl;
+    }
+}
+
+int N_MCMC_sin=100;
+mat X_new;
+X_new.load("x_new.csv", csv_ascii);
+mat P(N_MCMC_sin,X_new.n_rows);
+
+vector<Node*> z_assign_new_sin=G_1->MCMC(N_MCMC_sin,y_sin,X_sin,logsigma_sq,mu_beta,Sigma_beta,a,b,z_assign_sin,&P,X_new);
+
+for(int i=0;i<z_assign_new_sin.size();i++){
+     cout<<"Point "<<i<<" initially was in "<<z_assign_sin[i]->name<<" and now is in "<<z_assign_new_sin[i]->name<<endl;
+}
+
+P.save("P.csv",csv_ascii);
 
 return 0;
 }
