@@ -162,15 +162,17 @@ mat Expert::pi_calculator(mat X, vec gamma){
  * @param z_final vector of length n of pointers to experts to which each point has been allocated
  */
 void Expert::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
-    cout<<"Updating beta and sigma for Expert " <<this->name<<endl;
+    //cout<<"Updating beta and sigma for Expert " <<this->name<<endl;
     //cout<<"Before: "<<this->beta<<endl;
+    //cout<<"Before: "<<this->logsigma_sq<<endl;
     vec points=this->getPointIndices(z_final);
     //points.print("points:");
     vec myY=this->subsetY(y,points);
     mat myX=this->subsetX(X,points);
-    this->beta=this->expertmodel->updateBeta(this->beta,myY,myX,logsigma_sq,mu_beta,Sigma_beta);
-    this->logsigma_sq=this->expertmodel->updateSigma(this->logsigma_sq,myY,myX,this->beta,a,b,static_cast<int>(points.size()));
+    this->beta=this->expertmodel->updateBeta(this->beta,myY,myX,this->logsigma_sq,mu_beta,Sigma_beta);
+    this->logsigma_sq=this->expertmodel->updateSigma(0,myY,myX,this->beta,a,b,static_cast<int>(points.size()));
     //cout<<"After: "<<this->beta<<endl;
+    //cout<<"After: "<<this->logsigma_sq<<endl;
 }
 
 /**

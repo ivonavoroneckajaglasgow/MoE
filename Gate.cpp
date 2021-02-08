@@ -902,11 +902,14 @@ vector<Node*> Gate::updateZ(vec y, mat X,vector<Node*> z_final){
     // }else{
     vec points=this->getPointIndices(z_final);
     for(int i=0;i<points.size();i++){
+        //cout<<"Updating point "<<i<<endl;
         vec index(1);
         index.fill(points[i]);
         int current=static_cast<int>(points[i]);
         vec alpha=this->getSampleProbsForZ(this->subsetY(y,index),X.row(current));
+        //cout<<alpha<<endl;
         result[current]=this->updateZ_onepoint_sample(alpha);
+        //cout<<"Allocated to "<<result[current]->name<<endl;
     }
     //} 
     return result;
@@ -926,7 +929,7 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
          Expert* current=dynamic_cast<Expert*>(terminals[i]);
          vec beta=current->beta;
          double logsigma_sq=current->logsigma_sq;
-         alpha[i]=log(this->getPathProb(current,X))+current->expertmodel->loglik(y,X*beta,logsigma_sq);
+         alpha[i]=this->getPathProb(current,X)*sum(current->expertmodel->density(y,X*beta,logsigma_sq));
         }
      double sums=sum(alpha);
      alpha=alpha/sums;
@@ -953,8 +956,8 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
             }
         }
         cout<<"we should never be here update Z"<<endl;
-        alpha.print("alphas:");
-        cout<<"rnum "<<rnum<<endl;
+        //alpha.print("alphas:");
+        //cout<<"rnum "<<rnum<<endl;
     return terminals[alpha.size()-1];
  }
 
@@ -1012,6 +1015,10 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
      //cout<<"Inside Internal"<<endl;
      //cout<<"This idLR: "<<this->idLR<<endl;
      //cout<<"Node idLR: "<<node->idLR<<endl;
+     if(this->idLR==node->idLR){
+        //cout<<"I am done "<<endl;
+        return result;
+     } 
      if(node->idLR!=this->idLR){
          //cout<<"The idLR are not the same"<<endl;
          Gate* parent=node->getParent();
@@ -1028,10 +1035,9 @@ vec Gate::getSampleProbsForZ(vec y, mat X){ //y and X are for one i
          }
          //cout<<"my pi is "<<pi<<endl;
          result=result*pi;
-         return this->getPathProb_internal(parent,X,result); //put return here 
-     }else{ 
-     return result;
-     }
+         this->getPathProb_internal(parent,X,result); //put return here 
+     } 
+         
  }
 
 /**
@@ -1077,7 +1083,7 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
      vec pathprobs=this->getPathProb_mat(terminals[i],X);
      //cout<<dynamic_cast<Expert*>(terminals[i])->beta<<endl;
      //cout<<pathprobs<<endl;
-     vec est=X*(dynamic_cast<Expert*>(terminals[i])->beta);
+     vec est=X*(dynamic_cast<Expert*>(terminals[i])->beta); //not true for GLM
      helper.col(i)=pathprobs%est;
      }
      //helper.print("helper:");
@@ -1099,7 +1105,7 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
  * @param z_final vector of length n of pointers to experts to which each point has been allocated
  */
  void Gate::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
-        cout<<"Updating gamma for gate "<<name<<endl;
+        //cout<<"Updating gamma for gate "<<name<<endl;
         mat z=this->getZ(z_final);
         mat Omega;
         mat myX=this->subsetX(X,this->getPointIndices(z_final));
@@ -1126,7 +1132,7 @@ vec Gate::getPathProb_mat(Node* node, mat X){ //rows are observations and column
  */
 vector<Node*> Gate::MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
     this->MCMC_internal(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_final);
-    cout<<"Updating allocations"<<endl;
+    //cout<<"Updating allocations"<<endl;
     z_final=this->updateZ(y,X,z_final);
     return z_final;
 }
@@ -1151,7 +1157,7 @@ vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, m
     f.open("results.json");
     f << "[";
     for(int i=0;i<N;i++){
-        cout<<"Run number "<<i<<endl;
+        //cout<<"Run number "<<i<<endl;
         z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
         f << this->jsonify() << ",";
     }
@@ -1168,7 +1174,7 @@ vector<Node*> Gate::MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, m
     f.open("results.json");
     f << "[";
     for(int i=0;i<N;i++){
-        cout<<"Run number "<<i<<endl;
+        //cout<<"Run number "<<i<<endl;
         z_new=this->MCMC_OneRun(y,X,logsigma_sq,mu_beta,Sigma_beta,a,b,z_new);
         f << this->jsonify() << ",";
         mat helper=this->predict(Xnew);
@@ -1300,6 +1306,7 @@ double Gate::totalLogLikelihood(vec y, mat X){
         result_perpoint[i]=this->getPathProb(current,myX)*as_scalar(current->expertmodel->density(myY,myX*(current->beta),current->logsigma_sq));
         //cout<<"result per point "<<result_perpoint[i]<<endl;
     }
+        //cout<<"result for point "<< j<<" is "<< result_perpoint<<endl;
         result[j]=log(sum(result_perpoint));
         //result.print("result:");
     }
@@ -1438,6 +1445,7 @@ void Gate::swap(Gate* gate, int which, vec y, mat X){
     double acceptance=loglik_new-loglik_old;
     double u=randu();
     bool accept=u<exp(acceptance);
+    accept=1;
     if(accept==1){
        this->mostSeniorGate()->issueID();
        this->mostSeniorGate()->issueIDLR();

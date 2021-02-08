@@ -202,8 +202,10 @@ vec GLMModel::findBeta(vec y, mat X, double logsigma_sq){
  * @return vec estimated beta
  */
 vec GLMModel::findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+    //cout<<"I am in find beta"<<endl;
     vec beta;
     beta=this->initialiseBeta(y,X,logsigma_sq);
+    //cout<<"I have initialised beta"<<beta<<endl;
     mat sqrtSigma_beta=sqrtmat_sympd(Sigma_beta);
     mat invSigma_beta=Sigma_beta.i();
     mat sqrt_invSigma_beta=sqrtmat_sympd(invSigma_beta);
@@ -272,7 +274,8 @@ vec GLMModel::initialiseBeta(vec y, mat X, double logsigma_sq){
  */
 vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq){
   mat R;
-  vec betahat=this->findBeta(y,X,&R,logsigma_sq);//Uses IWLS to estimate beta
+  double sigma=exp(logsigma_sq);
+  vec betahat=this->findBeta(y,X,&R,sigma);//Uses IWLS to estimate beta
   vec v(betaold.size(),fill::randn);
   vec betanew=betahat+sqrt(SigmaMultiple)*solve(R,v); //take in proposal scale as an argument at some point 
   double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));
@@ -301,8 +304,12 @@ vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq){
  * @return vec updated value of beta
  */
 vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+  //cout<<"I got in "<<endl;
   mat R;
-  vec betahat=this->findBeta(y,X,&R, logsigma_sq,mu_beta,Sigma_beta);//Uses IWLS to estimate beta
+  vec betahat=this->findBeta(y,X,&R, exp(logsigma_sq),mu_beta,Sigma_beta);//Uses IWLS to estimate beta
+  //vec betahat=this->findBeta(y,X,&R, logsigma_sq,mu_beta,Sigma_beta);
+  //cout<<"log sigma sq "<<logsigma_sq<<endl;
+  //cout<<"I got beta hat"<<betahat<<endl;
   vec v(betaold.size(),fill::randn);
   vec betanew=betahat+solve(sqrt(SigmaMultiple)*R,v); //take in proposal scale as an argument at some point 
   double density_old=sum(this->logdensity(y,this->etafun(X,betaold),logsigma_sq));

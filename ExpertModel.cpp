@@ -254,12 +254,12 @@ double ExpertModel::logMarginalPosteriorY(vec y, mat X, vec mu_beta, mat Sigma_b
  */
 double ExpertModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
     if(n==0){
-        return 1/randg( distr_param(a,b));
+        return 1/randg( distr_param(a,1/b));
     }
     double alpha1=static_cast<double>(a+n/2);
     double alpha2=static_cast<double>(b+sum(pow(y-X*beta,2))/2);
-    double sigma_new=1/randg( distr_param(alpha1,alpha2)); 
-    return sigma_new;
+    double sigma_new=1/randg( distr_param(alpha1,1/alpha2)); 
+    return log(sigma_new);
     // double density_old=sum(this->logdensity(y,this->etafun(X,beta),sigma_old));
     // double density_new=sum(this->logdensity(y,this->etafun(X,beta),sigma_new));
     // double prior_old=sum(this->IG_log(sigma_old,a,b));
