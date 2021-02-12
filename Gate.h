@@ -79,7 +79,7 @@ class Gate: public Node{
     void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final); //updates gamma for a gate 
     vector<Node*> MCMC_OneRun(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates parameters followed by allocations once 
     vector<Node*> MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates parameters followed by allocations N times 
-    vector<Node*> MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final, mat* Predictions, mat Xnew);//updates parameters followed by allocations N times 
+    vector<Node*> MCMC(int N, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final, mat* Predictions, mat Xnew, mat* gammas1, mat* gammas2);//updates parameters followed by allocations N times 
     string jsonify(int indent); //produces a JSON string describing the current state
     string jsonify();           //wrapper for the above function
     vector<Node*> updateZparamsIntegratedOut(vec y, mat X, vector<Node*> z_final,vec mu_beta, mat Sigma_beta, double a, double b);//updates allocations z with parameters beta and sigma integrated out (Normal Model only)
@@ -92,6 +92,8 @@ class Gate: public Node{
     void  estimateAllBetas(vector<Node*> z_assign,vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);
     void  setAllSigmas(double value);
     void  estimateAllGamas(vector<Node*> z_assign, mat X, mat Omega);
+    double dnorm(double y, double mu, double sigma_sq);
+    vector<Node*>  split(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign, double mu_jump, double sigma_jump, double mu_gamma1, double sigma_gamma1, vec* x_record,vec* gamma_record);
     };
     
 
