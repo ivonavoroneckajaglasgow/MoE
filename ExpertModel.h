@@ -34,9 +34,11 @@ class ExpertModel{
     vec logmvndensity(vec response, vec mean, mat Sigma); //multivariate normal density with variance-covariance matrix
     vec logmvndensity(vec response, vec mean, mat* R);    //multivariate normal density with R from QR decomposition
     virtual double logMarginalPosteriorY(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b); //marginal posterior distribution of response y
-    double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n);//updates sigma
+    double updateSigma(vec y, mat X, vec beta, double a, double b, int n);//updates sigma
     double IG_log(double y, double a, double b);//inverse gamma density on a log scale   
     double transformSigma(double logsigma_sq);  //Transforms sigma to a log scale
+    virtual vec findBetaMLE(vec y, mat X);
+    virtual double findLogSigmaSqMLE(vec y, mat X, vec betahat);    
 };
 
 #endif //MOE_EXPERTMODEL_H

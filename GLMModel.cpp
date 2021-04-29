@@ -17,7 +17,7 @@ using namespace arma;
  * 
  */
 GLMModel::GLMModel(){
- cout<<"GLMModel has been created."<<endl;
+ //cout<<"GLMModel has been created."<<endl;
 }
 
 /**
@@ -175,6 +175,13 @@ for (int i=0; i<100; i++){
     if(all(abs(beta-beta_old)<(EPS,EPS*abs(beta)).max())) break;
 }
 return beta;
+}
+
+vec GLMModel::findBetaMLE(vec y, mat X){
+return 0;
+}
+double GLMModel::findLogSigmaSqMLE(vec y, mat X, vec betahat){
+return 0;
 }
 
 /**
@@ -340,7 +347,7 @@ vec GLMModel::updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_b
  * @param n the number of points in this expert
  * @return double updated value of sigma
  */
-double GLMModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+double GLMModel::updateSigma(vec y, mat X, vec beta, double a, double b, int n){
     return 0;
 }
 

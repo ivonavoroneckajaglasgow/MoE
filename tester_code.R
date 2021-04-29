@@ -7,11 +7,12 @@ setwd("C:/Users/Ivona Voroneckaja/Desktop/MoE/MoE")
 
 #data<-read.csv("data_sin.csv")
 data<-read.csv("data_quad2.csv")
+data<-read.csv("data_sin_stand.csv",header = FALSE)
 y<-data[,1]
 y<-(y-mean(y))/sd(y)
 X<-data[,2:3]
 x<-data[,3]
-write.table(cbind(y,1,x),file="data_quad2.csv",sep=",",col.names=FALSE,row.names = FALSE)
+#write.table(cbind(y,1,x),file="data_quad2.csv",sep=",",col.names=FALSE,row.names = FALSE)
 
 m1<-lm(y[1:33]~x[1:33])
 m2<-lm(y[34:66]~x[34:66])
@@ -25,16 +26,15 @@ z_before<-read.csv("z_before.csv",header=FALSE)
 z_before<-z_before[,1]
 
 
-z_before<-c(rep(1,times=33),rep(2,times=33),rep(3,times=34))
-z_before[10:15]<-2
-z_before[45:50]<-3
-z_before[80:85]<-1
+#z_before<-c(rep(1,times=33),rep(2,times=33),rep(3,times=34))
+#z_before[10:15]<-2
+#z_before[45:50]<-3
+#z_before[80:85]<-1
 #write.csv(file="z_before.csv",z_before,row.names = FALSE)
-write.table(z_before,file="z_before.csv",sep=",",col.names=FALSE,row.names = FALSE)
+#write.table(z_before,file="z_before.csv",sep=",",col.names=FALSE,row.names = FALSE)
 
 par(mfrow=c(1,1))
 #plot(y~x,pch=col=c(rep(1,times=33),rep(2,times=33),rep(3,times=34)),main="Estimates by R")
-plot(y~x,pch=20,col=z_before,main="Estimates by R")
 plot(y~x,pch=20,col=z_before,main="Initialization")
 abline(m1)
 abline(m2,col=2)
@@ -75,8 +75,66 @@ plot(x,exp(gammas[3]+gammas[4]*x)/(1+exp(gammas[3]+gammas[4]*x)),type="l",main="
 
 par(mfrow=c(1,1))
 plot(y~x,col=z_after,pch=20,main="1000 MCMC Iterations")
-lines(x,exp(gammas[1]+gammas[2]*x)/(1+exp(gammas[1]+gammas[2]*x))*120-10,lty=2,col=4)
-lines(x,exp(gammas[3]+gammas[4]*x)/(1+exp(gammas[3]+gammas[4]*x))*120-10,lty=4,col="darkgreen")
+lines(x,exp(gammas[1]+gammas[2]*x)/(1+exp(gammas[1]+gammas[2]*x))*4-1.5,lty=2,col=4)
+lines(x,exp(gammas[3]+gammas[4]*x)/(1+exp(gammas[3]+gammas[4]*x))*4-1.5,lty=4,col="darkgreen")
+
+###Splitting###
+coefs_split<-read.csv("coefs_split.csv",header = FALSE)
+logsigma_sqs_split<-as.numeric(read.csv("sigmas_split.csv",header = FALSE))
+betas_split <-as.numeric(unlist(coefs_split[,1:4]))
+gammas_split<-as.numeric(unlist(coefs_split[,5:7]))
+sigmas_split<-exp(logsigma_sqs_split)
+z_split<-read.csv("z_afterSplit.csv",header=FALSE)
+z_split<-z_split[,1]
+
+par(mfrow=c(1,1))
+plot(y~x,col=z_split,pch=20,main="After Split")
+lines(x, betas_split[1]+betas_split[2]*x)
+lines(x, betas_split[1]+betas_split[2]*x+2*sqrt(sigmas_split[1]),lty=2)
+lines(x, betas_split[1]+betas_split[2]*x-2*sqrt(sigmas_split[1]),lty=2)
+lines(x, betas_split[3]+betas_split[4]*x,col=2)
+lines(x, betas_split[3]+betas_split[4]*x+2*sqrt(sigmas_split[2]),lty=2,col=2)
+lines(x, betas_split[3]+betas_split[4]*x-2*sqrt(sigmas_split[2]),lty=2,col=2)
+lines(x, betas_split[5]+betas_split[6]*x,col=3)
+lines(x, betas_split[5]+betas_split[6]*x+2*sqrt(sigmas_split[3]),lty=2,col=3)
+lines(x, betas_split[5]+betas_split[6]*x-2*sqrt(sigmas_split[3]),lty=2,col=3)
+lines(x, betas_split[7]+betas_split[8]*x,col=4)
+lines(x, betas_split[7]+betas_split[8]*x+2*sqrt(sigmas_split[4]),lty=2,col=4)
+lines(x, betas_split[7]+betas_split[8]*x-2*sqrt(sigmas_split[4]),lty=2,col=4)
+
+plot(y~x,col=z_split,pch=20,main="After Split")
+lines(x,exp(gammas_split[1]+gammas_split[2]*x)/(1+exp(gammas_split[1]+gammas_split[2]*x))*4-1.5,lty=2,col=4)
+lines(x,exp(gammas_split[3]+gammas_split[4]*x)/(1+exp(gammas_split[3]+gammas_split[4]*x))*4-1.5,lty=4,col="darkgreen")
+lines(x,exp(gammas_split[5]+gammas_split[6]*x)/(1+exp(gammas_split[5]+gammas_split[6]*x))*4-1.5,lty=4,col=1)
+
+
+###After Merge
+coefs_merge<-read.csv("coefs_merge.csv",header = FALSE)
+logsigma_sqs_merge<-as.numeric(read.csv("sigmas_merge.csv",header = FALSE))
+betas_merge <-as.numeric(unlist(coefs_merge[,1:3]))
+gammas_merge<-as.numeric(unlist(coefs_merge[,4:5]))
+sigmas_merge<-exp(logsigma_sqs_merge)
+z_merge<-read.csv("z_afterMerge.csv",header=FALSE)
+z_merge<-z_merge[,1]
+
+par(mfrow=c(1,1))
+plot(y~x,col=z_merge,pch=20,main="After Merge")
+lines(x, betas_merge[1]+betas_merge[2]*x)
+lines(x, betas_merge[1]+betas_merge[2]*x+2*sqrt(sigmas_merge[1]),lty=2)
+lines(x, betas_merge[1]+betas_merge[2]*x-2*sqrt(sigmas_merge[1]),lty=2)
+lines(x, betas_merge[3]+betas_merge[4]*x,col=2)
+lines(x, betas_merge[3]+betas_merge[4]*x+2*sqrt(sigmas_merge[2]),lty=2,col=2)
+lines(x, betas_merge[3]+betas_merge[4]*x-2*sqrt(sigmas_merge[2]),lty=2,col=2)
+lines(x, betas_merge[5]+betas_merge[6]*x,col=3)
+lines(x, betas_merge[5]+betas_merge[6]*x+2*sqrt(sigmas_merge[3]),lty=2,col=3)
+lines(x, betas_merge[5]+betas_merge[6]*x-2*sqrt(sigmas_merge[3]),lty=2,col=3)
+
+plot(y~x,col=z_merge,pch=20,main="After Split")
+lines(x,exp(gammas_merge[1]+gammas_merge[2]*x)/(1+exp(gammas_merge[1]+gammas_merge[2]*x))*4-1.5,lty=2,col=4)
+lines(x,exp(gammas_merge[3]+gammas_merge[4]*x)/(1+exp(gammas_merge[3]+gammas_merge[4]*x))*4-1.5,lty=4,col="darkgreen")
+
+
+
 
 ###After Swap###
 z_swap<-read.csv("z_swap.csv",header=FALSE)

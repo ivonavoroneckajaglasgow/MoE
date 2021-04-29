@@ -46,7 +46,7 @@ class Node{
     mat subsetX(mat X, vec index);//subsets a matrix X
     vec subsetY(vec Y, vec index);//subsets a vector y
     virtual mat pi_calculator(mat X, vec gamma);//calculates mixing proportions
-    virtual void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates parameters of a node 
+    virtual void MCMC_internal(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final);//updates parameters of a node 
     virtual mat getZ(vector<Node*> z_final);//returns a matrix of allocations z
     virtual string jsonify(int indent);//writes the current state of the tree as a json format string
     vector<int> describeTree(); //describes the tree as a vector of integers

@@ -32,6 +32,8 @@ double deta(vec y, vec eta, double logsigma_sq);// returns the derivative of log
 double dsigma (vec y, vec eta, double logsigma_sq); //derivative of the log-likelihood wrt to sigma^2
 double a(double phi); //a(phi) function in the exponential family expression for the family
 vec V(vec theta); //b''(theta) function in the exponential family expression for the family
+vec findBetaMLE(vec y, mat X);
+double findLogSigmaSqMLE(vec y, mat X, vec betahat); //finds MLE estimate for sigma squared 
 };
 
 #endif //MOE_NORMALFAMILY_H

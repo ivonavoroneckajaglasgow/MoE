@@ -37,7 +37,7 @@ class Expert: public Node{
     int rightMostNodeID();  //returns its own ID and Gate decides which one is right most
     int isInRange(Node* node);//returns yes or no to whether its ID is te same as node
     mat pi_calculator(mat X, vec gamma);//returns a matrix of ones (used in multiplication when calculating path probabilities)
-    void MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final);//updates beta and sigma
+    void MCMC_internal(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final);//updates beta and sigma
     string jsonify(int indent); //produces a JSON string describing the current state
     vector<int> describeTreeInternal(vector<int>* description);//helps describe the tree as a vector of integers
 };

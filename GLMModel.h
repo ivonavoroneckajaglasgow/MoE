@@ -37,7 +37,9 @@ vec findBeta(vec y, mat X, mat* R, double logsigma_sq, vec mu_beta, mat Sigma_be
 vec findBeta(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta);//estimates beta Bayesian + pointer to R in QR decomposition
 vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq); //updates beta
 vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta); //updates beta Bayesian
-virtual double updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n); //updates sigma using posterior
+virtual double updateSigma(vec y, mat X, vec beta, double a, double b, int n); //updates sigma using posterior
+virtual vec findBetaMLE(vec y, mat X);
+virtual double findLogSigmaSqMLE(vec y, mat X, vec betahat);
 };
 
 

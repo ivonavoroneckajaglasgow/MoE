@@ -15,7 +15,7 @@ using namespace arma;
  * 
  */
 ExpertModel::ExpertModel(){
-    cout<<"Expert Model has been created."<<endl;
+    //cout<<"Expert Model has been created."<<endl;
 }
 
 /**
@@ -252,9 +252,9 @@ double ExpertModel::logMarginalPosteriorY(vec y, mat X, vec mu_beta, mat Sigma_b
  * @param n the number of points in this expert
  * @return double updated value of sigma
  */
-double ExpertModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double a, double b, int n){
+double ExpertModel::updateSigma(vec y, mat X, vec beta, double a, double b, int n){
     if(n==0){
-        return 1/randg( distr_param(a,1/b));
+        return log(1/randg( distr_param(a,1/b)));
     }
     double alpha1=static_cast<double>(a+n/2);
     double alpha2=static_cast<double>(b+sum(pow(y-X*beta,2))/2);
@@ -268,7 +268,7 @@ double ExpertModel::updateSigma(double sigma_old, vec y, mat X, vec beta, double
     // double u=randu();
     // bool accept=u<exp(acceptance);
     // if(accept==1) return sigma_new;
-    // if(accept==0) return sigma_old; 
+    // if(accept==0) return sigma_old; f
 }
 
 /**
@@ -293,3 +293,10 @@ double ExpertModel::transformSigma(double logsigma_sq){
     return exp(logsigma_sq);
 }
 
+
+vec ExpertModel::findBetaMLE(vec y, mat X){
+return 0;
+}
+double ExpertModel::findLogSigmaSqMLE(vec y, mat X, vec betahat){
+return 0;
+}

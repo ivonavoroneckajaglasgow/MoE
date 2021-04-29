@@ -15,7 +15,7 @@ using namespace arma;
  * 
  */
 NormalFamily::NormalFamily(){
-cout<<"Normal Family has been created"<<endl;
+//cout<<"Normal Family has been created"<<endl;
 }
 
 /**
@@ -187,5 +187,19 @@ vec NormalFamily::V(vec theta){
     return result;
 }
 
+double NormalFamily::findLogSigmaSqMLE(vec y, mat X, vec betahat){
+    double n=static_cast<int>(y.size());
+    return as_scalar(log(1/(n-X.n_cols)*(y-X*betahat).t()*(y-X*betahat)));
+}
+
+vec NormalFamily::findBetaMLE(vec y, mat X){
+mat Xt(X.n_cols,X.n_rows);
+Xt=X.t();
+mat XtX(X.n_rows,X.n_rows);
+XtX=Xt*X;
+mat XtXinv(X.n_rows,X.n_rows);
+XtXinv=XtX.i();
+return XtXinv*Xt*y;
+}
 
 

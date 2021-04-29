@@ -15,6 +15,7 @@ using namespace arma;
  * 
  */
 Expert::Expert(){
+    Parent=NULL;
     //cout<<"Expert has been created."<<endl;
 }
 
@@ -23,7 +24,7 @@ Expert::Expert(){
  * 
  */
 Expert::~Expert(){
-    //cout<<"Expert has been deleted."<<endl;
+    cout<<"Expert has been deleted."<<endl;
 }
 
 /**
@@ -161,7 +162,7 @@ mat Expert::pi_calculator(mat X, vec gamma){
  * @param b prior scale parameter for Inverse Gamma 
  * @param z_final vector of length n of pointers to experts to which each point has been allocated
  */
-void Expert::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
+void Expert::MCMC_internal(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final){
     //cout<<"Updating beta and sigma for Expert " <<this->name<<endl;
     //cout<<"Before: "<<this->beta<<endl;
     //cout<<"Before: "<<this->logsigma_sq<<endl;
@@ -170,7 +171,7 @@ void Expert::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Si
     vec myY=this->subsetY(y,points);
     mat myX=this->subsetX(X,points);
     this->beta=this->expertmodel->updateBeta(this->beta,myY,myX,this->logsigma_sq,mu_beta,Sigma_beta);
-    this->logsigma_sq=this->expertmodel->updateSigma(0,myY,myX,this->beta,a,b,static_cast<int>(points.size()));
+    this->logsigma_sq=this->expertmodel->updateSigma(myY,myX,this->beta,a,b,static_cast<int>(points.size()));
     //cout<<"After: "<<this->beta<<endl;
     //cout<<"After: "<<this->logsigma_sq<<endl;
 }

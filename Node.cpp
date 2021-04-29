@@ -18,7 +18,11 @@ using namespace arma;
  * 
  */
 void Node::printParent() {
+    if(Parent!=NULL){
         cout << name << " parent is " << Parent->name << "." << endl;
+    }else{
+        cout<<name<<" doesn't have a parent."<<endl;
+    }
 }
 
 /**
@@ -248,6 +252,7 @@ int Node::countPoints(vector<Node*> z_final){
  * @return vec vector containing indeces of the points that have travelled through the node
  */
 vec Node::getPointIndices(vector<Node*> z_final){
+    //cout<<"I am in"<<endl;
     vec range=this->getDescendantRange();    
     vec result(this->countPoints(z_final));
     int position=0;
@@ -283,8 +288,10 @@ mat Node::subsetX(mat X, vec index){
  * @return vec resulting vector
  */
 vec Node::subsetY(vec y, vec index){
+    //cout<<"I am in"<<endl;
     vec result(index.size());
     for(int i=0;i<index.size();i++){
+        //cout<<index[i]<<endl;
         result[i]=y[static_cast<int>(index[i])];
     }
     return result;
@@ -313,7 +320,7 @@ mat Node::pi_calculator(mat X, vec gamma){
  * @param b prior scale parameter for Inverse Gamma 
  * @param z_final vector of length n of pointers to experts to which each point has been allocated
  */
-void Node::MCMC_internal(vec y, mat X, double logsigma_sq, vec mu_beta, mat Sigma_beta, double a, double b, vector<Node*> z_final){
+void Node::MCMC_internal(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final){
     
 }
 
@@ -546,6 +553,7 @@ Node* Node::findNode(string Name){
     if(this->name==Name) return this;
     Gate* Root=this->mostSeniorGate();
     if(Root->name==Name) return Root;
+    if(Root->Parent->name==Name) return Root->Parent;
     vector<Node*> desc=Root->getDescendants();
     for(int i=0;i<desc.size();i++){
         if(desc[i]->name==Name) return desc[i];
