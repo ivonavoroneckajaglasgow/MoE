@@ -31,10 +31,15 @@ class Gate: public Node{
     void printDescendants();     //prints descendant names
     void printTerminalNodes();   //prints termial nodes (experts) names
     vector<Node*> getChildren(); //returns a vector with pointers to children
+    vector<Node*> getGates(); //returns a vector of gates in the tree
     vector<Node*> getDescendantsInternal(vector<Node*>* desc);       //returns a vector with pointers to descendants
     vector<Node*> getTerminalNodesInternal(vector<Node*>* terminal); //returns a vector with pointers to termial nodes (experts)
     int countChildren();   //returns the total number of children
     int countDescendants();//returns the total number of descendants
+    int countGates(); //returns the total number of gates in the tree
+    int countTerminals(); //returns the total number of experts in the tree
+    int getMaxGateID(); //returns the maximum ID for gate
+    int getMaxExpertID(); //returns the maximum ID for expert
     void issueID();//issues IDs top to bottom with the help of two functions below
     void issueID_helper1(int* gate_id, int* expert_id);//helper for issueID
     void issueID_helper2(int* gate_id, int* expert_id);//helper for issueID
@@ -80,6 +85,7 @@ class Gate: public Node{
     void MCMC_internal(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final); //updates gamma for a gate 
     vector<Node*> MCMC_OneRun(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final);//updates parameters followed by allocations once 
     vector<Node*> MCMC(int N, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final);//updates parameters followed by allocations N times 
+    vector<Node*> MCMC_RJ(int N, int RJ_every, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, vector<Node*> z_final);//updates parameters followed by allocations N times with RJ 
     vector<Node*> MCMC(int N, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final, mat* Predictions, mat Xnew, mat* gammas1, mat* gammas2);//updates parameters followed by allocations N times 
     string jsonify(int indent); //produces a JSON string describing the current state
     string jsonify();           //wrapper for the above function
@@ -97,6 +103,12 @@ class Gate: public Node{
     vector<Node*> split(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, double mu_gamma1, double sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);
     vector<Node*> split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);
     vector<Node*> merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega);
+    vector<Node*> mergeRoot(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega);
+    vector<Node*> forceMerge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega);
+    double qGamma(mat X, vector<Node*> z_assign, mat Omega);
+    vector<Expert*> whichEmpty(vector<Node*> z_assign);
+    int areAnyExpEmpty(vector<Node*> z_assign);
+    vector<Node*> create_copy(std::vector<Node*> const &vec);
     };
     
 

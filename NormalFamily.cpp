@@ -189,7 +189,7 @@ vec NormalFamily::V(vec theta){
 
 double NormalFamily::findLogSigmaSqMLE(vec y, mat X, vec betahat){
     double n=static_cast<int>(y.size());
-    return as_scalar(log(1/(n-X.n_cols)*(y-X*betahat).t()*(y-X*betahat)));
+    return as_scalar(log(sqrt(1/(n-X.n_cols)*(y-X*betahat).t()*(y-X*betahat))));
 }
 
 vec NormalFamily::findBetaMLE(vec y, mat X){

@@ -271,6 +271,11 @@ double ExpertModel::updateSigma(vec y, mat X, vec beta, double a, double b, int 
     // if(accept==0) return sigma_old; f
 }
 
+double ExpertModel::qSigma(vec y, mat X, vec beta, double logsigma_sq, double a, double b){
+  int n=y.size();
+  return this->IG_log(exp(logsigma_sq),a+n/2,b+sum(pow(y-X*beta,2))/2);
+}
+
 /**
  * @brief Inverse Gamma density on a log scale
  * 
@@ -297,6 +302,11 @@ double ExpertModel::transformSigma(double logsigma_sq){
 vec ExpertModel::findBetaMLE(vec y, mat X){
 return 0;
 }
+
 double ExpertModel::findLogSigmaSqMLE(vec y, mat X, vec betahat){
 return 0;
+}
+
+double ExpertModel::qBeta(vec y, mat X, vec beta, double logsigma_sq, vec mu_beta, mat Sigma_beta){
+  return 0;
 }

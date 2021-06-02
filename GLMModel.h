@@ -40,6 +40,8 @@ vec updateBeta(vec betaold, vec y, mat X, double logsigma_sq, vec mu_beta, mat S
 virtual double updateSigma(vec y, mat X, vec beta, double a, double b, int n); //updates sigma using posterior
 virtual vec findBetaMLE(vec y, mat X);
 virtual double findLogSigmaSqMLE(vec y, mat X, vec betahat);
+double qBeta(vec y, mat X, vec beta, double logsigma_sq, vec mu_beta, mat Sigma_beta);
+//virtual double qSigma();
 };
 
 

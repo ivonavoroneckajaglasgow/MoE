@@ -39,6 +39,8 @@ class ExpertModel{
     double transformSigma(double logsigma_sq);  //Transforms sigma to a log scale
     virtual vec findBetaMLE(vec y, mat X);
     virtual double findLogSigmaSqMLE(vec y, mat X, vec betahat);    
+    double qSigma(vec y, mat X, vec beta, double logsigma_sq, double a, double b);
+    virtual double qBeta(vec y, mat X, vec beta, double logsigma_sq, vec mu_beta, mat Sigma_beta);
 };
 
 #endif //MOE_EXPERTMODEL_H
