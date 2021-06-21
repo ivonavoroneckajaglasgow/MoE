@@ -85,7 +85,7 @@ class Gate: public Node{
     void MCMC_internal(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final); //updates gamma for a gate 
     vector<Node*> MCMC_OneRun(vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final);//updates parameters followed by allocations once 
     vector<Node*> MCMC(int N, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final);//updates parameters followed by allocations N times 
-    vector<Node*> MCMC_RJ(int N, int RJ_every, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, vector<Node*> z_final);//updates parameters followed by allocations N times with RJ 
+    vector<Node*> MCMC_RJ(int N, bool doRJ, int RJ_every, int L, mat* accept_RJ,vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, vector<Node*> z_final, mat X_new, mat* predictions, int predict_every);//updates parameters followed by allocations N times with RJ 
     vector<Node*> MCMC(int N, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, vector<Node*> z_final, mat* Predictions, mat Xnew, mat* gammas1, mat* gammas2);//updates parameters followed by allocations N times 
     string jsonify(int indent); //produces a JSON string describing the current state
     string jsonify();           //wrapper for the above function
@@ -100,16 +100,24 @@ class Gate: public Node{
     void  setAllSigmas(double value);
     void  estimateAllGamas(vector<Node*> z_assign, mat X, mat Omega);
     double dnorm(double y, double mu, double sigma_sq);
-    vector<Node*> split(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, double mu_gamma1, double sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);
+    double split_empty(vec y, mat X, mat X_sub, double q_beta, double q_sigma, double prior_beta, double prior_sigma, vec q_z_helper, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);
+    vector<Node*> split_at_root(vec y, mat X, int* accept, Expert* ExpertToSplit, Expert* ExpertToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);// double mu_jump, double sigma_jump, vec mu_beta, mat Sigma_beta, vec* x_record, vec* gamma_record){
+    vector<Node*> split(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);
     vector<Node*> split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);
+    vector<Node*> split3(vec y, mat X, int* accept, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega);// double mu_jump, double sigma_jump, vec mu_beta, mat Sigma_beta, vec* x_record, vec* gamma_record){
+    void splitEmptyExpert(Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, double* prior_betastar, double* prior_sigmastar, double* prior_gamma, double* q_betastar,double* q_sigmastar, double* q_gamma);
+    vector<Node*> proposeZafterSplit(vec y_sub, mat X_sub, vec points, Gate* GateToAdd, vector<Node*> z_assign, vec* q_z_helper);
+    void proposeExpertParamsSplit(vec y, mat X, Expert* myExpert,vec mu_beta, mat Sigma_beta, double a, double b, double* q_betastar, double* q_sigmastar);
+    vec proposeGammaSplit(vec y_sub, mat X_sub,vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon);
+    vector<Node*> merge2(vec y, mat X, int* accept, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega);
     vector<Node*> merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega);
-    vector<Node*> mergeRoot(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega);
-    vector<Node*> forceMerge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega);
-    double qGamma(mat X, vector<Node*> z_assign, mat Omega);
+    double q_gammaMerge(mat X, vector<Node*> z_assign, mat Omega);
+    double q_gammaSplit(mat X_sub, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon);
     vector<Expert*> whichEmpty(vector<Node*> z_assign);
     int areAnyExpEmpty(vector<Node*> z_assign);
-    vector<Node*> create_copy(std::vector<Node*> const &vec);
-    };
+    vector<Node*> deepCopyAllocations(vector<Node*> z_assign, Gate* backup);
+    mat extractAllParams();
+ };
     
 
 #endif //MOE_GATE_H

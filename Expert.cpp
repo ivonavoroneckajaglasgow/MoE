@@ -59,6 +59,7 @@ Expert* Expert::copyThis(){
     Copy->y=this->y;
     Copy->X=this->X;
     Copy->idLR=this->idLR;
+    Copy->id=this->id;
     return Copy;
 }
 

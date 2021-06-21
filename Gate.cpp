@@ -1565,191 +1565,104 @@ double Gate::dnorm(double y, double mu, double sigma_sq){
      return exp(-0.5*(log(2*M_PI)+log(sigma_sq))-pow(y-mu,2)/(2*sigma_sq));
 }
 
-
-vector<Node*> Gate::split(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, double mu_gamma1, double sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega){// double mu_jump, double sigma_jump, vec mu_beta, mat Sigma_beta, vec* x_record, vec* gamma_record){
-    vector<Node*> z_assign_new(z_assign.size());
-    z_assign_new=z_assign;
-    vec points=ExpertToSplit->getPointIndices(z_assign);
-    vec y_sub=ExpertToSplit->subsetY(y,points);
-    mat X_sub=ExpertToSplit->subsetX(X,points);
-    //1) Draw an x_star from all x at random
-    int n_rand=rand() % y_sub.size();  
-    double x_star=X_sub.col(1)[n_rand];
-    //cout<<n_rand<<"th observation chosen, x star: "<<x_star<<endl;
-    //2) Draw gamma1
-    vec mu_g(1); mu_g.fill(mu_gamma1);
-    mat sigma_g(1,1); sigma_g.row(0)=sigma_gamma1;
-    double gamma_1=as_scalar(mvnrnd(mu_g, sigma_g, 1)); 
-    cout<<"gamma_1="<<gamma_1<<endl;
-    //3) Draw epsilon
-    vec mu_e(1); mu_e.fill(0);
-    mat sigma_e(1,1); sigma_e.row(0)=sigma_epsilon;
-    double epsilon=as_scalar(mvnrnd(mu_e, sigma_e, 1));
-    cout<<"epsilon="<<epsilon<<endl;
-    //4) Infer gamma_0
-    double gamma_0=-gamma_1*x_star+epsilon;
-    vec gamma(2); gamma[0]=gamma_0; gamma[1]=gamma_1;
-    cout<<"gamma_0="<<gamma_0<<endl;
-    //A) Save copies of the original architecture
-    Gate* backup=ExpertToSplit->Parent->copyStructure();
-    Gate* backupParent=ExpertToSplit->Parent->Parent;
-    int   k=ExpertToSplit->Parent->whichChild(ExpertToSplit);
-    cout<<"Copies stored successfully"<<endl;
-    //B) Record the log likelihood of the original tree
-    //double loglik_old=ExpertToSplit->mostSeniorGate()->totalLogLikelihood(y,X);
-    double loglik_old=ExpertToSplit->Parent->loglik_complete(y,X,z_assign);
-    cout<<"loglik_old: "<<loglik_old<<endl;
-    //C) Perform the split    
-    ExpertToSplit->Parent->replaceChild(k,GateToAdd);
-    GateToAdd->addChild(ExpertToSplit);
-    GateToAdd->addChild(ExpertToAdd); 
-    this->mostSeniorGate()->issueIDLR();
-    this->mostSeniorGate()->issueID();
-    GateToAdd->gamma=gamma;
-    cout<<"Split performed on the original tree"<<endl;
-    //5) Assign points to the newly formed experts with probabilities defined by gamma
-    vec alpha(GateToAdd->countChildren());
-    vec q_z_helper(y_sub.size());
-    for(int i=0;i<y_sub.size();i++){
-         vec index(1);
-         index.fill(points[i]);
-         int current=static_cast<int>(points[i]);
-         for(int j=0;j<GateToAdd->countChildren();j++){
-             alpha[j]=GateToAdd->getPathProb(GateToAdd->Children[j],X_sub.row(i));
-     }
-    //cout<<"Before: "<<z_assign_new[current]->name<<endl;
-    double sums=sum(alpha);
-    alpha=alpha/sums; 
-    z_assign_new[current]=GateToAdd->updateZ_onepoint_sample(alpha);
-    q_z_helper[i]=alpha[GateToAdd->whichChild(z_assign_new[current])];
-    //cout<<"After: "<<z_assign_new[current]->name<<endl;
-}
-    vec y1=ExpertToAdd->subsetY(y,ExpertToAdd->getPointIndices(z_assign_new)); mat X1=ExpertToAdd->subsetX(X,ExpertToAdd->getPointIndices(z_assign_new)); int n1=static_cast<int>(X1.n_rows);
-    vec y2=ExpertToSplit->subsetY(y,ExpertToSplit->getPointIndices(z_assign_new)); mat X2=ExpertToSplit->subsetX(X,ExpertToSplit->getPointIndices(z_assign_new));int n2=static_cast<int>(X2.n_rows);
-    double acceptance;
-    if(n1>2 & n2>2){ 
-        //6) Obtain beta and sigma estimates for new experts
+double Gate::split_empty(vec y, mat X, mat X_sub, double q_beta, double q_sigma, double prior_beta, double prior_sigma, vec q_z_helper, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon,  double a, double b, mat Omega){
+    vec y1=ExpertToAdd->subsetY(y,ExpertToAdd->getPointIndices(z_assign)); mat X1=ExpertToAdd->subsetX(X,ExpertToAdd->getPointIndices(z_assign)); int n1=static_cast<int>(X1.n_rows);
+    vec y2=ExpertToSplit->subsetY(y,ExpertToSplit->getPointIndices(z_assign)); mat X2=ExpertToSplit->subsetX(X,ExpertToSplit->getPointIndices(z_assign));int n2=static_cast<int>(X2.n_rows);
+    vec mu_zeros(X.n_cols); mu_zeros.fill(0);
+    double q_betastar=0;
+    double q_sigmastar=0;
+    if(n1>2){
+        cout<<ExpertToAdd->name<<" is not empty"<<endl;
         vec beta1hat=ExpertToAdd->expertmodel->findBetaMLE(y1,X1);
-        vec beta2hat=ExpertToSplit->expertmodel->findBetaMLE(y2,X2);
-        beta1hat.print("beta1hat:");
-        beta2hat.print("beta2hat:");
         double sigma1hat=ExpertToAdd->expertmodel->findLogSigmaSqMLE(y1,X1,beta1hat);
-        double sigma2hat=ExpertToSplit->expertmodel->findLogSigmaSqMLE(y2,X2,beta2hat);
-        cout<<"sigma1hat: "<<sigma1hat<<endl;
-        cout<<"sigma2hat: "<<sigma2hat<<endl;
-        //7) Use estimates for sigma to obtain variance for the noise to be added to the estimates of betas
         mat Sigma1_prop= (X1.t()*X1).i()*exp(sigma1hat);
-        mat Sigma2_prop= (X2.t()*X2).i()*exp(sigma2hat);
-        Sigma1_prop.print("Sigma1prop:");
-        Sigma2_prop.print("Sigma1prop:");
-        //8) Draw new betas centred around the estimates from 6)
-        vec mu_zeros(2); mu_zeros.fill(0);
         ExpertToAdd->beta=beta1hat+mvnrnd(mu_zeros, Sigma1_prop,1);
-        ExpertToSplit->beta=beta2hat+mvnrnd(mu_zeros, Sigma2_prop,1);
-        cout<<"beta1star: "<<ExpertToAdd->beta<<endl;
-        cout<<"beta2star: "<<ExpertToSplit->beta<<endl;
-        //9) Draw the values for sigma stars given beta stars
         ExpertToAdd->logsigma_sq=ExpertToAdd->expertmodel->updateSigma(y1,X1,ExpertToAdd->beta,a,b,n1);
+        q_betastar+=sum(this->logmvndensity(ExpertToAdd->beta,beta1hat,Sigma1_prop));
+        q_sigmastar+=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a+n1/2,b+sum(pow(y1-X1*ExpertToAdd->beta,2))/2);
+    }else{
+        cout<<ExpertToAdd->name<<" is empty"<<endl;
+        ExpertToAdd->beta=mvnrnd(mu_beta, Sigma_beta,1);
+        ExpertToAdd->logsigma_sq=ExpertToAdd->expertmodel->updateSigma(y1,X1,ExpertToAdd->beta,a,b,n1);
+        q_betastar+=sum(this->logmvndensity(ExpertToAdd->beta,mu_beta,Sigma_beta));
+        q_sigmastar+=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a,b);
+    }
+    if(n2>2){
+        cout<<ExpertToSplit->name<<" is not empty"<<endl;
+        vec beta2hat=ExpertToSplit->expertmodel->findBetaMLE(y2,X2);
+        double sigma2hat=ExpertToSplit->expertmodel->findLogSigmaSqMLE(y2,X2,beta2hat);
+        mat Sigma2_prop= (X2.t()*X2).i()*exp(sigma2hat);
+        ExpertToSplit->beta=beta2hat+mvnrnd(mu_zeros, Sigma2_prop,1);
         ExpertToSplit->logsigma_sq=ExpertToSplit->expertmodel->updateSigma(y2,X2,ExpertToSplit->beta,a,b,n2);
-        cout<<"sigma1star: "<<ExpertToAdd->logsigma_sq<<endl;
-        cout<<"sigma2star: "<<ExpertToSplit->logsigma_sq<<endl;
-        //10) Calculate log likelihood for the new model
-        double loglik_new=GateToAdd->loglik_complete(y,X,z_assign_new);
-        cout<<"Loglik old: "<<loglik_old<<endl;
-        cout<<"Loglik new: "<<loglik_new<<endl;
-        //double q_beta= 
-        //11) Calculate the probability of arriving at the betas for new experts
-        double q_betastar=sum(this->logmvndensity(ExpertToAdd->beta,beta1hat,Sigma1_prop))+sum(this->logmvndensity(ExpertToSplit->beta,beta2hat,Sigma2_prop));
-        cout<<"q_betastar: "<<q_betastar<<endl;
-        //12) Calculate the probability of arriving at the sigmas for new experts
-        double q_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a+n1/2,b+sum(pow(y1-X1*ExpertToAdd->beta,2))/2)+
-                       ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a+n2/2,b+sum(pow(y2-X2*ExpertToSplit->beta,2))/2);
-        cout<<"q_sigmastar: "<<q_sigmastar<<endl;
-        //13) Calculate the probability of assigning the specific z
-        double q_z=sum(log(q_z_helper));
-        cout<<"q_z: "<<q_z<<endl;
-        //14) Calculate the probability of arriving at the specific gamma
-        double q_gamma=0;
-        for(int i=0;i<X_sub.n_rows;i++){
-            vec mean_helper(gamma.size());
-            mean_helper[0]=-X_sub.col(1)[i]*mu_gamma1;
-            mean_helper[1]=mu_gamma1;
-            mat Sigma_helper(gamma.size(),gamma.size());
-            Sigma_helper.row(0)[0]=sigma_epsilon+pow(X_sub.col(1)[i],2)*sigma_gamma1;
-            Sigma_helper.row(0)[1]=-X_sub.col(1)[i]*sigma_gamma1;
-            Sigma_helper.row(1)[0]=Sigma_helper.row(0)[1];
-            Sigma_helper.row(1)[1]=sigma_gamma1;
-            if(i==0) Sigma_helper.print("Sigma helper:");
+        q_betastar+=sum(this->logmvndensity(ExpertToSplit->beta,beta2hat,Sigma2_prop));
+        q_sigmastar+=ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a+n2/2,b+sum(pow(y2-X2*ExpertToSplit->beta,2))/2);
+    }else{
+        cout<<ExpertToSplit->name<<" is empty"<<endl;
+        ExpertToSplit->beta=mvnrnd(mu_beta, Sigma_beta,1);
+        ExpertToSplit->logsigma_sq=ExpertToAdd->expertmodel->updateSigma(y2,X2,ExpertToAdd->beta,a,b,n2);
+        q_betastar+=sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+        q_sigmastar+=ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+    }
+    
+    double q_z=sum(log(q_z_helper));
+        
+    double q_gamma=0;
+        for(int i=0;i<(X_sub.n_rows);i++){
+            mat mean_helper(gamma.size(),1);
+            mean_helper=mu_gamma1;
+            mat x_helper=X_sub.row(i);
+            x_helper.shed_col(0);
+            mean_helper.insert_rows(0,-x_helper*mu_gamma1);
+            mat Sigma11=sigma_epsilon+x_helper*Sigma_gamma1*x_helper.t();
+            mat Sigma12=-x_helper*Sigma_gamma1;
+            mat Sigma_helper=join_cols(join_rows(Sigma11,Sigma12),join_rows(Sigma12.t(),Sigma_gamma1));
             q_gamma+=sum(exp(this->logmvndensity(GateToAdd->gamma,mean_helper,Sigma_helper)));
         }
         q_gamma=log(q_gamma/X_sub.n_rows);
-        cout<<"q_gamma: "<<q_gamma<<endl;
-         //15) Calculate priors
-        double prior_beta=sum(this->logmvndensity(dynamic_cast<Expert*>(backup->Children[k])->beta,mu_beta,Sigma_beta));
-        cout<<"Prior beta: "<<prior_beta<<endl;
+        
+      
         double prior_betastar=sum(this->logmvndensity(ExpertToAdd->beta,mu_beta,Sigma_beta))+
-                          sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
-        cout<<"Prior beta star: "<<prior_betastar<<endl;
-        double prior_sigma=dynamic_cast<Expert*>(backup->Children[k])->expertmodel->IG_log(exp(dynamic_cast<Expert*>(backup->Children[k])->logsigma_sq),a,b);
-        cout<<"Prior sigma: "<<prior_sigma<<endl;
+                              sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+     
         double prior_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a,b)+
-                           ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
-        cout<<"Prior sigma star: "<<prior_sigmastar<<endl;
+                               ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+
         double prior_gamma=sum(this->logmvndensity(GateToAdd->gamma,mu_zeros,Omega));
-        cout<<"Prior gamma: "<<prior_gamma<<endl;
-        //16) Calculate acceptance probability
-        acceptance=loglik_new+prior_betastar+prior_sigmastar+prior_gamma-
-               loglik_old-prior_beta-prior_sigma-q_betastar-q_sigmastar-q_z-q_gamma;
-        cout<<"Acceptance: "<<acceptance<<endl;
-     }else{
-        acceptance=-10000000;
-    }
-    double u=randu();
-    bool accept=log(u)<=acceptance;
-    //accept=0;
-    if(accept==1){
-        cout<<"Split has been accepted"<<endl;
-        return z_assign_new;
-    }else{
-       cout<<"Split has been rejected"<<endl;
-       cout<<"Want to reinstate the original structure"<<endl;
-       cout<<"Set the "<<k<<"-th child of "<<backupParent->name<<" to be "<<backup->name<<" from the backup hard copy"<<endl;
-       backupParent->Children[k]=backup;
-       cout<<"Set the parent of "<<backupParent->Children[k]->name<<" to be "<<backupParent->name<<endl;
-       backupParent->Children[k]->Parent=backupParent;
-       dynamic_cast<Gate*>(backupParent->findNode("RP")->Children[0])->issueID();
-       dynamic_cast<Gate*>(backupParent->findNode("RP")->Children[0])->issueIDLR();
-       return z_assign;
-  }
-}  
+        
+        double acceptance=prior_betastar+prior_sigmastar+prior_gamma+q_beta+q_sigma-
+                          prior_beta-prior_sigma-q_betastar-q_sigmastar-q_z-q_gamma;
+        
+        return acceptance;     
 
-vector<Node*> Gate::create_copy(std::vector<Node*> const &vec)
-{
-    std::vector<Node*> v(vec.begin(), vec.end());
-    return v;
 }
-
+    
 
 vector<Node*> Gate::split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega){// double mu_jump, double sigma_jump, vec mu_beta, mat Sigma_beta, vec* x_record, vec* gamma_record){
     cout<<"Entered a split"<<endl;
     vector<Node*> z_assign_new(z_assign.size());
     z_assign_new=z_assign;
-    cout<<"Expert to split "<<ExpertToSplit->name<<endl;
-    ExpertToSplit->Parent->printChildren();
     vec points=ExpertToSplit->getPointIndices(z_assign);
     vec y_sub=ExpertToSplit->subsetY(y,points);
     mat X_sub=ExpertToSplit->subsetX(X,points);
+    if(y_sub.size()<=2) cout<<"!!!!ATTENTION Proposing to split an empty expert"<<endl;
     //1) Record the densities and priors of the current expert parameters
     double q_beta=ExpertToSplit->expertmodel->qBeta(y_sub,X_sub,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,mu_beta,Sigma_beta);
     double q_sigma=ExpertToSplit->expertmodel->qSigma(y_sub,X_sub,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,a,b);
     double prior_beta=sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
     double prior_sigma=ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
-    //cout<<"q_beta: "<<q_beta<<endl;a
-    //cout<<"q_sigma: "<<q_sigma<<endl;
+    // cout<<"q_beta: "<<q_beta<<endl;
+    // cout<<"q_sigma: "<<q_sigma<<endl;
+    // cout<<"prior_beta: "<<prior_beta<<endl;
+    // cout<<"prior_sigma: "<<prior_sigma<<endl;
     //2) Draw an x_star from all x at random
-    int n_rand=rand() % y_sub.size();  
-    mat x_star=X_sub.row(n_rand); x_star.shed_col(0);
-    //cout<<n_rand<<"th observation chosen, x star: "<<x_star<<endl;
+    mat x_star;
+    if(y_sub.size()!=0){
+        int n_rand=rand() % y_sub.size();  
+        x_star=X_sub.row(n_rand); x_star.shed_col(0);
+        //cout<<n_rand<<"th observation chosen, x star: "<<x_star<<endl;
+    }else{
+        x_star=X.row(0); x_star.shed_col(0);
+    }
     //3) Draw gamma1
     mat gamma_1=mvnrnd(mu_gamma1, Sigma_gamma1, 1); 
     //cout<<"gamma_1="<<gamma_1<<endl;
@@ -1788,10 +1701,10 @@ vector<Node*> Gate::split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertTo
     ExpertToSplit->mostSeniorGate()->issueID();
     GateToAdd->gamma=gamma;
     //cout<<"Split performed on the original tree"<<endl;
-    cout<<"After split "<<endl;
-    ExpertToSplit->printParent();
-    ExpertToSplit->Parent->Parent->printChildren();
-    ExpertToSplit->Parent->printChildren();
+    //cout<<"Structure after proposed split "<<endl;
+    //ExpertToSplit->printParent();
+    //ExpertToSplit->Parent->Parent->printChildren();
+    //ExpertToSplit->Parent->printChildren();
     //6) Assign points to the newly formed experts with probabilities defined by gamma
     vec alpha(GateToAdd->countChildren());
     vec q_z_helper(y_sub.size());
@@ -1813,6 +1726,7 @@ vector<Node*> Gate::split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertTo
     vec y2=ExpertToSplit->subsetY(y,ExpertToSplit->getPointIndices(z_assign_new)); mat X2=ExpertToSplit->subsetX(X,ExpertToSplit->getPointIndices(z_assign_new));int n2=static_cast<int>(X2.n_rows);
     double acceptance;
     if((n1>2)&(n2>2)){ 
+        cout<<"Proposed to split into two non empty experts"<<endl;
         //7) Obtain beta and sigma estimates for new experts
         vec beta1hat=ExpertToAdd->expertmodel->findBetaMLE(y1,X1);
         vec beta2hat=ExpertToSplit->expertmodel->findBetaMLE(y2,X2);
@@ -1886,7 +1800,9 @@ vector<Node*> Gate::split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertTo
                    loglik_old-prior_beta-prior_sigma-q_betastar-q_sigmastar-q_z-q_gamma;
        //cout<<"Acceptance: "<<acceptance<<endl;
      }else{
-        acceptance=-10000000;
+        cout<<"ATTENTION"<<endl;
+        cout<<"Proposal includes an empty expert"<<endl;
+        acceptance=this->split_empty(y,X,X_sub,q_beta,q_sigma,prior_beta,prior_sigma,q_z_helper,ExpertToSplit, ExpertToAdd, GateToAdd,z_assign_new,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
     }
     double u=randu();
     bool accept=log(u)<=acceptance;
@@ -1896,10 +1812,10 @@ vector<Node*> Gate::split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertTo
         return z_assign_new;
     }else{
         cout<<"Split has been rejected"<<endl;
-        cout<<"Want to reinstate the original structure"<<endl;
-        cout<<"Set the "<<m<<"-th child of "<<backupParent->name<<" to be "<<backup->name<<" from the backup hard copy"<<endl;
+        //cout<<"Want to reinstate the original structure"<<endl;
+        //cout<<"Set the "<<m<<"-th child of "<<backupParent->name<<" to be "<<backup->name<<" from the backup hard copy"<<endl;
         backupParent->Children[m]=backup;
-        cout<<"Set the parent of "<<backupParent->Children[m]->name<<" to be "<<backupParent->name<<endl;
+        //cout<<"Set the parent of "<<backupParent->Children[m]->name<<" to be "<<backupParent->name<<endl;
         backupParent->Children[m]->Parent=backupParent;
         dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueID();
         dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueIDLR();
@@ -1916,55 +1832,508 @@ vector<Node*> Gate::split2(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertTo
   }
 }  
 
-vector<Node*> Gate::mergeRoot(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega){
-    //A) Record indeces for all points
-    vec points=GateToMerge->getPointIndices(z_assign);
-    //B) Crete expert to replace all children of the root
-    Expert* NewExpert=new Expert();
-    NewExpert->name="E"+to_string(1);
-    NormalFamily* NF=new NormalFamily();
-    NewExpert->expertmodel=NF;
-    //C) Perform the merge
-    GateToMerge->deleteChildren();
-    GateToMerge->addChild(NewExpert);
-    //D) Assign all points to one expert
-    vector<Node*> z_assign_new(z_assign.size());
-    for(int i=0;i<points.size();i++){
-         z_assign_new[static_cast<int>(points[i])]=NewExpert;
+void Gate::splitEmptyExpert(Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega, double* prior_betastar, double* prior_sigmastar, double* prior_gamma, double* q_betastar,double* q_sigmastar, double* q_gamma){
+    vec mu_zeros(mu_beta.size()); mu_zeros.fill(0);
+    //1) Draw all parameters from the priors
+    ExpertToAdd->beta=mvnrnd(mu_beta, Sigma_beta,1);
+    ExpertToSplit->beta=mvnrnd(mu_beta, Sigma_beta,1);
+    ExpertToAdd->logsigma_sq=log(1/randg( distr_param(a,1/b)));
+    ExpertToSplit->logsigma_sq=log(1/randg( distr_param(a,1/b)));
+    GateToAdd->gamma=mvnrnd(mu_zeros, Omega,1); 
+    //2) Evaluate required results
+    *prior_betastar=sum(this->logmvndensity(ExpertToAdd->beta,mu_beta,Sigma_beta))+
+                       sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+    *prior_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a,b)+
+                        ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+    *prior_gamma=sum(this->logmvndensity(GateToAdd->gamma,mu_zeros,Omega));
+    *q_betastar=*prior_betastar;
+    *q_sigmastar=*prior_sigmastar;
+    *q_gamma=*prior_gamma;
+}
+
+vec Gate::proposeGammaSplit(vec y_sub, mat X_sub,vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon){
+    //1) Draw one point at random
+    int n_rand=rand() % y_sub.size();  
+    mat x_star=X_sub.row(n_rand); x_star.shed_col(0);
+    //2) Draw a value for gamma_1
+    mat gamma_1=mvnrnd(mu_gamma1, Sigma_gamma1, 1);
+    //3) Draw a value for epsilon 
+    vec mu_e(1); mu_e.fill(0);
+    mat sigma_e(1,1); sigma_e.row(0)=sigma_epsilon;
+    double epsilon=as_scalar(mvnrnd(mu_e, sigma_e, 1));
+    //4) Infer gamma_0
+    mat gamma_0(1,1); gamma_0.row(0)=-as_scalar(x_star*gamma_1)+epsilon;
+    //5) Stick both into a vector
+    mat gamma=gamma_1;
+    gamma.insert_rows(0,gamma_0); 
+
+    return gamma;
+}
+
+vector<Node*> Gate::proposeZafterSplit(vec y_sub, mat X_sub, vec points, Gate* GateToAdd, vector<Node*> z_assign, vec* q_z_helper){
+    vec alpha(GateToAdd->countChildren());
+
+    for(int i=0;i<y_sub.size();i++){
+        vec index(1);
+        index.fill(points[i]);
+        int current=static_cast<int>(points[i]);
+        for(int j=0;j<GateToAdd->countChildren();j++){
+            alpha[j]=GateToAdd->getPathProb(GateToAdd->Children[j],X_sub.row(i));
+        }
+        double sums=sum(alpha);
+        alpha=alpha/sums; 
+        z_assign[current]=GateToAdd->updateZ_onepoint_sample(alpha);
+        (*q_z_helper)[i]=alpha[GateToAdd->whichChild(z_assign[current])];
     }
-    //E) Issue IDs to the newly created architecture
-    NewExpert->mostSeniorGate()->issueID();
-    NewExpert->mostSeniorGate()->issueIDLR();
-    //2) Obtain betahat and sigmahat
-    vec betahat=NewExpert->expertmodel->findBetaMLE(y,X);
-    //betahat.print("betahat: ");
-    double sigmahat=NewExpert->expertmodel->findLogSigmaSqMLE(y,X,betahat);
-    //cout<<"sigmahat: "<<sigmahat<<endl;
-    //3) Use estimate for sigma to obtain variance for the noise to be added to the estimate of beta
-    mat Sigma_prop= (X.t()*X).i()*exp(sigmahat);
-    //Sigma_prop.print("Sigmaprop: ");
-    //4) Propose a new value for beta centred around betahat
-    vec mu_zeros(2); mu_zeros.fill(0);
-    NewExpert->beta=betahat+mvnrnd(mu_zeros, Sigma_prop,1);
-    //cout<<"betastar: "<<MergedExpert->beta<<endl;
-    //5) Draw a new value for sigma given betastar
-    NewExpert->logsigma_sq=NewExpert->expertmodel->updateSigma(y,X,NewExpert->beta,a,b,y.size());
-    //cout<<"sigmastar: "<<MergedExpert->logsigma_sq<<endl;
+ 
     return z_assign;
 }
+
+void Gate::proposeExpertParamsSplit(vec y, mat X, Expert* myExpert,vec mu_beta, mat Sigma_beta, double a, double b, double* q_betastar, double* q_sigmastar){
+    vec mu_zeros(X.n_cols); mu_zeros.fill(0);
+    if(X.n_rows>2){
+        //1) If not empty
+        //2) Calculate estimates for beta and sigma
+        vec betahat=myExpert->expertmodel->findBetaMLE(y,X);
+        double sigmahat=myExpert->expertmodel->findLogSigmaSqMLE(y,X,betahat);
+        mat Sigma_prop= (X.t()*X).i()*exp(sigmahat);      
+        //3) Draw a value for beta cenntred around betahat
+        myExpert->beta=betahat+mvnrnd(mu_zeros, Sigma_prop,1);
+        //4) Draw a value for sigma given beta
+        myExpert->logsigma_sq=myExpert->expertmodel->updateSigma(y,X,myExpert->beta,a,b,X.n_rows);
+        //5) Record the densities
+        *q_betastar+=sum(this->logmvndensity(myExpert->beta,betahat,Sigma_prop));
+        *q_sigmastar+=myExpert->expertmodel->IG_log(exp(myExpert->logsigma_sq),a+X.n_rows/2,b+sum(pow(y-X*myExpert->beta,2))/2);
+    }else{
+        //1) If empty
+        //2) Draw both beta and sigma from prior
+        myExpert->beta=mvnrnd(mu_beta, Sigma_beta,1);
+        myExpert->logsigma_sq=log(1/randg( distr_param(a,1/b)));
+        *q_betastar+=sum(this->logmvndensity(myExpert->beta,mu_beta,Sigma_beta));
+        *q_sigmastar+=myExpert->expertmodel->IG_log(exp(myExpert->logsigma_sq),a,b);
+    }
+
+}
+
+vector<Node*> Gate::deepCopyAllocations(vector<Node*> z_assign, Gate* backup){
+    vector<Node*> terminals=backup->getTerminalNodes();
+    vector<Node*> result(z_assign.size());
+    result=z_assign;
+    for(int i=0;i<z_assign.size();i++){
+        for(int j=0; j<terminals.size();j++){
+            if(z_assign[i]->id==terminals[j]->id) result[i]=terminals[j];
+        }
+    }
+    return result;
+}
+
+vector<Node*> Gate::split3(vec y, mat X, int* accept, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega){// double mu_jump, double sigma_jump, vec mu_beta, mat Sigma_beta, vec* x_record, vec* gamma_record){
+    //1) Record the indices of points that reached the expert we are trying to split
+    vec  points=ExpertToSplit->getPointIndices(z_assign);
+    //2) Check if the chosen expert is empty
+    bool empty=points.size()<=2;
+    //3) Subset y and X accordingly
+    vec y_sub=ExpertToSplit->subsetY(y,points);
+    mat X_sub=ExpertToSplit->subsetX(X,points);
+    vec mu_zeros(X.n_cols); mu_zeros.fill(0);
+    
+    //4) Record relevant information before splitting
+    double q_beta=ExpertToSplit->expertmodel->qBeta(y_sub,X_sub,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,mu_beta,Sigma_beta);
+    double q_sigma=ExpertToSplit->expertmodel->qSigma(y_sub,X_sub,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,a,b);
+    double prior_beta=sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+    double prior_sigma=ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+    //5) If chosen expert isn't empty, record its log-likelihood
+    double loglik_old=100000000;
+    if(empty==0) loglik_old=ExpertToSplit->expertmodel->loglik(y_sub,X_sub*(ExpertToSplit->beta),ExpertToSplit->logsigma_sq);
+    //if(empty==0) loglik_old=ExpertToSplit->Parent->loglik_complete(y,X,z_assign);
+    
+    //6) Create necessary backups in case split is rejected
+    Gate* backup=ExpertToSplit->Parent->copyStructure();
+    Gate* backupParent=ExpertToSplit->Parent->Parent;
+    int   k=ExpertToSplit->Parent->whichChild(ExpertToSplit);
+    int   m=backupParent->whichChild(backup);
+    vector<Node*> z_backup=ExpertToSplit->Parent->deepCopyAllocations(z_assign,backup);
+   
+    //7) Perform the split
+    ExpertToSplit->Parent->replaceChild(k,GateToAdd);
+    GateToAdd->addChild(ExpertToSplit);
+    GateToAdd->addChild(ExpertToAdd); 
+    ExpertToSplit->mostSeniorGate()->issueIDLR();
+    ExpertToSplit->mostSeniorGate()->issueID();
+
+    //8) Set up place holders for post split results
+    double acceptance;
+    double prior_betastar;
+    double prior_sigmastar;
+    double prior_gamma;
+    double q_betastar=0;
+    double q_sigmastar=0;
+    double q_gamma;
+    double loglik_new;
+    vector<Node*> z_new(z_assign.size());
+
+    //9)Make parameter proposals
+    if(empty==1){
+        //cout<<"Splitting an empty expert"<<endl;
+        this->splitEmptyExpert(ExpertToSplit,ExpertToAdd, GateToAdd, mu_beta,Sigma_beta,a,b,Omega,&prior_betastar,&prior_sigmastar,&prior_gamma,&q_betastar,&q_sigmastar,&q_gamma);
+        acceptance=prior_betastar+prior_sigmastar+prior_gamma+q_beta+q_sigma-
+                   prior_beta-prior_sigma-q_betastar-q_sigmastar-q_gamma;
+        z_new=z_backup;
+    }else{
+        //10) Propose a gamma
+        GateToAdd->gamma=GateToAdd->proposeGammaSplit(y_sub,X_sub,mu_gamma1,Sigma_gamma1,sigma_epsilon);
+        //11) Propose allocations after the split
+        vec q_z_helper(y_sub.size());
+        z_new=this->proposeZafterSplit(y_sub,X_sub, points, GateToAdd,z_assign,&q_z_helper);
+        //12) Subset accordingly
+        vec y1=ExpertToAdd->subsetY(y,ExpertToAdd->getPointIndices(z_new)); mat X1=ExpertToAdd->subsetX(X,ExpertToAdd->getPointIndices(z_new)); int n1=static_cast<int>(X1.n_rows);
+        vec y2=ExpertToSplit->subsetY(y,ExpertToSplit->getPointIndices(z_new)); mat X2=ExpertToSplit->subsetX(X,ExpertToSplit->getPointIndices(z_new));int n2=static_cast<int>(X2.n_rows);
+        //13) Propose expert parameters after the split
+        this->proposeExpertParamsSplit(y1,X1,ExpertToAdd,mu_beta,Sigma_beta,a,b,&q_betastar,&q_sigmastar);
+        this->proposeExpertParamsSplit(y2,X2,ExpertToSplit,mu_beta,Sigma_beta,a,b,&q_betastar,&q_sigmastar);
+        //14) Obtain the probability of arriving to the specific z
+        double q_z=sum(log(q_z_helper));
+        //15) Obtain the density of chosen gamma
+        q_gamma=GateToAdd->q_gammaSplit(X_sub,mu_gamma1,Sigma_gamma1,sigma_epsilon);
+        //16) Obtain prior densities of the expert parameters
+        prior_betastar=sum(this->logmvndensity(ExpertToAdd->beta,mu_beta,Sigma_beta))+
+                       sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+        prior_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a,b)+
+                        ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+        prior_gamma=sum(this->logmvndensity(GateToAdd->gamma,mu_zeros,Omega));
+        //17) Record the new likelihood
+        loglik_new=GateToAdd->loglik_complete(y,X,z_new);
+        //18) Calculate acceptance
+        acceptance=loglik_new+prior_betastar+prior_sigmastar+prior_gamma+q_beta+q_sigma-
+                   loglik_old-prior_beta-prior_sigma-q_betastar-q_sigmastar-q_z-q_gamma; 
+        //cout<<"q_z"<<q_z<<endl;
+    }
+
+    //UNCOMMENT BELLOW IF WANT TO ZOOM IN ON VALUES
+    // cout<<"acceptance"<<acceptance<<endl;
+    // cout<<"loglik_old"<<loglik_old<<endl;
+    // cout<<"loglik_new"<<loglik_new<<endl;
+    // cout<<"prior_betastar"<<prior_betastar<<endl;
+    // cout<<"prior_sigmastar"<<prior_sigmastar<<endl;
+    // cout<<"prior_gamma"<<prior_gamma<<endl;
+    // cout<<"q_betastar"<<q_betastar<<endl;
+    // cout<<"q_sigmastar"<<q_sigmastar<<endl;
+    // cout<<"q_gamma"<<q_gamma<<endl;
+
+    double u=randu();
+    bool acc=log(u)<=acceptance;
+    if(acc==1){
+        //cout<<"Split has been accepted"<<endl;
+        (*accept)=1;
+        return z_new;
+    }else{
+        //cout<<"Split has been rejected"<<endl;
+        backupParent->Children[m]=backup;
+        backupParent->Children[m]->Parent=backupParent;
+        dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueID();
+        dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueIDLR();
+        (*accept)=0;
+        return z_backup;
+    } 
+}
+
+vector<Node*> Gate::split_at_root(vec y, mat X, int* accept, Expert* ExpertToSplit, Expert* ExpertToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega){// double mu_jump, double sigma_jump, vec mu_beta, mat Sigma_beta, vec* x_record, vec* gamma_record){
+    //1) Record the indices of all points as integers
+    vec  points=ExpertToSplit->getPointIndices(z_assign);
+    //2) Set up helpers
+    vec mu_zeros(X.n_cols); mu_zeros.fill(0);
+    //3) Record relevant information before splitting
+    double q_beta=ExpertToSplit->expertmodel->qBeta(y,X,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,mu_beta,Sigma_beta);
+    double q_sigma=ExpertToSplit->expertmodel->qSigma(y,X,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,a,b);
+    double prior_beta=sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+    double prior_sigma=ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+    //4) Record the log-likelihood
+    double loglik_old=ExpertToSplit->expertmodel->loglik(y,X*(ExpertToSplit->beta),ExpertToSplit->logsigma_sq);
+    //5) Create necessary backups in case split is rejected
+    Gate* backup=ExpertToSplit->Parent->copyStructure(); //this is the root gate
+    Gate* backupParent=ExpertToSplit->Parent->Parent; //this is the root parent
+    vector<Node*> z_backup=ExpertToSplit->Parent->deepCopyAllocations(z_assign,backup);
+    //6) Perform the split
+    ExpertToSplit->Parent->addChild(ExpertToAdd); //add the second expert as a child of root gate
+    ExpertToSplit->mostSeniorGate()->issueIDLR();
+    ExpertToSplit->mostSeniorGate()->issueID();
+    //7) Set up place holders for post split results
+    double acceptance;
+    double prior_betastar;
+    double prior_sigmastar;
+    double prior_gamma;
+    double q_betastar=0;
+    double q_sigmastar=0;
+    double q_gamma;
+    double loglik_new;
+    vector<Node*> z_new(z_assign.size());
+
+    //8) Propose a gamma
+    ExpertToSplit->Parent->gamma=ExpertToSplit->Parent->proposeGammaSplit(y,X,mu_gamma1,Sigma_gamma1,sigma_epsilon);
+    //9) Propose allocations after the split
+    vec q_z_helper(y.size());
+    z_new=this->proposeZafterSplit(y,X, points,ExpertToSplit->Parent,z_assign,&q_z_helper);
+    //10) Subset accordingly
+    vec y1=ExpertToAdd->subsetY(y,ExpertToAdd->getPointIndices(z_new)); mat X1=ExpertToAdd->subsetX(X,ExpertToAdd->getPointIndices(z_new)); int n1=static_cast<int>(X1.n_rows);
+    vec y2=ExpertToSplit->subsetY(y,ExpertToSplit->getPointIndices(z_new)); mat X2=ExpertToSplit->subsetX(X,ExpertToSplit->getPointIndices(z_new));int n2=static_cast<int>(X2.n_rows);
+    //11) Propose expert parameters after the split
+    this->proposeExpertParamsSplit(y1,X1,ExpertToAdd,mu_beta,Sigma_beta,a,b,&q_betastar,&q_sigmastar);
+    this->proposeExpertParamsSplit(y2,X2,ExpertToSplit,mu_beta,Sigma_beta,a,b,&q_betastar,&q_sigmastar);
+    //12) Obtain the probability of arriving to the specific z
+    double q_z=sum(log(q_z_helper));
+    //13) Obtain the density of chosen gamma
+    q_gamma=ExpertToSplit->Parent->q_gammaSplit(X,mu_gamma1,Sigma_gamma1,sigma_epsilon);
+    //14) Obtain prior densities of the expert parameters
+    prior_betastar=sum(this->logmvndensity(ExpertToAdd->beta,mu_beta,Sigma_beta))+
+                   sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+    prior_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a,b)+
+                    ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+    prior_gamma=sum(this->logmvndensity(ExpertToSplit->Parent->gamma,mu_zeros,Omega));
+    //15) Record the new likelihood
+    loglik_new=ExpertToSplit->Parent->loglik_complete(y,X,z_new);
+    //16) Calculate acceptance
+    acceptance=loglik_new+prior_betastar+prior_sigmastar+prior_gamma+q_beta+q_sigma-
+               loglik_old-prior_beta-prior_sigma-q_betastar-q_sigmastar-q_z-q_gamma; 
+    //cout<<"q_z"<<q_z<<endl;
+    
+    //UNCOMMENT BELLOW IF WANT TO ZOOM IN ON VALUES
+    // cout<<"acceptance"<<acceptance<<endl;
+    // cout<<"loglik_old"<<loglik_old<<endl;
+    // cout<<"loglik_new"<<loglik_new<<endl;
+    // cout<<"prior_betastar"<<prior_betastar<<endl;
+    // cout<<"prior_sigmastar"<<prior_sigmastar<<endl;
+    // cout<<"prior_gamma"<<prior_gamma<<endl;
+    // cout<<"q_betastar"<<q_betastar<<endl;
+    // cout<<"q_sigmastar"<<q_sigmastar<<endl;
+    // cout<<"q_gamma"<<q_gamma<<endl;
+
+    double u=randu();
+    bool acc=log(u)<=acceptance;
+    if(acc==1){
+        //cout<<"Split has been accepted"<<endl;
+        (*accept)=1;
+        return z_new;
+    }else{
+        //cout<<"Split has been rejected"<<endl;
+        backupParent->Children[0]=backup;
+        backupParent->Children[0]->Parent=backupParent;
+        dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueID();
+        dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueIDLR();
+        (*accept)=0;
+        return z_backup;
+    } 
+}
+
+
+double Gate::q_gammaSplit(mat X_sub, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon){
+    //This is the density of proposed gamma in the split. See Architecture Selection chapter for details
+    double q_gamma=0;
+    vec gamma=this->gamma;
+        for(int i=0;i<X_sub.n_rows;i++){
+            mat mean_helper(gamma.size(),1);
+            mean_helper=mu_gamma1;
+            mat x_helper=X_sub.row(i);
+            x_helper.shed_col(0);
+            mean_helper.insert_rows(0,-x_helper*mu_gamma1);
+            mat Sigma11=sigma_epsilon+x_helper*Sigma_gamma1*x_helper.t();
+            mat Sigma12=-x_helper*Sigma_gamma1;
+            mat Sigma_helper=join_cols(join_rows(Sigma11,Sigma12),join_rows(Sigma12.t(),Sigma_gamma1));
+            q_gamma+=sum(exp(this->logmvndensity(gamma,mean_helper,Sigma_helper)));
+        }
+        q_gamma=log(q_gamma/X_sub.n_rows);
+        return q_gamma;
+}
+
+
+vector<Node*> Gate::split(vec y, mat X, Expert* ExpertToSplit, Expert* ExpertToAdd, Gate* GateToAdd, vector<Node*> z_assign,  vec mu_beta, mat Sigma_beta, vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, double a, double b, mat Omega){// double mu_jump, double sigma_jump, vec mu_beta, mat Sigma_beta, vec* x_record, vec* gamma_record){
+    cout<<"Entered a split"<<endl;
+    //1) Make a copy of current allocations
+    vector<Node*> z_assign_new(z_assign.size());
+    z_assign_new=z_assign;
+    //2) Subset by points that have reached expert we are splitting
+    vec points=ExpertToSplit->getPointIndices(z_assign);
+    vec y_sub=ExpertToSplit->subsetY(y,points);
+    mat X_sub=ExpertToSplit->subsetX(X,points);
+    //3) Check that expert chosen to split isn't empty
+    bool empty=points.size()<=2;
+    if(empty==0) cout<<"Expert chosen to split is not empty"<<endl;
+    if(empty==1) cout<<"Expert chosen to split is empty"<<endl;
+    //4) Create variables to be filled in and other helpers
+    vec mu_zeros(X.n_cols); mu_zeros.fill(0);
+    double acceptance;
+    double prior_betastar;
+    double prior_sigmastar;
+    double prior_gamma;
+    double q_betastar;
+    double q_sigmastar;
+    double q_gamma;
+    //5) Record the densities and priors of the current expert parameters
+    double q_beta=ExpertToSplit->expertmodel->qBeta(y_sub,X_sub,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,mu_beta,Sigma_beta);
+    double q_sigma=ExpertToSplit->expertmodel->qSigma(y_sub,X_sub,ExpertToSplit->beta,ExpertToSplit->logsigma_sq,a,b);
+    double prior_beta=sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+    double prior_sigma=ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+    //6) Save copies of the original architecture
+    Gate* backup=ExpertToSplit->Parent->copyStructure();
+    Gate* backupParent=ExpertToSplit->Parent->Parent;
+    int   k=ExpertToSplit->Parent->whichChild(ExpertToSplit);
+    int   m=backupParent->whichChild(backup);
+    //7) If expert isn't empty, record the log likelihood of the original structure
+    double loglik_old=-1000000;
+    if(empty==0) double loglik_old=ExpertToSplit->Parent->loglik_complete(y,X,z_assign); ///AAAAAAAAAAAAAAAAAAAAAAA
+    //8) Perform the split    
+    ExpertToSplit->Parent->replaceChild(k,GateToAdd);
+    GateToAdd->addChild(ExpertToSplit);
+    GateToAdd->addChild(ExpertToAdd); 
+    ExpertToSplit->mostSeniorGate()->issueIDLR();
+    ExpertToSplit->mostSeniorGate()->issueID();
+    GateToAdd->gamma=gamma;
+    //9) Calculate acceptance when proposing to split an empty expert into two more empty experts
+    if(empty==1){
+        //a) Draw proposed parameters from priors
+        ExpertToAdd->beta=mvnrnd(mu_beta, Sigma_beta,1);
+        ExpertToSplit->beta=mvnrnd(mu_beta, Sigma_beta,1);
+        ExpertToAdd->logsigma_sq=log(1/randg( distr_param(a,1/b)));
+        ExpertToSplit->logsigma_sq=log(1/randg( distr_param(a,1/b)));
+        GateToAdd->gamma=mvnrnd(mu_zeros, Omega,1); 
+        //b) evaluate priors
+        prior_betastar=sum(this->logmvndensity(ExpertToAdd->beta,mu_beta,Sigma_beta))+
+                       sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+        prior_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a,b)+
+                        ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+        prior_gamma=sum(this->logmvndensity(GateToAdd->gamma,mu_zeros,Omega));
+        q_betastar=prior_betastar;
+        q_sigmastar=prior_sigmastar;
+        q_gamma=prior_gamma;
+        acceptance=prior_betastar+prior_sigmastar+prior_gamma+q_beta+q_sigma-
+                   prior_beta-prior_sigma-q_betastar-q_sigmastar-q_gamma;
+        cout<<"acceptance 1"<<acceptance<<endl;
+    }else{
+        //10) If chosen to split expert is not empty, propose gamma
+        //a) Draw an x_star from all x at random
+        int n_rand=rand() % y_sub.size();  
+        mat x_star=X_sub.row(n_rand); x_star.shed_col(0);
+        //b) Draw gamma1
+        mat gamma_1=mvnrnd(mu_gamma1, Sigma_gamma1, 1); 
+        //c) Draw epsilon
+        vec mu_e(1); mu_e.fill(0);
+        mat sigma_e(1,1); sigma_e.row(0)=sigma_epsilon;
+        double epsilon=as_scalar(mvnrnd(mu_e, sigma_e, 1));
+        //d) Infer gamma_0
+        mat gamma_0(1,1); gamma_0.row(0)=-as_scalar(x_star*gamma_1)+epsilon;
+        mat gamma=gamma_1;
+        gamma.insert_rows(0,gamma_0);  
+        //11) Assign points to the newly formed experts with probabilities defined by gamma
+        vec alpha(GateToAdd->countChildren());
+        vec q_z_helper(y_sub.size());
+        for(int i=0;i<y_sub.size();i++){
+            vec index(1);
+            index.fill(points[i]);
+            int current=static_cast<int>(points[i]);
+            for(int j=0;j<GateToAdd->countChildren();j++){
+                alpha[j]=GateToAdd->getPathProb(GateToAdd->Children[j],X_sub.row(i));
+            }
+        double sums=sum(alpha);
+        alpha=alpha/sums; 
+        z_assign_new[current]=GateToAdd->updateZ_onepoint_sample(alpha);
+        q_z_helper[i]=alpha[GateToAdd->whichChild(z_assign_new[current])];
+        }
+        //12) Subset by newly formed experts
+        vec y1=ExpertToAdd->subsetY(y,ExpertToAdd->getPointIndices(z_assign_new)); mat X1=ExpertToAdd->subsetX(X,ExpertToAdd->getPointIndices(z_assign_new)); int n1=static_cast<int>(X1.n_rows);
+        vec y2=ExpertToSplit->subsetY(y,ExpertToSplit->getPointIndices(z_assign_new)); mat X2=ExpertToSplit->subsetX(X,ExpertToSplit->getPointIndices(z_assign_new));int n2=static_cast<int>(X2.n_rows);
+         if((n1>2)&(n2>2)){ 
+            //13) If both newly proposed experts are not empty, obtain beta and sigma estimates for new experts
+            vec beta1hat=ExpertToAdd->expertmodel->findBetaMLE(y1,X1);
+            vec beta2hat=ExpertToSplit->expertmodel->findBetaMLE(y2,X2);
+            double sigma1hat=ExpertToAdd->expertmodel->findLogSigmaSqMLE(y1,X1,beta1hat);
+            double sigma2hat=ExpertToSplit->expertmodel->findLogSigmaSqMLE(y2,X2,beta2hat);
+            //14) Use estimates for sigma to obtain variance for the noise to be added to the estimates of betas
+            mat Sigma1_prop= (X1.t()*X1).i()*exp(sigma1hat);
+            mat Sigma2_prop= (X2.t()*X2).i()*exp(sigma2hat);
+            //15) Draw new betas centred around the estimates found        
+            ExpertToAdd->beta=beta1hat+mvnrnd(mu_zeros, Sigma1_prop,1);
+            ExpertToSplit->beta=beta2hat+mvnrnd(mu_zeros, Sigma2_prop,1);
+            //16) Draw the values for sigma stars given beta stars
+            ExpertToAdd->logsigma_sq=ExpertToAdd->expertmodel->updateSigma(y1,X1,ExpertToAdd->beta,a,b,n1);
+            ExpertToSplit->logsigma_sq=ExpertToSplit->expertmodel->updateSigma(y2,X2,ExpertToSplit->beta,a,b,n2);
+            //17) Calculate the new likelihood post split
+            double loglik_new=GateToAdd->loglik_complete(y,X,z_assign_new);
+            //18) Calculate the probability of arriving at the betas for new experts
+            q_betastar=sum(this->logmvndensity(ExpertToAdd->beta,beta1hat,Sigma1_prop))+sum(this->logmvndensity(ExpertToSplit->beta,beta2hat,Sigma2_prop));
+            //19) Calculate the probability of arriving at the sigmas for new experts
+            q_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a+n1/2,b+sum(pow(y1-X1*ExpertToAdd->beta,2))/2)+
+                                ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a+n2/2,b+sum(pow(y2-X2*ExpertToSplit->beta,2))/2);
+            //20) Calculate the probability of assigning the specific z
+            double q_z=sum(log(q_z_helper));
+            //21) Calculate the probability of arriving at the specific gamma
+            q_gamma=0;
+            for(int i=0;i<X_sub.n_rows;i++){
+                mat mean_helper(gamma.size(),1);
+                mean_helper=mu_gamma1;
+                mat x_helper=X_sub.row(i);
+                x_helper.shed_col(0);
+                mean_helper.insert_rows(0,-x_helper*mu_gamma1);
+                mat Sigma11=sigma_epsilon+x_helper*Sigma_gamma1*x_helper.t();
+                mat Sigma12=-x_helper*Sigma_gamma1;
+                mat Sigma_helper=join_cols(join_rows(Sigma11,Sigma12),join_rows(Sigma12.t(),Sigma_gamma1));
+                q_gamma+=sum(exp(this->logmvndensity(GateToAdd->gamma,mean_helper,Sigma_helper)));
+            }
+            q_gamma=log(q_gamma/X_sub.n_rows);
+             //22) Calculate priors
+            prior_betastar=sum(this->logmvndensity(ExpertToAdd->beta,mu_beta,Sigma_beta))+
+                              sum(this->logmvndensity(ExpertToSplit->beta,mu_beta,Sigma_beta));
+            prior_sigmastar=ExpertToAdd->expertmodel->IG_log(exp(ExpertToAdd->logsigma_sq),a,b)+
+                               ExpertToSplit->expertmodel->IG_log(exp(ExpertToSplit->logsigma_sq),a,b);
+            prior_gamma=sum(this->logmvndensity(GateToAdd->gamma,mu_zeros,Omega));
+            //23) Calculate acceptance probability
+            acceptance=loglik_new+prior_betastar+prior_sigmastar+prior_gamma+q_beta+q_sigma-
+                       loglik_old-prior_beta-prior_sigma-q_betastar-q_sigmastar-q_z-q_gamma;       
+         }else{
+            acceptance=this->split_empty(y,X,X_sub,q_beta,q_sigma,prior_beta,prior_sigma,q_z_helper,ExpertToSplit, ExpertToAdd, GateToAdd,z_assign_new,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
+         }
+    }
+    cout<<"acceptance:"<<acceptance<<endl;
+    double u=randu();
+    bool accept=log(u)<=acceptance;
+    //accept=1;
+    if(accept==1){
+        cout<<"Split has been accepted"<<endl;
+        return z_assign_new;
+    }else{
+        cout<<"Split has been rejected"<<endl;
+        //cout<<"Want to reinstate the original structure"<<endl;
+        //cout<<"Set the "<<m<<"-th child of "<<backupParent->name<<" to be "<<backup->name<<" from the backup hard copy"<<endl;
+        backupParent->Children[m]=backup;
+        //cout<<"Set the parent of "<<backupParent->Children[m]->name<<" to be "<<backupParent->name<<endl;
+        backupParent->Children[m]->Parent=backupParent;
+        dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueID();
+        dynamic_cast<Gate*>(backupParent->mostSeniorGate())->issueIDLR();
+        vector<Node*> experts=dynamic_cast<Gate*>(backupParent->mostSeniorGate())->getTerminalNodes();
+        for(int i=0;i<z_assign.size();i++){
+            for(int j=0; j<experts.size(); j++){
+                if(z_assign[i]->name==experts[j]->name){
+                    z_assign[i]=experts[j];
+                }
+            }
+        }
+        backupParent->Children[m]->printChildren();
+        return z_assign;
+  }
+}   
+
+
+
 vector<Node*> Gate::merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega){
-    bool accept;
+    //1) Determine which experts are to be merged
     vector<Node*> ExpertsToMerge=GateToMerge->getTerminalNodes();
-    //for(int i=0;i<ExpertsToMerge.size();i++) cout<<ExpertsToMerge[i]->name<<endl;
-    //1) Record the log likelihood and priors and parameter densities for the current architecture
-    double loglik_old=GateToMerge->loglik_complete(y,X,z_assign); //picks out the relevant points itself
-    //cout<<"Loklik old: "<<loglik_old<<endl;
+    //2) Determine which poits have reached the gate
+    vec points=GateToMerge->getPointIndices(z_assign);
+    //3) Record the log likelihood, priors and parameter densities for the current architecture
+    double loglik_old=GateToMerge->loglik_complete(y,X,z_assign); 
     double prior_beta=0;
     double prior_sigma=0;
     double q_beta=0;
     double q_sigma=0;
-    double q_gamma=GateToMerge->qGamma(X,z_assign,Omega); //subsets X based on z_assign inside
-    //cout<<"q_gamma: "<<q_gamma<<endl;
+    double q_gamma=GateToMerge->q_gammaMerge(X,z_assign,Omega); //subsets X based on z_assign inside
     for(int i=0;i<ExpertsToMerge.size();i++){
         Expert* current=dynamic_cast<Expert*>(ExpertsToMerge[i]);
         vec points_helper=current->getPointIndices(z_assign);
@@ -1975,18 +2344,30 @@ vector<Node*> Gate::merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assig
         q_beta=q_beta+current->expertmodel->qBeta(y_sub,X_sub,current->beta,current->logsigma_sq,mu_beta,Sigma_beta);
         q_sigma=q_sigma+current->expertmodel->qSigma(y_sub,X_sub,current->beta,current->logsigma_sq,a,b);
     }
-    //cout<<"q_beta: "<<q_beta<<endl;
-    //cout<<"q_sigma: "<<q_sigma<<endl;
-    vector<Node*> z_assign_new=z_assign;
-    //A) Subset the points that have travelled through the gate we are merging 
-    vec points=GateToMerge->getPointIndices(z_assign);
-    //B) Copy the current structure in case merge rejected
+
+    //4) Store back ups in case merge is rejected
     Gate* backup=GateToMerge->copyStructure();
     Gate* backupParent=GateToMerge->Parent;
     int   k=GateToMerge->Parent->whichChild(GateToMerge);
     int   m=backupParent->whichChild(backup);
-    //C) Perform the merge
-    GateToMerge->Parent->replaceChild(k,ExpertsToMerge[0]);
+    vector<Node*> z_backup=GateToMerge->deepCopyAllocations(z_assign,backup);
+    vector<Node*> z_assign_new=z_assign;
+
+    //5) Perform the merge
+    if(GateToMerge->Parent->Parent==NULL){
+        GateToMerge->deleteChildren();
+        GateToMerge->addChild(ExpertsToMerge[0]);
+        GateToMerge->Parent->printChildren();
+        GateToMerge->printChildren();
+    }else{
+        GateToMerge->printParent();
+        GateToMerge->Parent->replaceChild(k,ExpertsToMerge[0]);
+    }
+    //6) Create variables to be filled in
+    bool accept;
+    cout<<"DONE"<<endl;
+    ExpertsToMerge[0]->Parent->printChildren();
+
     //D) Assign all points to one expert
     for(int i=0;i<points.size();i++){
          z_assign_new[static_cast<int>(points[i])]=ExpertsToMerge[0];
@@ -2005,7 +2386,7 @@ vector<Node*> Gate::merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assig
     double sigmahat=MergedExpert->expertmodel->findLogSigmaSqMLE(myY,myX,betahat);
     //cout<<"sigmahat: "<<sigmahat<<endl;
     //3) Use estimate for sigma to obtain variance for the noise to be added to the estimate of beta
-    mat Sigma_prop= (myX.t()*myX).i()*exp(sigmahat);
+    mat Sigma_prop=(myX.t()*myX).i()*exp(sigmahat);
     //Sigma_prop.print("Sigmaprop: ");
     //4) Propose a new value for beta centred around betahat
     vec mu_zeros(2); mu_zeros.fill(0);
@@ -2017,8 +2398,8 @@ vector<Node*> Gate::merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assig
     //6) Calculate the log likelihood for the newly formed 
     //double loglik_new=MergedExpert->mostSeniorGate()->loglik_complete(y,X,z_assign_new);
     double loglik_new=MergedExpert->expertmodel->loglik(myY,myX*(MergedExpert->beta),MergedExpert->logsigma_sq);
-    //cout<<"Before:"<<loglik_old<<endl;
-    //cout<<"After:"<<loglik_new<<endl;
+    cout<<"Before:"<<loglik_old<<endl;
+    cout<<"After:"<<loglik_new<<endl;
     //7) Calculate the probability of arriving at the value of beta_star
     double q_betastar=sum(this->logmvndensity(MergedExpert->beta,betahat,Sigma_prop));
     //cout<<"q_betastar: "<<q_betastar<<endl;
@@ -2046,10 +2427,10 @@ vector<Node*> Gate::merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assig
          return z_assign_new;
     }else{
        cout<<"Merge has been rejected"<<endl;
-       cout<<"Want to reinstate the original structure"<<endl;
-       cout<<"Set the "<<m<<"-th child of "<<backupParent->name<<" to be "<<backup->name<<" from the backup hard copy"<<endl;
+       //cout<<"Want to reinstate the original structure"<<endl;
+       //cout<<"Set the "<<m<<"-th child of "<<backupParent->name<<" to be "<<backup->name<<" from the backup hard copy"<<endl;
        backupParent->Children[m]=backup;
-       cout<<"Set the parent of "<<backupParent->Children[m]->name<<" to be "<<backupParent->name<<endl;
+       //cout<<"Set the parent of "<<backupParent->Children[m]->name<<" to be "<<backupParent->name<<endl;
        backupParent->Children[m]->Parent=backupParent;
        backupParent->mostSeniorGate()->issueID();
        backupParent->mostSeniorGate()->issueIDLR();
@@ -2065,51 +2446,90 @@ vector<Node*> Gate::merge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assig
 }
 }
 
-vector<Node*> Gate::forceMerge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega){
+
+vector<Node*> Gate::merge2(vec y, mat X, int* accept, Gate* GateToMerge, vector<Node*> z_assign, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega){
+    vec mu_zeros(X.n_cols); mu_zeros.fill(0);
+    //1) Determine which experts to merge
     vector<Node*> ExpertsToMerge=GateToMerge->getTerminalNodes();
-     //for (int i=0;i<ExpertsToMerge.size();i++) cout<<ExpertsToMerge[i]->name<<endl;
-    //A) Subset the points that have travelled through the gate we are merging 
+    //2) Subset the points that have reached the gate
     vec points=GateToMerge->getPointIndices(z_assign);
-    //B) Perform the merge
-    int   k=GateToMerge->Parent->whichChild(GateToMerge);
-    GateToMerge->Parent->replaceChild(k,ExpertsToMerge[0]);
-    //ExpertsToMerge[0]->printParent();
-    //ExpertsToMerge[0]->getParent()->printChildren();
-    //C) Assign all points to one expert
-    vector<Node*> z_assign_new(z_assign.size());
-    z_assign_new=z_assign;
-    for(int i=0;i<points.size();i++){
-         z_assign_new[static_cast<int>(points[i])]=ExpertsToMerge[0];
+    //3) Record the log likelihood, priors and parameter densities for the current architecture
+    double loglik_old=GateToMerge->loglik_complete(y,X,z_assign); 
+    double prior_beta=0;
+    double prior_sigma=0;
+    double q_beta=0;
+    double q_sigma=0;
+    double q_gamma=GateToMerge->q_gammaMerge(X,z_assign,Omega); //subsets X based on z_assign inside
+    double prior_gamma=sum(this->logmvndensity(GateToMerge->gamma,mu_zeros,Omega));
+    for(int i=0;i<ExpertsToMerge.size();i++){
+        Expert* current=dynamic_cast<Expert*>(ExpertsToMerge[i]);
+        vec points_helper=current->getPointIndices(z_assign);
+        vec y_sub=current->subsetY(y,points_helper);
+        mat X_sub=current->subsetX(X,points_helper);
+        prior_beta=prior_beta+sum(this->logmvndensity(current->beta,mu_beta,Sigma_beta));
+        prior_sigma=prior_sigma+current->expertmodel->IG_log(exp(current->logsigma_sq),a,b);
+        q_beta=q_beta+current->expertmodel->qBeta(y_sub,X_sub,current->beta,current->logsigma_sq,mu_beta,Sigma_beta);
+        q_sigma=q_sigma+current->expertmodel->qSigma(y_sub,X_sub,current->beta,current->logsigma_sq,a,b);
     }
-      //D) Subset all points that are in the new merged expert
-    mat myX=ExpertsToMerge[0]->subsetX(X,points);
-    vec myY=ExpertsToMerge[0]->subsetY(y,points);
-    //E) Create a new pointer to the newly formed expert to simplify notation
+    //4) Create backups in case merge is rejected
+    Gate* backup=GateToMerge->copyStructure();
+    Gate* backupParent=GateToMerge->Parent;
+    int   k=GateToMerge->Parent->whichChild(GateToMerge);
+    int   m=backupParent->whichChild(backup);
+    vector<Node*> z_backup=GateToMerge->deepCopyAllocations(z_assign,backup);
+    //5)Create variables to be filled in
+    bool acc;
+    vector<Node*> z_new=z_assign;
+    //6) Perform the merge
+    if(GateToMerge->Parent->Parent==NULL){
+        //a) If merging a root gate, only have one expert in the model
+        GateToMerge->deleteChildren();
+        GateToMerge->addChild(ExpertsToMerge[0]);
+    }else{
+        GateToMerge->Parent->replaceChild(k,ExpertsToMerge[0]);
+    }
+    //7) Create a new pointer to the newly formed expert to simplify notation
     Expert* MergedExpert=dynamic_cast<Expert*>(ExpertsToMerge[0]);
-    //F) Issue IDs to the newly created architecture
+    //8) Issue IDs to the newly created architecture
     MergedExpert->mostSeniorGate()->issueID();
     MergedExpert->mostSeniorGate()->issueIDLR();
-    //2) Obtain betahat and sigmahat
-    vec betahat=MergedExpert->expertmodel->findBetaMLE(myY,myX);
-    //betahat.print("betahat: ");
-    double sigmahat=MergedExpert->expertmodel->findLogSigmaSqMLE(myY,myX,betahat);
-    //cout<<"sigmahat: "<<sigmahat<<endl;
-    //3) Use estimate for sigma to obtain variance for the noise to be added to the estimate of beta
-    mat Sigma_prop= (myX.t()*myX).i()*exp(sigmahat);
-    //Sigma_prop.print("Sigmaprop: ");
-    //4) Propose a new value for beta centred around betahat
-    vec mu_zeros(2); mu_zeros.fill(0);
-    MergedExpert->beta=betahat+mvnrnd(mu_zeros, Sigma_prop,1);
-    //cout<<"betastar: "<<MergedExpert->beta<<endl;
-    //5) Draw a new value for sigma given betastar
-    MergedExpert->logsigma_sq=MergedExpert->expertmodel->updateSigma(myY,myX,MergedExpert->beta,a,b,myY.size());
-    //cout<<"sigmastar: "<<MergedExpert->logsigma_sq<<endl;
-    
-    cout<<"Forced merge has been accepted performed"<<endl;
-         return z_assign_new;
+    //9) Assign all points to one merged expert
+    for(int i=0;i<points.size();i++){
+         z_new[static_cast<int>(points[i])]=MergedExpert;
+    }
+    //10) Subset all points that are in the new merged expert
+    mat myX=MergedExpert->subsetX(X,MergedExpert->getPointIndices(z_new));
+    vec myY=MergedExpert->subsetY(y,MergedExpert->getPointIndices(z_new));
+    //11) Propose post merge parameters
+    double q_betastar=0; double q_sigmastar=0;
+    MergedExpert->Parent->proposeExpertParamsSplit(myY,myX,MergedExpert,mu_beta,Sigma_beta,a,b,&q_betastar,&q_sigmastar);
+    //12) Record log-likelihood after the merge
+    double loglik_new=MergedExpert->expertmodel->loglik(myY,myX*(MergedExpert->beta),MergedExpert->logsigma_sq);
+    //13) Evaluate priors
+    double prior_betastar=sum(this->logmvndensity(MergedExpert->beta,mu_beta,Sigma_beta));
+    double prior_sigmastar=MergedExpert->expertmodel->IG_log(exp(MergedExpert->logsigma_sq),a,b);
+    //14) Calculate the acceptance probability
+    double acceptance=loglik_new+prior_betastar+prior_sigmastar+q_beta+q_sigma+q_gamma-
+                      loglik_old-prior_beta-prior_sigma-prior_gamma-q_betastar-q_sigmastar;
+   //15) Check if accepted
+    double u=randu();
+    acc=log(u)<acceptance;
+    if(acc==1){
+         //cout<<"Merge has been accepted"<<endl;
+         (*accept)=1;
+         return z_new;
+    }else{
+         //cout<<"Merge has been rejected"<<endl;
+         backupParent->Children[m]=backup;
+         backupParent->Children[m]->Parent=backupParent;
+         backupParent->mostSeniorGate()->issueID();
+         backupParent->mostSeniorGate()->issueIDLR();
+         (*accept)=0;
+         return z_backup;
+}
 }
 
- double Gate::qGamma(mat X, vector<Node*> z_assign, mat Omega){
+ double Gate::q_gammaMerge(mat X, vector<Node*> z_assign, mat Omega){
      mat z=this->getZ(z_assign);
      mat myX=this->subsetX(X,this->getPointIndices(z_assign));
      mat R;
@@ -2118,89 +2538,96 @@ vector<Node*> Gate::forceMerge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_
      return sum(this->logmvndensity(this->gamma,gammahat,Sigma));
  }
 
- vector<Node*> Gate::MCMC_RJ(int N, int RJ_every, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega,vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, vector<Node*> z_final){
-    cout<<"Welcome to the RJ MCMC!"<<endl;
+vector<Node*> Gate::MCMC_RJ(int N,  bool doRJ, int RJ_every, int L, mat* accept_RJ, vec y, mat X, vec mu_beta, mat Sigma_beta, double a, double b, mat Omega,vec mu_gamma1, mat Sigma_gamma1, double sigma_epsilon, vector<Node*> z_final, mat X_new, mat* predictions, int predict_every){
+    if(doRJ==0) cout<<"Welcome to the MCMC"<<endl;
+    if(doRJ==1) cout<<"Welcome to the RJ MCMC!"<<endl;
     cout<<"This MCMC wil run "<<N<<" times."<<endl;
-    cout<<"The jump will be proposed every "<< RJ_every<<" iteration."<<endl;
-    Gate* RootGate=this->mostSeniorGate()->Parent;
-    cout<<"Root gate is "<<RootGate->name<<endl;
-    int RJ_direction=1; //1 is for split 2 is for merge
-    int checkEmpty=0;
-    Gate* G0=dynamic_cast<Gate*>(RootGate->Children[0]);
+    if(doRJ==1) cout<<"There will be "<<L<<" jumps proposed every "<< RJ_every<<" iteration."<<endl;
+    Gate* RootParent=this->mostSeniorGate()->Parent;
+    Gate* G0=dynamic_cast<Gate*>(RootParent->Children[0]); 
+    int jump_no=0;
+    int predict_no=0;
     for(int i=0;i<N;i++){
-        if((i+1)%RJ_every!=0){
-            G0=dynamic_cast<Gate*>(RootGate->Children[0]);
-            //if(G0->countChildren()>=1){ //check that we don't have just one expert overall
-               z_final=G0->MCMC_OneRun(y,X,mu_beta,Sigma_beta,a,b,Omega,z_final);// run MCMC
-            //}
-            checkEmpty=G0->areAnyExpEmpty(z_final); //check if there are any empty experts in the model post MCMC
-            if(checkEmpty==1) RJ_direction=2;       //if so, immediately merge
-          }else{
-            cout<<"RJ taking place at iteration "<< i+1 <<endl;
-            if(RJ_direction==1){
-                cout<<"Performing a split."<<endl;
-                G0=dynamic_cast<Gate*>(RootGate->Children[0]);
-                G0->printChildren();
-                vector<Node*> terminals=G0->getTerminalNodes();
-                //arma_rng::set_seed_random();
-                int n_rand=rand() % terminals.size(); //choose one of terminal experts to split at random
-                Expert* ExpertToSplit = dynamic_cast<Expert*>(terminals[n_rand]);
-                Expert* ExpertToAdd= new Expert();
-                ExpertToAdd->name= "E"+to_string(G0->getMaxExpertID()+1);
-                NormalFamily* NF=new NormalFamily();
-                ExpertToAdd->expertmodel=NF;
-                Gate*   GateToAdd=new Gate();
-                GateToAdd->name="G"+to_string(G0->getMaxGateID()+1);
-                cout<<"Proposing to split "<<ExpertToSplit->name<<endl;
-                cout<<"Proposing to add "<<ExpertToAdd->name<<" and "<<GateToAdd->name<<endl;
-                z_final=G0->split2(y,X,ExpertToSplit,ExpertToAdd,GateToAdd,z_final,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
-                RJ_direction=2;
-                RootGate->Children[0]->printChildren();
-                }else{
-                cout<<"Performing a merge"<<endl;
-                G0=dynamic_cast<Gate*>(RootGate->Children[0]);
-                checkEmpty=G0->areAnyExpEmpty(z_final);
-                vector<Expert*> emptyExperts=G0->whichEmpty(z_final);
-                if(checkEmpty==1){
-                    cout<<"There is an empty expert."<<endl;
-                    Expert* ExpertToMerge=emptyExperts[0];
-                    if(ExpertToMerge->Parent->id==G0->id){
-                        cout<<"Empty expert "<<ExpertToMerge->name<<" parent is a root gate"<<endl;
-                        G0->printChildren();
-                        z_final=G0->mergeRoot(y,X,G0,z_final,mu_beta,Sigma_beta,a,b,Omega);
-                    }else{
-                        cout<<"Empty expert "<<ExpertToMerge->name<<" parent is not a root gate"<<endl;
-                        z_final=G0->forceMerge(y,X,ExpertToMerge->Parent,z_final,mu_beta,Sigma_beta,a,b,Omega);
-                    }
-                }else{
-                    cout<<"All experts have observations in them."<<endl;
-                     vector<Node*> gates=G0->getGates();
-                     gates.erase(gates.begin());
-                     int n_gates=G0->countGates()-1;
-                     if(n_gates!=0){
-                        //arma_rng::set_seed_random();
-                        int n_rand=rand() % n_gates;
-                        Gate* GateToMerge=dynamic_cast<Gate*>(gates[n_rand]);
-                        cout<<"Propose to merge the children of "<<GateToMerge->name<<endl;
-                        GateToMerge->printChildren();
-                        z_final=G0->merge(y,X,GateToMerge,z_final,mu_beta,Sigma_beta,a,b,Omega);
-                     }else{
-                         cout<<"Only one gate present with non empty children, do not merge."<<endl;
-                     }
-                }  
-                RJ_direction=1;   
+            //Run MCMC, if only one expert, then only update expert parameters
+            if(G0->countTerminals()>1){ 
+                z_final=G0->MCMC_OneRun(y,X,mu_beta,Sigma_beta,a,b,Omega,z_final);
+            }else{
+                dynamic_cast<Expert*>(G0->Children[0])->MCMC_internal(y,X,mu_beta,Sigma_beta,a,b,Omega,z_final);
             }
-        }
-    }
-    return z_final;
- }
+            if(doRJ==1){ //If the RJ is on
+                    if(i%RJ_every==0){ //Check if it is the correct iteration
+                        for(int j=0;j<L;j++){   
+                            G0=dynamic_cast<Gate*>(RootParent->Children[0]);
+                            //cout<<"RJ taking place at iteration "<< i<<" for the "<<j+1<<"-th time"<<endl;
+                            int RJ_direction= rand() % 2; //Randomly choose the direction of the jump
+                            if(G0->mostSeniorGate()->countTerminals()==1) RJ_direction=0; //If there is only one expert propose to split it
+                            if(RJ_direction==0){ //in case of a split
+                                //cout<<"Performing a split."<<endl;
+                                G0=dynamic_cast<Gate*>(RootParent->Children[0]);
+                                vector<Node*> terminals=G0->getTerminalNodes();
+                                //arma_rng::set_seed_random();
+                                int n_rand=rand() % terminals.size(); //chose expert to split at random
+                                Expert* ExpertToSplit = dynamic_cast<Expert*>(terminals[n_rand]);
+                                //cout<<"Proposing to split "<<ExpertToSplit->name<<endl;
+                                Expert* ExpertToAdd= new Expert(); //create a new sibling expert
+                                ExpertToAdd->name= "E"+to_string(G0->getMaxExpertID()+1);
+                                NormalFamily* NF=new NormalFamily();
+                                ExpertToAdd->expertmodel=NF;
+                                int accept;
+                                if(ExpertToSplit->Parent->countChildren()==1){
+                                    z_final=G0->split_at_root(y,X,&accept,ExpertToSplit,ExpertToAdd,z_final,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
+                                }else{
+                                    Gate*   GateToAdd=new Gate(); //create a new gate parent
+                                    GateToAdd->name="G"+to_string(G0->getMaxGateID()+1);
+                                    //G0->printChildren();
+                                    z_final=G0->split3(y,X,&accept,ExpertToSplit,ExpertToAdd,GateToAdd,z_final,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
+                                }//closes the usual split when more than 1 child
+                                //RootParent->Children[0]->printChildren();
+                                (*accept_RJ).submat(span(jump_no,jump_no),span(0,0))=1;
+                                (*accept_RJ).submat(span(jump_no,jump_no),span(1,1))=accept;
+                                jump_no+=1;
+                            }else{
+                                //cout<<"Performing a merge"<<endl;
+                                G0=dynamic_cast<Gate*>(RootParent->Children[0]);
+                                vector<Node*> gates=G0->getGates();
+                                gates.erase(gates.begin());
+                                int n_gates=G0->countGates()-1;
+                                Gate* GateToMerge;
+                                if(n_gates!=0){ //if there is more than a root gate
+                                    //arma_rng::set_seed_random();
+                                    int n_rand=rand() % n_gates;
+                                    GateToMerge=dynamic_cast<Gate*>(gates[n_rand]); //choose a gate to merge at random
+                                }else{
+                                    GateToMerge=G0; //merge the root
+                                }
+                                //cout<<"Propose to merge the children of "<<GateToMerge->name<<endl;
+                                //GateToMerge->printChildren();
+                                int accept2;
+                                z_final=G0->merge2(y,X,&accept2,GateToMerge,z_final,mu_beta,Sigma_beta,a,b,Omega);
+                                //RootParent->Children[0]->printChildren();
+                                (*accept_RJ).submat(span(jump_no,jump_no),span(0,0))=2;
+                                (*accept_RJ).submat(span(jump_no,jump_no),span(1,1))=accept2;
+                                jump_no+=1;
+                            } //closes the merge
+                        } //closes for L
+                    } //closes if divisible    
+                } //closes if doRJ
+                    G0=dynamic_cast<Gate*>(RootParent->Children[0]); //record current root node
+                    if(i%predict_every==0){
+                        (*predictions).col(predict_no)=G0->predict(X_new);
+                        predict_no+=1;
+                    } //closes predict_every
+                } //closes the first for loop
+            return z_final;
+        } //closes the function
+    
 
  vector<Expert*> Gate::whichEmpty(vector<Node*> z_assign){
     vector<Expert*> result;
     vector<Node*> terminals=this->getTerminalNodes();
     for(int i=0; i<terminals.size();i++){
         vec points=terminals[i]->getPointIndices(z_assign);
-        if(points.size()<=1) result.push_back(dynamic_cast<Expert*>(terminals[i]));
+        if(points.size()<=2) result.push_back(dynamic_cast<Expert*>(terminals[i]));
     }  
     return result;
  }
@@ -2211,7 +2638,7 @@ vector<Node*> Gate::forceMerge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_
     result.fill(0);
     for(int i=0;i<terminals.size();i++){
         vec points=terminals[i]->getPointIndices(z_assign);
-        if(points.size()<=1) result[i]=1;
+        if(points.size()<=2) result[i]=1;
     }
     if(sum(result)==0){
         return 0;
@@ -2221,3 +2648,23 @@ vector<Node*> Gate::forceMerge(vec y, mat X, Gate* GateToMerge, vector<Node*> z_
 
  }
 
+mat Gate::extractAllParams(){
+    int n_exp=this->mostSeniorGate()->countTerminals();
+    int n_gates=this->mostSeniorGate()->countGates();
+    vector<Node*> terminals=this->mostSeniorGate()->getTerminalNodes();
+    vector<Node*> gates=this->mostSeniorGate()->getGates();
+    int p=(dynamic_cast<Gate*>(gates[0])->gamma).size();
+    mat result(p+1,n_exp+n_gates);
+    result.fill(0);
+    for(int i=0; i<terminals.size();i++){
+        Expert* current=dynamic_cast<Expert*>(terminals[i]);
+        result.submat(span(0,p-1),span(i,i))=current->beta;
+        result.submat(span(p,p),span(i,i))=current->logsigma_sq;
+    }
+    for(int j=0;j<gates.size();j++){
+        Gate* current=dynamic_cast<Gate*>(gates[j]);
+        result.submat(span(0,p-1),span(n_exp+j,n_exp+j))=current->gamma;
+    }
+    //result.print("result");
+    return result;
+}

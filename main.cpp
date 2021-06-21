@@ -10,6 +10,7 @@
 #include <algorithm> 
 #include <sstream> 
 #include <iterator> 
+#include <chrono>
 
 using namespace std;
 using namespace arma;
@@ -122,7 +123,7 @@ double sigma_epsilon=1;
 
 vec z_afterSplit(y.size());
 //arma_rng::set_seed_random();
-vector<Node*> z_post_split=G1->split2(y,X,E2,E3,G2,z_assign_new,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
+vector<Node*> z_post_split=G1->split(y,X,E2,E3,G2,z_assign_new,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
     
 for(int i=0;i<z_assign.size();i++){
     if(z_post_split[i]->name=="E1") z_afterSplit[i]=1;
@@ -494,7 +495,7 @@ for(int i=0;i<z_assign.size();i++){
       if(z_assign_new[i]->name=="E2") z_afterMCMC[i]=2;
       if(z_assign_new[i]->name=="E3") z_afterMCMC[i]=3;
 }
-z_afterMCMC.save("z_afterMCMC_split2.csv",csv_ascii);
+z_afterMCMC.save("z_afterMCMC_split.csv",csv_ascii);
 
 //Parameters for forward jump proposal
 vec mu_gamma1(X.n_cols-1);mu_gamma1.fill(0);
@@ -503,7 +504,7 @@ double sigma_epsilon=1;
 
 vec z_afterSplit(y.size());
 //arma_rng::set_seed_random();
-vector<Node*> z_post_split=G1->split2(y,X,E3,E4,G3,z_assign_new,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
+vector<Node*> z_post_split=G1->split(y,X,E3,E4,G3,z_assign_new,mu_beta,Sigma_beta,mu_gamma1,Sigma_gamma1,sigma_epsilon,a,b,Omega);
     
 for(int i=0;i<z_assign.size();i++){
     if(z_post_split[i]->name=="E1") z_afterSplit[i]=1;
@@ -625,8 +626,8 @@ for(int i=0; i<z_assign.size();i++) z_assign[i]=E1;
 return 0;
 }
 
-int main(){ //testing forward and backward together
-int Case=3;
+int main_test_sin(){ //testing forward and backward together
+int Case=2;
 
 Gate* RP=new Gate(); 
 Gate* G1=new Gate();
@@ -690,7 +691,139 @@ E4->expertmodel=NF;
 
 vec mu_beta(X.n_cols); mu_beta.zeros();
 vec diags(X.n_cols); diags.fill(0.5); mat Sigma_beta=diagmat(diags); //prior var-cov matrix for beta
-diags.fill(1); mat Omega=diagmat(diags); //prior var-cov matrix for gamma
+diags.fill(5); mat Omega=diagmat(diags); //prior var-cov matrix for gamma
+double a=0.01; double b=0.01; //prior IG for inverse gamma
+
+
+for(int i=0;i<(z_before.n_rows);i++){
+      if(as_scalar(z_before.row(i))==1) z_assign[i]=RP->findNode("E1");
+      if(as_scalar(z_before.row(i))==2) z_assign[i]=RP->findNode("E2");
+      if(as_scalar(z_before.row(i))==3) z_assign[i]=RP->findNode("E3");
+      if(as_scalar(z_before.row(i))==4) z_assign[i]=RP->findNode("E4");
+}
+
+//Set some initial values for parameters
+G1->estimateAllBetas(z_assign,y,X,0.1,mu_beta,Sigma_beta); 
+G1->setAllSigmas(0.5);
+G1->estimateAllGamas(z_assign,X,Omega);
+
+//Parameters for forward jump proposal
+vec mu_gamma1(X.n_cols-1);mu_gamma1.fill(0);
+vec diags2(X.n_cols-1); diags2.fill(20); mat Sigma_gamma1=diagmat(diags2); 
+double sigma_epsilon=0.5;
+dynamic_cast<Gate*>(RP->Children[0])->printChildren();
+
+int N_MCMC=1000;
+bool doRJ=1;
+int RJ_every=10;
+int L=4;
+int predict_every=20;
+mat accept_RJ(N_MCMC/RJ_every*L,2); accept_RJ.fill(5555);
+mat X_new=X; 
+mat predictions(y.size(),N_MCMC/predict_every); predictions.fill(33333);
+
+arma_rng::set_seed(3);
+vector<Node*> z_MCMC_RJ=G1->MCMC_RJ(N_MCMC, doRJ, RJ_every, L, &accept_RJ, y, X, mu_beta, Sigma_beta, a, b, Omega,mu_gamma1,Sigma_gamma1,sigma_epsilon,z_assign, X_new, &predictions, predict_every);
+cout<<"Complete"<<endl;
+//for(int i=0;i<z_MCMC_RJ.size();i++) cout<<"Point "<<i<<" is in "<<z_MCMC_RJ[i]->name<<endl;
+
+RP->printTerminalNodes();
+
+vec z_MCMCRJ(y.size());
+for(int i=0;i<y.size();i++){
+    if(z_MCMC_RJ[i]->name=="E1") z_MCMCRJ[i]=1;
+    if(z_MCMC_RJ[i]->name=="E2") z_MCMCRJ[i]=2;
+    if(z_MCMC_RJ[i]->name=="E3") z_MCMCRJ[i]=3;
+    if(z_MCMC_RJ[i]->name=="E4") z_MCMCRJ[i]=4;
+    if(z_MCMC_RJ[i]->name=="E5") z_MCMCRJ[i]=5;
+    if(z_MCMC_RJ[i]->name=="E6") z_MCMCRJ[i]=6;
+    if(z_MCMC_RJ[i]->name=="E7") z_MCMCRJ[i]=7;
+    if(z_MCMC_RJ[i]->name=="E8") z_MCMCRJ[i]=8;
+    if(z_MCMC_RJ[i]->name=="E9") z_MCMCRJ[i]=9;
+    if(z_MCMC_RJ[i]->name=="E10") z_MCMCRJ[i]=10;
+}
+
+z_MCMCRJ.save("z_MCMCRJ.csv",csv_ascii);
+cout<<"Any empties: "<<dynamic_cast<Gate*>(RP->Children[0])->areAnyExpEmpty(z_MCMC_RJ)<<endl;
+if(dynamic_cast<Gate*>(RP->Children[0])->areAnyExpEmpty(z_MCMC_RJ)==1){
+    vector<Expert*> empties=dynamic_cast<Gate*>(RP->Children[0])->whichEmpty(z_MCMC_RJ);
+    for(int i=0;i<empties.size();i++) cout<<empties[i]->name<<endl;
+}
+
+mat all_params=RP->extractAllParams();
+all_params.save("all_params.csv",csv_ascii);
+accept_RJ.save("accept_RJ.csv",csv_ascii);
+predictions.save("predictions.csv",csv_ascii);
+
+return 0;
+}
+
+int main(){ //testing forward and backward together
+int Case=2;
+
+Gate* RP=new Gate(); 
+Gate* G1=new Gate();
+Gate* G2=new Gate();
+Gate* G3=new Gate();
+Expert* E1=new Expert();
+Expert* E2=new Expert();
+Expert* E3=new Expert();
+Expert* E4=new Expert();
+RP->name="RP";
+G1->name="G1";
+G2->name="G2";
+G3->name="G3";
+E1->name="E1";
+E2->name="E2";
+E3->name="E3";
+E4->name="E4";
+
+mat A; vec y; mat X;
+A.load("data_cube.csv", csv_ascii);
+setUpData(A,&y,&X);
+vector<Node*> z_assign(y.size()); vec z_before(y.size());
+
+if(Case==1){
+//Case 1) Start 2
+    RP->makeThisRootParent(G1);
+    G1->addChild(E1);
+    G1->addChild(E2);
+    z_before.load("z_quad1.csv", csv_ascii); //Case 1
+}else{
+    if(Case==2){
+//Case 2) Start 3
+        RP->makeThisRootParent(G1);
+        G1->addChild(E1);
+        G1->addChild(G2);
+        G2->addChild(E2);
+        G2->addChild(E3);
+        z_before.load("z_quad2.csv", csv_ascii); //Case 2
+    }else{
+//Case 3) Start 4
+        RP->makeThisRootParent(G1);
+        G1->addChild(G2);
+        G1->addChild(G3);
+        G2->addChild(E1);
+        G2->addChild(E2);
+        G3->addChild(E3);
+        G3->addChild(E4);
+        z_before.load("z_quad3.csv", csv_ascii); //Case 3      
+    }
+}
+
+G1->issueID();
+G1->issueIDLR();
+
+NormalFamily* NF=new NormalFamily();
+E1->expertmodel=NF;
+E2->expertmodel=NF;
+E3->expertmodel=NF;
+E4->expertmodel=NF;
+
+
+vec mu_beta(X.n_cols); mu_beta.zeros();
+vec diags(X.n_cols); diags.fill(0.5); mat Sigma_beta=diagmat(diags); //prior var-cov matrix for beta
+diags.fill(5); mat Omega=diagmat(diags); //prior var-cov matrix for gamma
 double a=0.01; double b=0.01; //prior IG for inverse gamma
 
 
@@ -710,10 +843,29 @@ G1->estimateAllGamas(z_assign,X,Omega);
 vec mu_gamma1(X.n_cols-1);mu_gamma1.fill(0);
 vec diags2(X.n_cols-1); diags2.fill(20); mat Sigma_gamma1=diagmat(diags2); 
 double sigma_epsilon=1;
+dynamic_cast<Gate*>(RP->Children[0])->printChildren();
 
+int N_MCMC=1000;
+bool doRJ=0;
+int RJ_every=1;
+int L=4;
+int predict_every=1;
+mat accept_RJ(N_MCMC/RJ_every*L,2); accept_RJ.fill(5555);
+mat X_new=X; 
+mat predictions(y.size(),N_MCMC/predict_every); predictions.fill(33333);
+
+// Record start time
+auto start = std::chrono::high_resolution_clock::now();
 arma_rng::set_seed(3);
-vector<Node*> z_MCMC_RJ=G1->MCMC_RJ(5000,500, y, X, mu_beta, Sigma_beta, a, b, Omega,mu_gamma1,Sigma_gamma1,sigma_epsilon,z_assign);
+vector<Node*> z_MCMC_RJ=G1->MCMC_RJ(N_MCMC, doRJ, RJ_every, L, &accept_RJ, y, X, mu_beta, Sigma_beta, a, b, Omega,mu_gamma1,Sigma_gamma1,sigma_epsilon,z_assign, X_new, &predictions, predict_every);
+// Record end time
+auto finish = std::chrono::high_resolution_clock::now();
+std::chrono::duration<double> elapsed = finish - start;
 cout<<"Complete"<<endl;
+std::cout << "Elapsed time: " << elapsed.count() << " s\n";
+//for(int i=0;i<z_MCMC_RJ.size();i++) cout<<"Point "<<i<<" is in "<<z_MCMC_RJ[i]->name<<endl;
+
+RP->printTerminalNodes();
 
 vec z_MCMCRJ(y.size());
 for(int i=0;i<y.size();i++){
@@ -730,6 +882,16 @@ for(int i=0;i<y.size();i++){
 }
 
 z_MCMCRJ.save("z_MCMCRJ.csv",csv_ascii);
+cout<<"Any empties: "<<dynamic_cast<Gate*>(RP->Children[0])->areAnyExpEmpty(z_MCMC_RJ)<<endl;
+if(dynamic_cast<Gate*>(RP->Children[0])->areAnyExpEmpty(z_MCMC_RJ)==1){
+    vector<Expert*> empties=dynamic_cast<Gate*>(RP->Children[0])->whichEmpty(z_MCMC_RJ);
+    for(int i=0;i<empties.size();i++) cout<<empties[i]->name<<endl;
+}
 
-    return 0;
+mat all_params=RP->extractAllParams();
+all_params.save("all_params.csv",csv_ascii);
+accept_RJ.save("accept_RJ.csv",csv_ascii);
+predictions.save("predictions.csv",csv_ascii);
+
+return 0;
 }

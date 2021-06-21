@@ -273,7 +273,11 @@ double ExpertModel::updateSigma(vec y, mat X, vec beta, double a, double b, int 
 
 double ExpertModel::qSigma(vec y, mat X, vec beta, double logsigma_sq, double a, double b){
   int n=y.size();
-  return this->IG_log(exp(logsigma_sq),a+n/2,b+sum(pow(y-X*beta,2))/2);
+  if(n>2){
+    return this->IG_log(exp(logsigma_sq),a+n/2,b+sum(pow(y-X*beta,2))/2);
+  }else{
+    return this->IG_log(exp(logsigma_sq),a,b);
+  }
 }
 
 /**

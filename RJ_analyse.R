@@ -157,3 +157,32 @@ z_afterMCMC<-read.csv("z_MCMCRJ.csv",header=FALSE)
 z_afterMCMC<-z_afterMCMC[,1]
 plot(x,y,col=z_afterMCMC,pch=20, main="After RJ MCMC")
 
+n_exp<-length(unique(z_afterMCMC))
+cols<-c(1,2,4) #case 1
+cols<-c(1,2,3) #case 2
+cols<-c(1,3,4) #case 3
+params<-read.csv("all_params.csv",header=FALSE)
+
+for(i in 1:n_exp){
+  lines(x,params[1,i]+params[2,i]*x,col=cols[i])
+}
+
+
+accept<- read.csv("accept_RJ.csv",header=FALSE)
+accept_split<- accept[accept[,1]==1,]
+accept_merge<- accept[accept[,1]==2,]
+mean(accept_split[,2])
+mean(accept_merge[,2])
+
+plot(x,y,pch=20)
+predictions <-read.csv("predictions.csv", header=FALSE)
+mycol <- rgb(0, 0, 255, max = 255, alpha = 80, names = "blue50")
+for(i in 1:ncol(predictions)) lines(x,predictions[,i],pch=2,col=mycol)
+
+autocors<- c() 
+  
+for(i in 1:nrow(predictions)){
+  autocors<-c(autocors, cor(c(unlist(predictions[i,2:ncol(predictions)])),c(unlist(predictions[i,1:(ncol(predictions)-1)]))))
+}
+
+autocors

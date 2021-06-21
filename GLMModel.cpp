@@ -352,10 +352,14 @@ double GLMModel::updateSigma(vec y, mat X, vec beta, double a, double b, int n){
 }
 
 double GLMModel::qBeta(vec y, mat X, vec beta, double logsigma_sq, vec mu_beta, mat Sigma_beta){
-    mat R;
-    vec betahat=this->findBeta(y,X,&R, exp(logsigma_sq),mu_beta,Sigma_beta);
-    mat Sigma=(R.t()*R).i();
-    return sum(this->logmvndensity(beta,betahat,Sigma));
+    if(y.size()>2){
+        mat R;
+        vec betahat=this->findBeta(y,X,&R, exp(logsigma_sq),mu_beta,Sigma_beta);
+        mat Sigma=(R.t()*R).i();
+        return sum(this->logmvndensity(beta,betahat,Sigma));
+    }else{
+        return sum(this->logmvndensity(beta,mu_beta,Sigma_beta));
+    }
 }
 
 // double GLMModel::qSigma(){
