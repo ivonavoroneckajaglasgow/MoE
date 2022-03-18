@@ -84,7 +84,10 @@ vec NormalFamily::dmudeta(vec eta){
  */
 vec NormalFamily::logdensity(vec y, vec eta, double logsigma_sq){
    double std;
-   double logsigma_tr=this->transformSigma(logsigma_sq);
+   //cout<<"eta check:"<<eta[0]<<endl;
+   //cout<<"logsigma"<<logsigma_sq<<endl;
+   //double logsigma_tr=this->transformSigma(logsigma_sq);
+   double logsigma_tr=exp(logsigma_sq);
    std=sqrt(logsigma_tr);
    return -0.5*(log(2*M_PI)+log(logsigma_tr))-pow(y-eta,2)/(2*logsigma_tr);
 }
@@ -189,8 +192,10 @@ vec NormalFamily::V(vec theta){
 
 double NormalFamily::findLogSigmaSqMLE(vec y, mat X, vec betahat){
     double n=static_cast<int>(y.size());
-    return as_scalar(log(sqrt(1/(n-X.n_cols)*(y-X*betahat).t()*(y-X*betahat))));
+    //return as_scalar(log(sqrt(1/(n-X.n_cols)*(y-X*betahat).t()*(y-X*betahat))));
+    return as_scalar(log(1/(n-X.n_cols)*(y-X*betahat).t()*(y-X*betahat)));
 }
+
 
 vec NormalFamily::findBetaMLE(vec y, mat X){
 mat Xt(X.n_cols,X.n_rows);

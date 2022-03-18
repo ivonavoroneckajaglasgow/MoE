@@ -206,10 +206,12 @@ vec ExpertModel::logmvndensity(vec response, vec mean, mat Sigma){
  * @return vec multivariate normal density on a log scale
  */
 vec ExpertModel::logmvndensity(vec response, vec mean, mat* R){
-int k=static_cast<int>((*R).n_rows);
+//int k=static_cast<int>((*R).n_rows);
 //return -k/2*log(2*M_PI)+0.5*sum(log(pow((*R).diag(),2)))-0.5*(response-mean).t()*((*R).t()*(*R))*(response-mean);
 mat result;
-result=-k/2*log(2*M_PI)+sum(log((*R).diag()))-0.5*sum(pow((*R)*(response-mean),2));
+mat Sigma=((*R).t()*(*R)).i();
+//result =-k/2*log(2*M_PI)+sum(log((*R).diag()))-0.5*sum(pow((*R)*(response-mean),2));
+result=this->logmvndensity(response,mean,Sigma);
 return vectorise(result);
 }
 
@@ -253,12 +255,12 @@ double ExpertModel::logMarginalPosteriorY(vec y, mat X, vec mu_beta, mat Sigma_b
  * @return double updated value of sigma
  */
 double ExpertModel::updateSigma(vec y, mat X, vec beta, double a, double b, int n){
-    if(n==0){
+    if(n<=2){
         return log(1/randg( distr_param(a,1/b)));
     }
     double alpha1=static_cast<double>(a+n/2);
     double alpha2=static_cast<double>(b+sum(pow(y-X*beta,2))/2);
-    double sigma_new=1/randg( distr_param(alpha1,1/alpha2)); 
+    double sigma_new=1/randg(distr_param(alpha1,1/alpha2)); 
     return log(sigma_new);
     // double density_old=sum(this->logdensity(y,this->etafun(X,beta),sigma_old));
     // double density_new=sum(this->logdensity(y,this->etafun(X,beta),sigma_new));
@@ -272,7 +274,7 @@ double ExpertModel::updateSigma(vec y, mat X, vec beta, double a, double b, int 
 }
 
 double ExpertModel::qSigma(vec y, mat X, vec beta, double logsigma_sq, double a, double b){
-  int n=y.size();
+  double n=static_cast<double>(y.size());
   if(n>2){
     return this->IG_log(exp(logsigma_sq),a+n/2,b+sum(pow(y-X*beta,2))/2);
   }else{
@@ -284,11 +286,14 @@ double ExpertModel::qSigma(vec y, mat X, vec beta, double logsigma_sq, double a,
  * @brief Inverse Gamma density on a log scale
  * 
  * @param y response vector
- * @param a prior shape parameter for Inverse Gamma
- * @param b prior scale parameter for Inverse Gamma 
+ * @param a shape parameter for Inverse Gamma
+ * @param b scale parameter for Inverse Gamma 
  * @return double Inverse Gamma density on a log scale
  */
 double ExpertModel::IG_log(double y, double a, double b){
+    //b=1/b;
+    //cout<<"a: "<<a<<endl;
+    //cout<<"b: "<<b<<endl;
     return  a*log(b)-lgamma(a)-(a+1)*log(y)-b/y;
 }
 
